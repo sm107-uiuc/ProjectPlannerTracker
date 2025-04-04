@@ -8,19 +8,52 @@ async function throwIfResNotOk(res: Response) {
 }
 
 export async function apiRequest(
-  method: string,
-  url: string,
-  data?: unknown | undefined,
-): Promise<Response> {
-  const res = await fetch(url, {
-    method,
-    headers: data ? { "Content-Type": "application/json" } : {},
-    body: data ? JSON.stringify(data) : undefined,
-    credentials: "include",
-  });
+  urlOrOptions: string | { url: string, method: string, body?: any, headers?: Record<string, string> },
+  options?: { method: string, body?: any, headers?: Record<string, string> }
+): Promise<any> {
+  let url: string;
+  let fetchOptions: RequestInit = { credentials: "include" };
 
+  // Handle overloaded function signature
+  if (typeof urlOrOptions === 'string') {
+    url = urlOrOptions;
+    if (options) {
+      fetchOptions.method = options.method;
+      if (options.body) {
+        fetchOptions.body = typeof options.body === 'string' ? options.body : JSON.stringify(options.body);
+        fetchOptions.headers = { 
+          'Content-Type': 'application/json',
+          ...(options.headers || {})
+        };
+      } else if (options.headers) {
+        fetchOptions.headers = options.headers;
+      }
+    } else {
+      fetchOptions.method = 'GET';
+    }
+  } else {
+    url = urlOrOptions.url;
+    fetchOptions.method = urlOrOptions.method || 'GET';
+    if (urlOrOptions.body) {
+      fetchOptions.body = typeof urlOrOptions.body === 'string' ? urlOrOptions.body : JSON.stringify(urlOrOptions.body);
+      fetchOptions.headers = { 
+        'Content-Type': 'application/json',
+        ...(urlOrOptions.headers || {})
+      };
+    } else if (urlOrOptions.headers) {
+      fetchOptions.headers = urlOrOptions.headers;
+    }
+  }
+
+  const res = await fetch(url, fetchOptions);
   await throwIfResNotOk(res);
-  return res;
+  
+  // Try to parse as JSON if possible
+  try {
+    return await res.json();
+  } catch (e) {
+    return res;
+  }
 }
 
 type UnauthorizedBehavior = "returnNull" | "throw";

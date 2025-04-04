@@ -1,11 +1,12 @@
 import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { ChevronLeft, CheckCircle2, AlertCircle, Clock, ShieldAlert } from 'lucide-react';
+import { ChevronLeft, CheckCircle2, AlertCircle, Clock, ShieldAlert, Link as LinkIcon } from 'lucide-react';
 import { RecommendationInterface, RecommendationStep, RecommendationStatus } from '@/lib/types';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
+import { Link } from 'wouter';
 import { apiRequest } from '@/lib/queryClient';
 import { useToast } from '@/hooks/use-toast';
 
@@ -20,20 +21,18 @@ export const RecommendationDetail = ({ recommendation, onBack }: RecommendationD
   const [selectedStatus, setSelectedStatus] = useState<RecommendationStatus>(recommendation.status);
 
   // Fetch recommendation steps
-  const { data: steps = [], isLoading: isLoadingSteps } = useQuery({
+  const { data: steps = [], isLoading: isLoadingSteps } = useQuery<RecommendationStep[]>({
     queryKey: [`/api/recommendations/${recommendation.id}/steps`],
-    queryFn: ({ queryKey }) => apiRequest(queryKey[0])
+    queryFn: ({ queryKey }) => apiRequest(queryKey[0] as string)
   });
 
   // Update recommendation status
-  const updateStatusMutation = useMutation({
+  const updateStatusMutation = useMutation<RecommendationInterface, Error, RecommendationStatus>({
     mutationFn: async (status: RecommendationStatus) => {
-      return apiRequest(`/api/recommendations/${recommendation.id}/status`, {
+      return apiRequest({
+        url: `/api/recommendations/${recommendation.id}/status`,
         method: 'PATCH',
-        body: JSON.stringify({ status }),
-        headers: {
-          'Content-Type': 'application/json'
-        }
+        body: { status }
       });
     },
     onSuccess: () => {
@@ -54,14 +53,16 @@ export const RecommendationDetail = ({ recommendation, onBack }: RecommendationD
   });
 
   // Update step completion status
-  const updateStepMutation = useMutation({
-    mutationFn: async ({ stepId, isCompleted }: { stepId: number; isCompleted: boolean }) => {
-      return apiRequest(`/api/recommendation-steps/${stepId}/complete`, {
+  const updateStepMutation = useMutation<
+    RecommendationStep, 
+    Error, 
+    { stepId: number; isCompleted: boolean }
+  >({
+    mutationFn: async ({ stepId, isCompleted }) => {
+      return apiRequest({
+        url: `/api/recommendation-steps/${stepId}/complete`,
         method: 'PATCH',
-        body: JSON.stringify({ isCompleted }),
-        headers: {
-          'Content-Type': 'application/json'
-        }
+        body: { isCompleted }
       });
     },
     onSuccess: () => {
@@ -133,27 +134,81 @@ export const RecommendationDetail = ({ recommendation, onBack }: RecommendationD
     updateStatusMutation.mutate(status);
   };
 
+  // Status Checklist Item Component
+  const StatusChecklistItem = ({ status, label, isActive, onClick }: { 
+    status: RecommendationStatus, 
+    label: string, 
+    isActive: boolean, 
+    onClick: () => void 
+  }) => {
+    const getBackgroundColor = () => {
+      if (!isActive) return 'bg-white';
+      
+      switch (status) {
+        case 'notified': return 'bg-yellow-50';
+        case 'risk_accepted': return 'bg-orange-50';
+        case 'in_progress': return 'bg-blue-50';
+        case 'completed': return 'bg-green-50';
+        default: return 'bg-white';
+      }
+    };
+    
+    const getBorderColor = () => {
+      if (!isActive) return 'border-gray-200';
+      
+      switch (status) {
+        case 'notified': return 'border-yellow-200';
+        case 'risk_accepted': return 'border-orange-200';
+        case 'in_progress': return 'border-blue-200';
+        case 'completed': return 'border-green-200';
+        default: return 'border-gray-200';
+      }
+    };
+    
+    return (
+      <div 
+        className={`flex items-center p-3 border rounded-md cursor-pointer transition-all ${getBackgroundColor()} ${getBorderColor()}`}
+        onClick={onClick}
+      >
+        <div className={`flex-shrink-0 h-5 w-5 mr-3 flex items-center justify-center ${isActive ? 'text-slate-800' : 'text-slate-400'}`}>
+          {getStatusIcon(status)}
+        </div>
+        <div className="flex-1">
+          <p className={`text-sm font-medium ${isActive ? 'text-slate-800' : 'text-slate-500'}`}>{label}</p>
+          <p className="text-xs text-slate-500">
+            {status === 'notified' && 'Issue identified and awaiting action'}
+            {status === 'risk_accepted' && 'Risk acknowledged, no immediate action'}
+            {status === 'in_progress' && 'Currently being addressed'}
+            {status === 'completed' && 'All required actions completed'}
+          </p>
+        </div>
+        {isActive && (
+          <div className="ml-2 h-5 w-5 flex-shrink-0 flex items-center justify-center">
+            <CheckCircle2 className={`h-4 w-4 ${status === 'completed' ? 'text-green-500' : 'text-slate-500'}`} />
+          </div>
+        )}
+      </div>
+    );
+  };
+
   const renderStatusOptions = () => {
     const statuses: { value: RecommendationStatus; label: string }[] = [
-      { value: 'notified', label: 'Notified' },
-      { value: 'risk_accepted', label: 'Risk Accepted' },
-      { value: 'in_progress', label: 'In Progress' },
-      { value: 'completed', label: 'Completed' }
+      { value: 'notified', label: 'NOTIFIED' },
+      { value: 'risk_accepted', label: 'RISK ACCEPTED' },
+      { value: 'in_progress', label: 'IN PROGRESS' },
+      { value: 'completed', label: 'COMPLETED' }
     ];
 
     return (
-      <div className="flex flex-wrap gap-2 mt-4">
+      <div className="space-y-2 mt-4">
         {statuses.map(status => (
-          <Button
+          <StatusChecklistItem
             key={status.value}
-            variant={selectedStatus === status.value ? "default" : "outline"}
-            size="sm"
+            status={status.value}
+            label={status.label}
+            isActive={selectedStatus === status.value}
             onClick={() => handleStatusChange(status.value)}
-            className={selectedStatus === status.value ? "" : "hover:bg-slate-100"}
-          >
-            {getStatusIcon(status.value)}
-            <span className="ml-1">{status.label}</span>
-          </Button>
+          />
         ))}
       </div>
     );
@@ -274,7 +329,14 @@ export const RecommendationDetail = ({ recommendation, onBack }: RecommendationD
           )}
         </div>
       </CardContent>
-      <CardFooter className="flex justify-end bg-slate-50 py-3 px-6">
+      <CardFooter className="flex flex-wrap justify-between items-center gap-4 bg-slate-50 py-3 px-6">
+        <Link href="/integrations">
+          <Button variant="outline" className="border-blue-200 text-blue-600 hover:bg-blue-50">
+            <LinkIcon className="h-4 w-4 mr-2" />
+            Connect Integration
+          </Button>
+        </Link>
+        
         {allStepsCompleted && recommendation.status !== 'completed' && (
           <Button 
             onClick={() => handleStatusChange('completed')}
