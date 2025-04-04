@@ -108,7 +108,6 @@ const DashboardScreen = ({ selectedGoal }: DashboardScreenProps) => {
               <TabsTrigger value="overview">Overview</TabsTrigger>
               <TabsTrigger value="metrics">Metrics</TabsTrigger>
               <TabsTrigger value="recommendations">Recommendations</TabsTrigger>
-              <TabsTrigger value="integrations">Integrations</TabsTrigger>
             </TabsList>
             
             {/* Overview Tab */}
@@ -659,21 +658,6 @@ const DashboardScreen = ({ selectedGoal }: DashboardScreenProps) => {
                     <Download className="mr-2 h-4 w-4" /> Export Recommendations
                   </Button>
                 </CardFooter>
-              </Card>
-            </TabsContent>
-            
-            {/* Integrations Tab */}
-            <TabsContent value="integrations">
-              <Card>
-                <CardHeader>
-                  <CardTitle>Connected Services</CardTitle>
-                  <CardDescription>
-                    Manage your fleet service integrations
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <IntegrationsScreen />
-                </CardContent>
               </Card>
             </TabsContent>
           </Tabs>

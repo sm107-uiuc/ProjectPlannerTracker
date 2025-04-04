@@ -331,10 +331,12 @@ export const RecommendationDetail = ({ recommendation, onBack }: RecommendationD
       </CardContent>
       <CardFooter className="flex flex-wrap justify-between items-center gap-4 bg-slate-50 py-3 px-6">
         <Link href="/integrations">
-          <Button variant="outline" className="border-blue-200 text-blue-600 hover:bg-blue-50">
-            <LinkIcon className="h-4 w-4 mr-2" />
-            Connect Integration
-          </Button>
+          <div>
+            <Button variant="outline" className="border-blue-200 text-blue-600 hover:bg-blue-50">
+              <LinkIcon className="h-4 w-4 mr-2" />
+              Connect Integration
+            </Button>
+          </div>
         </Link>
         
         {allStepsCompleted && recommendation.status !== 'completed' && (

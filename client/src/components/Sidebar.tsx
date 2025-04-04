@@ -22,7 +22,6 @@ export const Sidebar = () => {
 
   const navItems = [
     { icon: LayoutDashboard, label: "Dashboard", path: "/" },
-    { icon: LinkIcon, label: "Integrations", path: "/integrations" },
     { icon: Truck, label: "Vehicles", path: "/vehicles" },
     { icon: MessageSquare, label: "Messages", path: "/messages" },
     { icon: Users, label: "Users", path: "/users" },
@@ -43,21 +42,21 @@ export const Sidebar = () => {
       
       {navItems.map((item) => (
         <Link key={item.path} href={item.path}>
-          <a className={cn(
+          <div className={cn(
             "sidebar-icon w-12 h-12 rounded-lg mb-2 flex items-center justify-center cursor-pointer",
             isActive(item.path) && "active bg-primary/10 text-primary"
           )}>
             <item.icon className="w-6 h-6" />
-          </a>
+          </div>
         </Link>
       ))}
       
       <div className="mt-auto">
         {bottomNavItems.map((item) => (
           <Link key={item.path} href={item.path}>
-            <a className="sidebar-icon w-12 h-12 rounded-lg mb-2 flex items-center justify-center cursor-pointer">
+            <div className="sidebar-icon w-12 h-12 rounded-lg mb-2 flex items-center justify-center cursor-pointer">
               <item.icon className="w-6 h-6" />
-            </a>
+            </div>
           </Link>
         ))}
         
