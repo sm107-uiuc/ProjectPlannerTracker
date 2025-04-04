@@ -31,7 +31,7 @@ interface MetricsTabProps {
 
 export const MetricsTab = ({ selectedGoal }: MetricsTabProps) => {
   const [timeframe, setTimeframe] = useState('month');
-  const [selectedChartTab, setSelectedChartTab] = useState('overview');
+  // We've consolidated overview and detailed views into single unified views
   
   // Use mock data directly 
   const metricsData = mockMetricsData;
@@ -66,8 +66,10 @@ export const MetricsTab = ({ selectedGoal }: MetricsTabProps) => {
   };
 
   // SAFETY METRICS RENDERERS
-  const renderSafetyMetricsOverview = () => {
+  const renderSafetyMetrics = () => {
     const safetyKpiData = metricsData.kpiMetrics.safety;
+    const CHART_COLOR = "#3b82f6"; // Consistent blue color for all charts
+    
     return (
       <>
         {/* Top row - Risk factors and US map */}
@@ -95,7 +97,7 @@ export const MetricsTab = ({ selectedGoal }: MetricsTabProps) => {
                     tick={{ fontSize: 12 }}
                   />
                   <Tooltip />
-                  <Bar dataKey="value" fill="#3b82f6" radius={[0, 4, 4, 0]} barSize={20} />
+                  <Bar dataKey="value" fill={CHART_COLOR} radius={[0, 4, 4, 0]} barSize={20} />
                 </BarChart>
               </ResponsiveContainer>
             </CardContent>
@@ -110,7 +112,7 @@ export const MetricsTab = ({ selectedGoal }: MetricsTabProps) => {
               <GeographyUSA 
                 data={metricsData.incidentMap}
                 title=""
-                color="#3b82f6"
+                color={CHART_COLOR}
               />
             </CardContent>
           </Card>
@@ -197,7 +199,7 @@ export const MetricsTab = ({ selectedGoal }: MetricsTabProps) => {
                   <Line 
                     type="monotone" 
                     dataKey="safety" 
-                    stroke="#3b82f6" 
+                    stroke={CHART_COLOR} 
                     strokeWidth={2}
                     dot={{ r: 4, strokeWidth: 2 }} 
                     activeDot={{ r: 6 }} 
@@ -223,49 +225,51 @@ export const MetricsTab = ({ selectedGoal }: MetricsTabProps) => {
                   <XAxis dataKey="range" tick={{ fontSize: 10 }} axisLine={false} tickLine={false} />
                   <YAxis tick={{ fontSize: 10 }} axisLine={false} tickLine={false} />
                   <Tooltip />
-                  <Bar dataKey="count" fill="#3b82f6" radius={[4, 4, 0, 0]} />
+                  <Bar dataKey="count" fill={CHART_COLOR} radius={[4, 4, 0, 0]} />
                 </BarChart>
               </ResponsiveContainer>
             </CardContent>
           </Card>
         </div>
-      </>
-    );
-  };
-
-  const renderSafetyMetricsDetailed = () => {
-    return (
-      <>
+        
+        {/* Fourth row - Additional charts from the detailed view */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
           {/* Incident Time of Day Analysis */}
           <Card>
             <CardHeader className="pb-2">
               <CardTitle className="text-base font-medium">Incident Time of Day Analysis</CardTitle>
-              <CardDescription>When incidents are most likely to occur</CardDescription>
+              <CardDescription className="text-xs text-slate-500">When incidents are most likely to occur</CardDescription>
             </CardHeader>
             <CardContent className="h-64">
               <ResponsiveContainer width="100%" height="100%">
                 <AreaChart data={metricsData.incidentTimeDistribution}>
-                  <CartesianGrid strokeDasharray="3 3" />
+                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e5e7eb" />
                   <XAxis 
                     dataKey="hour" 
                     tickFormatter={(hour) => `${hour}:00`}
+                    axisLine={false}
+                    tickLine={false}
+                    tick={{ fontSize: 10 }}
                   />
-                  <YAxis />
+                  <YAxis 
+                    axisLine={false}
+                    tickLine={false}
+                    tick={{ fontSize: 10 }}
+                  />
                   <Tooltip 
                     formatter={(value, name) => [`${value} incidents`, 'Count']}
                     labelFormatter={(hour) => `Time: ${hour}:00`}
                   />
                   <defs>
                     <linearGradient id="incidentTimeGradient" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.8}/>
-                      <stop offset="95%" stopColor="#3b82f6" stopOpacity={0.1}/>
+                      <stop offset="5%" stopColor={CHART_COLOR} stopOpacity={0.8}/>
+                      <stop offset="95%" stopColor={CHART_COLOR} stopOpacity={0.1}/>
                     </linearGradient>
                   </defs>
                   <Area 
                     type="monotone" 
                     dataKey="count" 
-                    stroke="#3b82f6" 
+                    stroke={CHART_COLOR} 
                     fill="url(#incidentTimeGradient)"
                   />
                 </AreaChart>
@@ -273,11 +277,11 @@ export const MetricsTab = ({ selectedGoal }: MetricsTabProps) => {
             </CardContent>
           </Card>
           
-          {/* Training Compliance by Department */}
+          {/* Regional Safety Comparison */}
           <Card>
             <CardHeader className="pb-2">
-              <CardTitle className="text-base font-medium">Driver Safety Comparison</CardTitle>
-              <CardDescription>Safety metrics comparison across regions</CardDescription>
+              <CardTitle className="text-base font-medium">Regional Safety Comparison</CardTitle>
+              <CardDescription className="text-xs text-slate-500">Safety metrics across regions</CardDescription>
             </CardHeader>
             <CardContent className="h-64">
               <ResponsiveContainer width="100%" height="100%">
@@ -293,57 +297,16 @@ export const MetricsTab = ({ selectedGoal }: MetricsTabProps) => {
                   <Radar 
                     name="Safety Score" 
                     dataKey="safety" 
-                    stroke="#3b82f6" 
-                    fill="#3b82f6" 
+                    stroke={CHART_COLOR} 
+                    fill={CHART_COLOR} 
                     fillOpacity={0.5} 
                   />
                   <Tooltip />
-                  <Legend />
                 </RadarChart>
               </ResponsiveContainer>
             </CardContent>
           </Card>
         </div>
-        
-        {/* Driver Safety Trend */}
-        <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-base font-medium flex justify-between items-center">
-              <span>Driver Safety Trend</span>
-              <Select defaultValue="month" onValueChange={setTimeframe}>
-                <SelectTrigger className="w-[120px] h-8 text-xs">
-                  <SelectValue placeholder="Select timeframe" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="week">Last Week</SelectItem>
-                  <SelectItem value="month">Last Month</SelectItem>
-                  <SelectItem value="quarter">Last Quarter</SelectItem>
-                  <SelectItem value="year">Last Year</SelectItem>
-                </SelectContent>
-              </Select>
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="h-64">
-            <ResponsiveContainer width="100%" height="100%">
-              <LineChart data={metricsData.monthlyTrends}>
-                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e5e7eb" />
-                <XAxis dataKey="month" tick={{ fontSize: 12 }} axisLine={false} tickLine={false} />
-                <YAxis domain={[40, 100]} tick={{ fontSize: 12 }} axisLine={false} tickLine={false} />
-                <Tooltip />
-                <Legend />
-                <Line
-                  type="monotone"
-                  dataKey="safety"
-                  stroke="#3b82f6"
-                  strokeWidth={2}
-                  dot={{ r: 3 }}
-                  activeDot={{ r: 6 }}
-                  name="Safety Score"
-                />
-              </LineChart>
-            </ResponsiveContainer>
-          </CardContent>
-        </Card>
       </>
     );
   };
@@ -1307,15 +1270,15 @@ export const MetricsTab = ({ selectedGoal }: MetricsTabProps) => {
 
   // Determine which metrics to display based on selected goal
   const renderGoalMetrics = () => {
-    const renderSelectedTabContent = () => {
+    const renderSelectedContent = () => {
       if (selectedGoal === 'safety') {
-        return selectedChartTab === 'overview' ? renderSafetyMetricsOverview() : renderSafetyMetricsDetailed();
+        return renderSafetyMetrics();
       } else if (selectedGoal === 'fuel') {
-        return selectedChartTab === 'overview' ? renderFuelMetricsOverview() : renderFuelMetricsDetailed();
+        return renderFuelMetricsOverview();
       } else if (selectedGoal === 'maintenance') {
-        return selectedChartTab === 'overview' ? renderMaintenanceMetricsOverview() : renderMaintenanceMetricsDetailed();
+        return renderMaintenanceMetricsOverview();
       } else if (selectedGoal === 'utilization') {
-        return selectedChartTab === 'overview' ? renderUtilizationMetricsOverview() : renderUtilizationMetricsDetailed();
+        return renderUtilizationMetricsOverview();
       }
     };
 
@@ -1324,20 +1287,14 @@ export const MetricsTab = ({ selectedGoal }: MetricsTabProps) => {
         <div className="flex items-center justify-between">
           <h2 className="text-2xl font-bold flex items-center">
             {selectedGoal === 'safety' && <Activity className="h-5 w-5 mr-2 text-blue-500" />}
-            {selectedGoal === 'fuel' && <Droplets className="h-5 w-5 mr-2 text-green-500" />}
-            {selectedGoal === 'maintenance' && <Wrench className="h-5 w-5 mr-2 text-purple-500" />}
-            {selectedGoal === 'utilization' && <BarChart2 className="h-5 w-5 mr-2 text-pink-500" />}
+            {selectedGoal === 'fuel' && <Droplets className="h-5 w-5 mr-2 text-blue-500" />}
+            {selectedGoal === 'maintenance' && <Wrench className="h-5 w-5 mr-2 text-blue-500" />}
+            {selectedGoal === 'utilization' && <BarChart2 className="h-5 w-5 mr-2 text-blue-500" />}
             {selectedGoal.charAt(0).toUpperCase() + selectedGoal.slice(1)} Metrics
           </h2>
-          <Tabs defaultValue="overview" className="w-[260px]" value={selectedChartTab} onValueChange={setSelectedChartTab}>
-            <TabsList className="grid grid-cols-2">
-              <TabsTrigger value="overview">Overview</TabsTrigger>
-              <TabsTrigger value="detailed">Detailed</TabsTrigger>
-            </TabsList>
-          </Tabs>
         </div>
 
-        {renderSelectedTabContent()}
+        {renderSelectedContent()}
       </div>
     );
   };
