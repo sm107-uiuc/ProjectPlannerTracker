@@ -11,13 +11,12 @@ interface MetricsTabProps {
   selectedGoal: Goal;
 }
 
-export const MetricsTab = ({ selectedGoal }: MetricsTabProps) => {
+const MetricsTab = ({ selectedGoal }: MetricsTabProps) => {
   const [timeframe, setTimeframe] = useState('month');
   
-  // Use mock data directly 
+  // Use mock data directly
   const metricsData = mockMetricsData;
   const kpiData = metricsData.kpiMetrics[selectedGoal];
-  const isLoading = false; // Since we're using mock data directly
   
   // Format value for display
   const formatValue = (value: number, prefix: string = '', suffix: string = '') => {
@@ -206,14 +205,14 @@ export const MetricsTab = ({ selectedGoal }: MetricsTabProps) => {
           </CardHeader>
           <CardContent className="h-64">
             <ResponsiveContainer width="100%" height="100%">
-              <LineChart data={timeSeriesData}>
+              <LineChart data={metricsData.monthlyTrends}>
                 <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e5e7eb" />
-                <XAxis dataKey="name" tick={{ fontSize: 12 }} axisLine={false} tickLine={false} />
+                <XAxis dataKey="month" tick={{ fontSize: 12 }} axisLine={false} tickLine={false} />
                 <YAxis tick={{ fontSize: 12 }} axisLine={false} tickLine={false} />
                 <Tooltip />
                 <Line
                   type="monotone"
-                  dataKey="value"
+                  dataKey="safety"
                   stroke="#3b82f6"
                   strokeWidth={2}
                   dot={{ r: 3 }}
@@ -367,14 +366,14 @@ export const MetricsTab = ({ selectedGoal }: MetricsTabProps) => {
           </CardHeader>
           <CardContent className="h-64">
             <ResponsiveContainer width="100%" height="100%">
-              <LineChart data={timeSeriesData}>
+              <LineChart data={metricsData.monthlyTrends}>
                 <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e5e7eb" />
-                <XAxis dataKey="name" tick={{ fontSize: 12 }} axisLine={false} tickLine={false} />
+                <XAxis dataKey="month" tick={{ fontSize: 12 }} axisLine={false} tickLine={false} />
                 <YAxis tick={{ fontSize: 12 }} axisLine={false} tickLine={false} />
                 <Tooltip />
                 <Line
                   type="monotone"
-                  dataKey="value"
+                  dataKey="fuel"
                   stroke="#22c55e"
                   strokeWidth={2}
                   dot={{ r: 3 }}
@@ -396,20 +395,20 @@ export const MetricsTab = ({ selectedGoal }: MetricsTabProps) => {
             <CardHeader className="pb-2">
               <CardTitle className="text-base font-medium flex items-center justify-between">
                 <span>Maintenance Score</span>
-                {getTrendIndicator(metricsData.current, metricsData.previousPeriod)}
+                {getTrendIndicator(kpiData.current, kpiData.previousPeriod)}
               </CardTitle>
             </CardHeader>
             <CardContent className="pb-4">
               <div className="flex items-end justify-between">
                 <div>
-                  <div className={`text-2xl font-bold ${getValueColor(metricsData.current, metricsData.target)}`}>
-                    {formatValue(metricsData.current)}
+                  <div className={`text-2xl font-bold ${getValueColor(kpiData.current, kpiData.target)}`}>
+                    {formatValue(kpiData.current)}
                   </div>
-                  <div className="text-xs text-slate-500 mt-1">Target: {formatValue(metricsData.target)}</div>
+                  <div className="text-xs text-slate-500 mt-1">Target: {formatValue(kpiData.target)}</div>
                 </div>
                 <div className="flex-1 ml-4">
                   <Progress 
-                    value={(metricsData.current / metricsData.target) * 100} 
+                    value={(kpiData.current / kpiData.target) * 100} 
                     className="h-2"
                   />
                 </div>
@@ -440,10 +439,10 @@ export const MetricsTab = ({ selectedGoal }: MetricsTabProps) => {
             </CardHeader>
             <CardContent className="pb-2">
               <div className="flex items-center">
-                <div className="text-2xl font-bold text-amber-500">{metricsData.openIssues}</div>
+                <div className="text-2xl font-bold text-amber-500">{kpiData.openIssues}</div>
                 <div className="text-xs text-slate-500 ml-2">current issues</div>
               </div>
-              <div className="text-xs text-slate-500 mt-1">Avg repair cost: ${metricsData.avgRepairCost.toLocaleString()}</div>
+              <div className="text-xs text-slate-500 mt-1">Avg repair cost: ${kpiData.avgRepairCost.toLocaleString()}</div>
             </CardContent>
             <div className="h-32 pt-2">
               <ResponsiveContainer width="100%" height="100%">
@@ -466,15 +465,15 @@ export const MetricsTab = ({ selectedGoal }: MetricsTabProps) => {
               <div className="flex items-end justify-between">
                 <div>
                   <div className={`text-2xl font-bold ${
-                    metricsData.preventiveCompliance > 80 ? 'text-green-500' : 'text-yellow-500'
+                    kpiData.preventiveCompliance > 80 ? 'text-green-500' : 'text-yellow-500'
                   }`}>
-                    {formatValue(metricsData.preventiveCompliance, '', '%')}
+                    {formatValue(kpiData.preventiveCompliance, '', '%')}
                   </div>
                   <div className="text-xs text-slate-500 mt-1">Target: ≥95%</div>
                 </div>
                 <div className="flex-1 ml-4">
                   <Progress 
-                    value={metricsData.preventiveCompliance} 
+                    value={kpiData.preventiveCompliance} 
                     className="h-2" 
                   />
                 </div>
@@ -485,8 +484,8 @@ export const MetricsTab = ({ selectedGoal }: MetricsTabProps) => {
                 <PieChart>
                   <Pie
                     data={[
-                      { name: 'Completed', value: metricsData.preventiveCompliance, color: '#22c55e' },
-                      { name: 'Pending', value: 100 - metricsData.preventiveCompliance, color: '#f59e0b' }
+                      { name: 'Completed', value: kpiData.preventiveCompliance, color: '#22c55e' },
+                      { name: 'Pending', value: 100 - kpiData.preventiveCompliance, color: '#f59e0b' }
                     ]}
                     cx="50%"
                     cy="50%"
@@ -496,8 +495,8 @@ export const MetricsTab = ({ selectedGoal }: MetricsTabProps) => {
                     dataKey="value"
                   >
                     {[
-                      { name: 'Completed', value: metricsData.preventiveCompliance, color: '#22c55e' },
-                      { name: 'Pending', value: 100 - metricsData.preventiveCompliance, color: '#f59e0b' }
+                      { name: 'Completed', value: kpiData.preventiveCompliance, color: '#22c55e' },
+                      { name: 'Pending', value: 100 - kpiData.preventiveCompliance, color: '#f59e0b' }
                     ].map((entry, index) => (
                       <Cell key={`cell-${index}`} fill={entry.color} />
                     ))}
@@ -528,14 +527,14 @@ export const MetricsTab = ({ selectedGoal }: MetricsTabProps) => {
           </CardHeader>
           <CardContent className="h-64">
             <ResponsiveContainer width="100%" height="100%">
-              <LineChart data={timeSeriesData}>
+              <LineChart data={metricsData.monthlyTrends}>
                 <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e5e7eb" />
-                <XAxis dataKey="name" tick={{ fontSize: 12 }} axisLine={false} tickLine={false} />
+                <XAxis dataKey="month" tick={{ fontSize: 12 }} axisLine={false} tickLine={false} />
                 <YAxis tick={{ fontSize: 12 }} axisLine={false} tickLine={false} />
                 <Tooltip />
                 <Line
                   type="monotone"
-                  dataKey="value"
+                  dataKey="maintenance"
                   stroke="#8b5cf6"
                   strokeWidth={2}
                   dot={{ r: 3 }}
@@ -557,20 +556,20 @@ export const MetricsTab = ({ selectedGoal }: MetricsTabProps) => {
             <CardHeader className="pb-2">
               <CardTitle className="text-base font-medium flex items-center justify-between">
                 <span>Utilization Score</span>
-                {getTrendIndicator(metricsData.current, metricsData.previousPeriod)}
+                {getTrendIndicator(kpiData.current, kpiData.previousPeriod)}
               </CardTitle>
             </CardHeader>
             <CardContent className="pb-4">
               <div className="flex items-end justify-between">
                 <div>
-                  <div className={`text-2xl font-bold ${getValueColor(metricsData.current, metricsData.target)}`}>
-                    {formatValue(metricsData.current)}
+                  <div className={`text-2xl font-bold ${getValueColor(kpiData.current, kpiData.target)}`}>
+                    {formatValue(kpiData.current)}
                   </div>
-                  <div className="text-xs text-slate-500 mt-1">Target: {formatValue(metricsData.target)}</div>
+                  <div className="text-xs text-slate-500 mt-1">Target: {formatValue(kpiData.target)}</div>
                 </div>
                 <div className="flex-1 ml-4">
                   <Progress 
-                    value={(metricsData.current / metricsData.target) * 100} 
+                    value={(kpiData.current / kpiData.target) * 100} 
                     className="h-2"
                   />
                 </div>
@@ -602,9 +601,9 @@ export const MetricsTab = ({ selectedGoal }: MetricsTabProps) => {
             <CardContent className="pb-2">
               <div className="flex items-center">
                 <div className={`text-2xl font-bold ${
-                  metricsData.utilizationRate > 70 ? 'text-green-500' : 'text-yellow-500'
+                  kpiData.utilizationRate > 70 ? 'text-green-500' : 'text-yellow-500'
                 }`}>
-                  {formatValue(metricsData.utilizationRate, '', '%')}
+                  {formatValue(kpiData.utilizationRate, '', '%')}
                 </div>
                 <div className="text-xs text-slate-500 ml-2">of capacity</div>
               </div>
@@ -631,15 +630,15 @@ export const MetricsTab = ({ selectedGoal }: MetricsTabProps) => {
               <div className="flex items-end justify-between">
                 <div>
                   <div className={`text-2xl font-bold ${
-                    metricsData.downtime < 10 ? 'text-green-500' : 'text-red-500'
+                    kpiData.downtime < 10 ? 'text-green-500' : 'text-red-500'
                   }`}>
-                    {formatValue(metricsData.downtime, '', '%')}
+                    {formatValue(kpiData.downtime, '', '%')}
                   </div>
                   <div className="text-xs text-slate-500 mt-1">Target: &lt;5%</div>
                 </div>
                 <div className="flex-1 ml-4">
                   <Progress 
-                    value={metricsData.downtime * 2} 
+                    value={kpiData.downtime * 2} 
                     className="h-2" 
                   />
                 </div>
@@ -650,8 +649,8 @@ export const MetricsTab = ({ selectedGoal }: MetricsTabProps) => {
                 <PieChart>
                   <Pie
                     data={[
-                      { name: 'Downtime', value: metricsData.downtime, color: '#ef4444' },
-                      { name: 'Uptime', value: 100 - metricsData.downtime, color: '#22c55e' }
+                      { name: 'Downtime', value: kpiData.downtime, color: '#ef4444' },
+                      { name: 'Uptime', value: 100 - kpiData.downtime, color: '#22c55e' }
                     ]}
                     cx="50%"
                     cy="50%"
@@ -661,8 +660,8 @@ export const MetricsTab = ({ selectedGoal }: MetricsTabProps) => {
                     dataKey="value"
                   >
                     {[
-                      { name: 'Downtime', value: metricsData.downtime, color: '#ef4444' },
-                      { name: 'Uptime', value: 100 - metricsData.downtime, color: '#22c55e' }
+                      { name: 'Downtime', value: kpiData.downtime, color: '#ef4444' },
+                      { name: 'Uptime', value: 100 - kpiData.downtime, color: '#22c55e' }
                     ].map((entry, index) => (
                       <Cell key={`cell-${index}`} fill={entry.color} />
                     ))}
@@ -693,14 +692,14 @@ export const MetricsTab = ({ selectedGoal }: MetricsTabProps) => {
           </CardHeader>
           <CardContent className="h-64">
             <ResponsiveContainer width="100%" height="100%">
-              <LineChart data={timeSeriesData}>
+              <LineChart data={metricsData.monthlyTrends}>
                 <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e5e7eb" />
-                <XAxis dataKey="name" tick={{ fontSize: 12 }} axisLine={false} tickLine={false} />
+                <XAxis dataKey="month" tick={{ fontSize: 12 }} axisLine={false} tickLine={false} />
                 <YAxis tick={{ fontSize: 12 }} axisLine={false} tickLine={false} />
                 <Tooltip />
                 <Line
                   type="monotone"
-                  dataKey="value"
+                  dataKey="utilization"
                   stroke="#0ea5e9"
                   strokeWidth={2}
                   dot={{ r: 3 }}
@@ -716,17 +715,6 @@ export const MetricsTab = ({ selectedGoal }: MetricsTabProps) => {
   
   // Choose what to render based on the selected goal
   const renderMetrics = () => {
-    if (isLoading) {
-      return (
-        <div className="flex items-center justify-center h-64">
-          <div className="text-center">
-            <div className="spinner h-8 w-8 border-4 border-blue-500 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-            <p className="text-slate-500">Loading metrics data...</p>
-          </div>
-        </div>
-      );
-    }
-    
     switch (selectedGoal) {
       case 'safety':
         return renderSafetyMetrics();
