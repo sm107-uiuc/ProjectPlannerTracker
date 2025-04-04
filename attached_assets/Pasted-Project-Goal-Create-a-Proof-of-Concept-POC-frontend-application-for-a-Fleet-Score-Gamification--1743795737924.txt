@@ -1,0 +1,85 @@
+Project Goal: Create a Proof-of-Concept (POC) frontend application for a "Fleet Score Gamification" portal. This portal should allow a Fleet Manager to select their primary goal, view a personalized dashboard displaying fleet and vehicle scores based on that goal, see rankings, and receive basic actionable insights.
+
+Target User: Fleet Manager
+
+Core Concept: The application personalizes the displayed information (scores, rankings, insights) based on the Fleet Manager's self-identified primary objective (e.g., improve safety, reduce fuel costs). It uses a gamified scoring approach to highlight performance and suggest improvements.
+
+Technology Stack (UI):
+
+React
+Tailwind CSS
+Shadcn/ui component library (Use components like Card, Button, Table, Input, Select, Progress, Icons etc.)
+Visual Style Guide:
+
+Mandatory: Adhere strictly to the visual style presented in the original screenshot provided.
+Color Palette: Use the same dark blue sidebar, light gray/white content background, blue accents for primary actions/data, shades of gray for text, and specific colors for status indicators (red/orange for warnings/low scores, green for positive trends/good scores) as seen in the screenshot.
+Layout: Mimic the general layout: Fixed dark left sidebar with icons, a top bar area (can be minimal for POC), and a main content area with widgets organized in cards.
+Component Styling: Ensure Shadcn components (Card, Button, Table, etc.) are styled to match the rounded corners, padding, font sizes, and overall clean aesthetic of the screenshot's components. Use Tailwind utility classes for fine-tuning.
+Typography: Match the font styles and sizes used in the screenshot.
+Data Handling (for POC):
+
+Use mock/placeholder data for all dynamic content (scores, vehicle lists, trends, recommendations).
+The mock data displayed on the dashboard should conceptually reflect the goal selected in the first step (e.g., if "Safety" is selected, mock data should emphasize safety-related scores and insights).
+No backend integration is required for this POC. Simulate API calls with static JSON data or simple JavaScript functions returning mock data.
+Detailed Instructions for Windsurf:
+
+Phase 1: Setup & Styling Foundation
+
+Initialize Project: Set up a new React project using Vite or Create React App.
+Install Dependencies: Install Tailwind CSS and Shadcn/ui, configuring them according to their documentation.
+Base Layout & Styling:
+Create the main application layout shell resembling the screenshot:
+A fixed-width, dark blue (#1e293b or similar based on screenshot) Left Sidebar. Populate it with placeholder icons (using a library like Lucide Icons, included with Shadcn) representing potential navigation items (e.g., Dashboard, Vehicles, Reports, Settings). Ensure icons match the style in the screenshot.
+A Main Content Area with a light gray/white background (#f8fafc or similar) that takes up the remaining space.
+Apply global styles (via index.css or App.css) to set the base font family and background colors to match the screenshot.
+Phase 2: Goal Selection Screen (Entry Point)
+
+Create Goal Selection View: This is the first screen the user sees.
+Title: Add a clear heading like "What are you trying to achieve?" or "Select Your Primary Fleet Goal". Style it prominently.
+Goal Options:
+Present 3-4 common fleet goals as selectable options using Shadcn Card components or large Button components styled like cards. Make them visually distinct and clickable.
+Example Goals: "Improve Driver Safety," "Reduce Fuel Costs," "Optimize Maintenance," "Increase Vehicle Utilization."
+Include an icon within each card/button relevant to the goal.
+(Optional) Add a Shadcn Input field below the cards labeled "Or describe your goal:" for custom text entry (no processing needed for POC).
+Action Button: Add a Shadcn Button labeled "View Dashboard" or "Proceed." Style it as a primary action button (blue background, white text, rounded corners) consistent with the screenshot.
+State Management (Simple): When a goal card/button is selected, store the selected goal (e.g., "Safety", "Fuel") in a simple React state. This state will determine (conceptually) the data shown on the next screen. Clicking "Proceed" should navigate the user to the Dashboard view.
+Phase 3: Main Dashboard Screen
+
+Create Dashboard View: This is the main screen displayed after goal selection.
+Structure: Use a grid or flexbox layout within the Main Content Area to arrange widgets/cards similar to the screenshot's "Quick View".
+Top Bar Elements (within Main Content Area or as a separate header):
+Display a title like "Fleet Performance Dashboard".
+Include placeholder Shadcn Button components for "Refresh" and "Filters," styled exactly like those in the screenshot (light background, gray text/icon, rounded corners). Functionality is not required.
+Implement Dashboard Widgets (Use Shadcn Card for each):
+Card 1: Overall Fleet Score:
+Title: "Overall Fleet Score" (add subtext: "Based on: [Selected Goal]").
+Content: Display a large mock score (e.g., "82") prominently. Optionally add "/ 100". Include a simple visual indicator like a Shadcn Progress bar or a small static gauge element reflecting the score.
+Card 2: Fleet Score Trend:
+Title: "Fleet Score Trend (Last 30 Days)".
+Content: Display a placeholder line or bar chart. Use a simple charting library placeholder (like a static SVG or an image) or just text saying "[Chart showing trend based on selected goal]". Add a mock percentage change indicator (e.g., ↑+5.2% or ↓-3.1%) styled like the green/red percentage badges in the screenshot.
+Card 3: Vehicle Ranking/List:
+Title: "Vehicle Performance Ranking".
+Content: Implement a Shadcn Table.
+Table Columns: Vehicle ID, Driver Score (Mock), Maintenance Score (Mock), Overall Score (Mock), Status/Alert (Mock text like "Good", "Needs Review", "Action Required"). Crucially, the mock 'Overall Score' should be the primary column for sorting/ranking.
+Table Data: Populate with 5-10 rows of mock vehicle data. Ensure the scores conceptually align with the selected goal (e.g., if "Safety" was chosen, show more variation/lower scores in the 'Driver Score' column for some mock vehicles).
+Styling: Style the table headers and rows to match the screenshot's aesthetic (padding, borders, text alignment).
+Action: Make rows clickable (no action needed yet, just visual hover state).
+Filtering/Sorting Placeholders: Mention in comments or visually imply (e.g., sort icons in headers) that filtering/sorting by score/status is intended, but don't implement the logic.
+Card 4: Top Performers:
+Title: "Top Performing Vehicles".
+Content: List the top 3 mock vehicles from the table based on their mock 'Overall Score'. Display Vehicle ID and Score.
+Card 5: Low Performers / Needs Attention:
+Title: "Vehicles Needing Attention".
+Content: List the bottom 3 mock vehicles from the table based on their mock 'Overall Score'. Display Vehicle ID and Score. Highlight these entries slightly (e.g., subtle background color or icon).
+Card 6: Actionable Insights:
+Title: "Key Recommendations based on [Selected Goal]".
+Content: Display 2-3 bullet points with mock, actionable recommendations relevant to the selected goal.
+Example (if Goal="Safety"): "Vehicle [ID]: High frequency of harsh braking events detected. Recommend driver coaching."
+Example (if Goal="Fuel"): "Fleet: Average idle time increased by 15%. Review driver habits and routes."
+Use icons next to each recommendation if appropriate.
+Phase 4: Polish & Refinement
+
+Consistency Check: Ensure all components, colors, fonts, spacing, and padding strictly adhere to the visual style of the provided screenshot.
+Responsiveness (Basic): Ensure the layout adapts reasonably well to slightly smaller screen widths (e.g., tablet size). Perfect mobile responsiveness is not required for the POC, but it shouldn't break completely.
+Clean Code: Ensure component structure is logical and code is readable. Add comments where necessary, especially around mock data generation or placeholder elements.
+Final Output: A clickable React frontend POC demonstrating the core flow: Goal Selection -> Personalized Dashboard View with mock scores, rankings, and insights, all styled according to the reference screenshot using Shadcn/ui and Tailwind CSS
