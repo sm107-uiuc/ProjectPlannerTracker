@@ -151,6 +151,10 @@ export const recommendations = pgTable("recommendations", {
   goalType: text("goal_type").notNull(), // safety, fuel, maintenance, utilization
   title: text("title").notNull(),
   description: text("description").notNull(),
+  actionableInsight: text("actionable_insight"),
+  potentialImpact: text("potential_impact"),
+  estimatedSavings: text("estimated_savings"),
+  timeToImplement: text("time_to_implement"),
   type: text("type").notNull(), // warning, danger, info, success
   icon: text("icon").notNull(),
   status: text("status").default("notified").notNull(), // notified, risk_accepted, in_progress, completed
@@ -216,6 +220,10 @@ export const insertRecommendationSchema = createInsertSchema(recommendations).pi
   goalType: true,
   title: true,
   description: true,
+  actionableInsight: true,
+  potentialImpact: true,
+  estimatedSavings: true,
+  timeToImplement: true,
   type: true,
   icon: true,
   status: true,

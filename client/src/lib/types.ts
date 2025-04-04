@@ -12,6 +12,10 @@ export interface RecommendationInterface {
   goalType: Goal;
   title: string;
   description: string;
+  actionableInsight?: string;
+  potentialImpact?: string;
+  estimatedSavings?: string;
+  timeToImplement?: string;
   type: 'warning' | 'danger' | 'info' | 'success';
   icon: string;
   status: RecommendationStatus;

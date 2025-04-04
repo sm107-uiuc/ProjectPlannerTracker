@@ -185,6 +185,47 @@ export const RecommendationDetail = ({ recommendation, onBack }: RecommendationD
       <CardContent className="px-6 py-4">
         <p className="text-slate-600 mb-4">{recommendation.description}</p>
         
+        {/* Actionable Insights Section */}
+        {(recommendation.actionableInsight || recommendation.potentialImpact || recommendation.estimatedSavings || recommendation.timeToImplement) && (
+          <>
+            <div className="mb-4 bg-blue-50 p-4 rounded-md border border-blue-100">
+              <h3 className="text-sm font-medium text-blue-800 mb-3">Actionable Insights</h3>
+              <div className="space-y-3">
+                {recommendation.actionableInsight && (
+                  <div>
+                    <h4 className="text-xs font-semibold text-blue-700">ACTION STRATEGY</h4>
+                    <p className="text-sm text-slate-700">{recommendation.actionableInsight}</p>
+                  </div>
+                )}
+                
+                {recommendation.potentialImpact && (
+                  <div>
+                    <h4 className="text-xs font-semibold text-blue-700">POTENTIAL IMPACT</h4>
+                    <p className="text-sm text-slate-700">{recommendation.potentialImpact}</p>
+                  </div>
+                )}
+                
+                <div className="flex flex-wrap gap-6">
+                  {recommendation.estimatedSavings && (
+                    <div>
+                      <h4 className="text-xs font-semibold text-blue-700">ESTIMATED SAVINGS</h4>
+                      <p className="text-sm text-slate-700">{recommendation.estimatedSavings}</p>
+                    </div>
+                  )}
+                  
+                  {recommendation.timeToImplement && (
+                    <div>
+                      <h4 className="text-xs font-semibold text-blue-700">TIME TO IMPLEMENT</h4>
+                      <p className="text-sm text-slate-700">{recommendation.timeToImplement}</p>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+            <Separator className="my-4" />
+          </>
+        )}
+        
         <div className="mb-4">
           <h3 className="text-sm font-medium text-slate-800 mb-2">Status</h3>
           {renderStatusOptions()}
