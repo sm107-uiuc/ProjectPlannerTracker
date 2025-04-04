@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Goal } from "@/lib/types";
 import { goalData, goalDisplayText, mockVehicles, getTopPerformers, getVehiclesNeedingAttention } from "@/lib/mockData";
 import { Sidebar } from "@/components/Sidebar";
@@ -6,14 +7,17 @@ import FleetScoreTrendCard from "@/components/FleetScoreTrendCard";
 import RecommendationsCard from "@/components/RecommendationsCard";
 import VehiclePerformanceTable from "@/components/VehiclePerformanceTable";
 import PerformersCard from "@/components/PerformersCard";
-import { RefreshCw, Filter } from "lucide-react";
+import { IntegrationsScreen } from "@/components/IntegrationsScreen";
+import { RefreshCw, Filter, Link as LinkIcon, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 
 interface DashboardScreenProps {
   selectedGoal: Goal;
 }
 
 const DashboardScreen = ({ selectedGoal }: DashboardScreenProps) => {
+  const [showIntegrations, setShowIntegrations] = useState(false);
   const data = goalData[selectedGoal];
   const topPerformers = getTopPerformers(mockVehicles);
   const vehiclesNeedingAttention = getVehiclesNeedingAttention(mockVehicles);
@@ -31,6 +35,15 @@ const DashboardScreen = ({ selectedGoal }: DashboardScreenProps) => {
             </p>
           </div>
           <div className="flex items-center space-x-3">
+            <Button 
+              variant="outline" 
+              size="sm" 
+              className="bg-gray-100 text-gray-700 hover:bg-gray-200"
+              onClick={() => setShowIntegrations(true)}
+            >
+              <LinkIcon className="w-4 h-4 mr-2" />
+              Integrations
+            </Button>
             <Button variant="outline" size="sm" className="bg-gray-100 text-gray-700 hover:bg-gray-200">
               <RefreshCw className="w-4 h-4 mr-2" />
               Refresh
@@ -41,6 +54,23 @@ const DashboardScreen = ({ selectedGoal }: DashboardScreenProps) => {
             </Button>
           </div>
         </div>
+        
+        {/* Integrations Dialog */}
+        <Dialog open={showIntegrations} onOpenChange={setShowIntegrations}>
+          <DialogContent className="max-w-4xl h-[85vh] p-0">
+            <DialogHeader className="px-6 pt-6 pb-0">
+              <div className="flex items-center justify-between w-full">
+                <DialogTitle className="text-2xl">Integrations</DialogTitle>
+                <Button variant="ghost" size="icon" onClick={() => setShowIntegrations(false)}>
+                  <X className="h-4 w-4" />
+                </Button>
+              </div>
+            </DialogHeader>
+            <div className="px-6 py-4 overflow-auto flex-1">
+              <IntegrationsScreen />
+            </div>
+          </DialogContent>
+        </Dialog>
 
         {/* Dashboard Content */}
         <div className="flex-1 p-6 overflow-auto">

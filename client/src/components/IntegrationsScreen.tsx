@@ -1,6 +1,5 @@
-import React, { useState } from "react";
+import React from "react";
 import { useQuery } from "@tanstack/react-query";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { IntegrationCard } from "./IntegrationCard";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Loader2 } from "lucide-react";
@@ -28,8 +27,6 @@ interface FleetIntegration {
 const MOCK_USER_ID = 1;
 
 export const IntegrationsScreen = () => {
-  const [activeCategory, setActiveCategory] = useState<string>('all');
-  
   // Fetch integration services
   const { data: services, isLoading: isLoadingServices } = useQuery<IntegrationService[]>({
     queryKey: ['/api/integration-services'],
@@ -42,31 +39,7 @@ export const IntegrationsScreen = () => {
     queryKey: [`/api/users/${MOCK_USER_ID}/integrations`],
   });
   
-  // Get unique categories from services
-  const getUniqueCategories = () => {
-    if (!services) return ['all'];
-    const categories = ['all'];
-    const categorySet = new Set<string>();
-    
-    // Collect unique categories
-    services.forEach(service => {
-      if (!categorySet.has(service.category)) {
-        categorySet.add(service.category);
-        categories.push(service.category);
-      }
-    });
-    
-    return categories;
-  };
-  
-  const categories = getUniqueCategories();
-  
-  // Filter services by category
-  const filteredServices = services
-    ? activeCategory === 'all' 
-      ? services 
-      : services.filter(service => service.category === activeCategory)
-    : [];
+  const availableServices = services || [];
   
   // Find integration for a service
   const getIntegrationForService = (serviceId: number) => {
@@ -78,7 +51,6 @@ export const IntegrationsScreen = () => {
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-3xl font-bold tracking-tight">Integrations</h2>
         <p className="text-muted-foreground mt-2">
           Connect your fleet systems to unlock powerful insights and automation
         </p>
@@ -91,17 +63,7 @@ export const IntegrationsScreen = () => {
           <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
         </Card>
       ) : (
-        <Tabs defaultValue="all" value={activeCategory} onValueChange={setActiveCategory}>
-          <div className="mb-4 bg-muted/50 p-1 rounded-lg">
-            <TabsList className="grid" style={{ gridTemplateColumns: `repeat(${Math.min(categories.length, 5)}, 1fr)` }}>
-              {categories.map(category => (
-                <TabsTrigger key={category} value={category} className="capitalize">
-                  {category}
-                </TabsTrigger>
-              ))}
-            </TabsList>
-          </div>
-
+        <>
           {/* Connected Integrations Summary */}
           {integrations && integrations.length > 0 && (
             <Card className="mb-6">
@@ -134,7 +96,7 @@ export const IntegrationsScreen = () => {
 
           {/* Available Integrations */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {filteredServices.map(service => (
+            {availableServices.map(service => (
               <IntegrationCard 
                 key={service.id} 
                 service={service} 
@@ -143,18 +105,16 @@ export const IntegrationsScreen = () => {
               />
             ))}
             
-            {filteredServices.length === 0 && (
+            {availableServices.length === 0 && (
               <Card className="col-span-full p-6 flex flex-col items-center justify-center text-center">
                 <CardTitle className="mb-2">No integrations found</CardTitle>
                 <CardDescription>
-                  {activeCategory === 'all' 
-                    ? "There are no integration services available at the moment." 
-                    : `There are no integration services available in the ${activeCategory} category.`}
+                  There are no integration services available at the moment.
                 </CardDescription>
               </Card>
             )}
           </div>
-        </Tabs>
+        </>
       )}
     </div>
   );
