@@ -38,11 +38,14 @@ export const GeographyUSA = ({ data, title, color }: GeographyUSAProps) => {
     const maxValue = Math.max(...data.map(d => d.value));
     const opacity = maxValue > 0 ? value / maxValue : 0;
     
-    // Parse the base color
-    const baseColor = color;
+    // Use blue color with opacity
+    // Get the rgb components of #3b82f6 (blue)
+    const r = 59;
+    const g = 130;
+    const b = 246;
     
-    // Return with calculated opacity
-    return `${baseColor}${Math.round(opacity * 100)}`;
+    // Calculate the color with opacity
+    return `rgba(${r}, ${g}, ${b}, ${opacity.toFixed(2)})`;
   };
 
   return (
@@ -64,7 +67,7 @@ export const GeographyUSA = ({ data, title, color }: GeographyUSAProps) => {
                     strokeWidth={0.5}
                     style={{
                       default: { outline: 'none' },
-                      hover: { outline: 'none', fill: color },
+                      hover: { outline: 'none', fill: "#3b82f6" },
                       pressed: { outline: 'none' }
                     }}
                     onMouseEnter={() => {

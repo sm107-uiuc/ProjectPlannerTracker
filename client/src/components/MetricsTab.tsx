@@ -133,7 +133,7 @@ export const MetricsTab = ({ selectedGoal }: MetricsTabProps) => {
                   <XAxis dataKey="month" tick={{ fontSize: 10 }} axisLine={false} tickLine={false} />
                   <YAxis hide />
                   <Tooltip />
-                  <Bar dataKey="safety" fill="#ef4444" radius={[4, 4, 0, 0]} />
+                  <Bar dataKey="safety" fill="#3b82f6" radius={[4, 4, 0, 0]} />
                 </BarChart>
               </ResponsiveContainer>
             </div>
@@ -223,7 +223,7 @@ export const MetricsTab = ({ selectedGoal }: MetricsTabProps) => {
               <GeographyUSA 
                 data={metricsData.incidentMap}
                 title=""
-                color="#ef4444"
+                color="#3b82f6"
               />
             </CardContent>
           </Card>
@@ -257,14 +257,14 @@ export const MetricsTab = ({ selectedGoal }: MetricsTabProps) => {
                   />
                   <defs>
                     <linearGradient id="incidentTimeGradient" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor="#f97316" stopOpacity={0.8}/>
-                      <stop offset="95%" stopColor="#f97316" stopOpacity={0.1}/>
+                      <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.8}/>
+                      <stop offset="95%" stopColor="#3b82f6" stopOpacity={0.1}/>
                     </linearGradient>
                   </defs>
                   <Area 
                     type="monotone" 
                     dataKey="count" 
-                    stroke="#f97316" 
+                    stroke="#3b82f6" 
                     fill="url(#incidentTimeGradient)"
                   />
                 </AreaChart>
@@ -382,15 +382,15 @@ export const MetricsTab = ({ selectedGoal }: MetricsTabProps) => {
                 <AreaChart data={metricsData.monthlyTrends}>
                   <defs>
                     <linearGradient id="fuelGradient" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor="#22c55e" stopOpacity={0.8}/>
-                      <stop offset="95%" stopColor="#22c55e" stopOpacity={0}/>
+                      <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.8}/>
+                      <stop offset="95%" stopColor="#3b82f6" stopOpacity={0}/>
                     </linearGradient>
                   </defs>
                   <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e5e7eb" />
                   <XAxis dataKey="month" tick={{ fontSize: 10 }} axisLine={false} tickLine={false} />
                   <YAxis hide />
                   <Tooltip />
-                  <Area type="monotone" dataKey="fuel" stroke="#22c55e" fillOpacity={1} fill="url(#fuelGradient)" />
+                  <Area type="monotone" dataKey="fuel" stroke="#3b82f6" fillOpacity={1} fill="url(#fuelGradient)" />
                 </AreaChart>
               </ResponsiveContainer>
             </div>
@@ -491,7 +491,7 @@ export const MetricsTab = ({ selectedGoal }: MetricsTabProps) => {
                   <YAxis domain={[60, 80]} />
                   <Tooltip formatter={(value) => `${value} mpg`} />
                   <Legend />
-                  <Bar dataKey="fuel" fill="#22c55e" name="MPG" radius={[4, 4, 0, 0]} />
+                  <Bar dataKey="fuel" fill="#3b82f6" name="MPG" radius={[4, 4, 0, 0]} />
                 </BarChart>
               </ResponsiveContainer>
             </CardContent>
@@ -513,7 +513,7 @@ export const MetricsTab = ({ selectedGoal }: MetricsTabProps) => {
                   <YAxis />
                   <Tooltip formatter={(value) => `${value} hours`} />
                   <Legend />
-                  <Bar dataKey="hours" fill="#f59e0b" name="Idle Hours" radius={[4, 4, 0, 0]} />
+                  <Bar dataKey="hours" fill="#3b82f6" name="Idle Hours" radius={[4, 4, 0, 0]} />
                 </BarChart>
               </ResponsiveContainer>
             </CardContent>
@@ -557,7 +557,7 @@ export const MetricsTab = ({ selectedGoal }: MetricsTabProps) => {
                   <Scatter 
                     name="Efficiency by Temperature" 
                     data={metricsData.fuelEfficiencyByWeather} 
-                    fill="#22c55e" 
+                    fill="#3b82f6" 
                   />
                 </ScatterChart>
               </ResponsiveContainer>
@@ -648,7 +648,7 @@ export const MetricsTab = ({ selectedGoal }: MetricsTabProps) => {
                 <Line
                   type="monotone"
                   dataKey="actual"
-                  stroke="#f59e0b"
+                  stroke="#3b82f6"
                   strokeWidth={2}
                   name="Actual Consumption"
                   dot={{ r: 3 }}
