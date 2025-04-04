@@ -367,7 +367,7 @@ export const MetricsTab = ({ selectedGoal }: MetricsTabProps) => {
             </CardHeader>
             <CardContent className="pb-2">
               <div className="flex items-center">
-                <div className="text-2xl font-bold text-amber-500">{fuelKpiData.gallonsConsumed.toLocaleString()}</div>
+                <div className="text-2xl font-bold text-blue-500">{fuelKpiData.gallonsConsumed.toLocaleString()}</div>
                 <div className="text-xs text-slate-500 ml-2">this month</div>
               </div>
               <div className="text-xs text-slate-500 mt-1">Cost per mile: ${fuelKpiData.costPerMile.toFixed(2)}</div>
@@ -379,7 +379,7 @@ export const MetricsTab = ({ selectedGoal }: MetricsTabProps) => {
                   <XAxis dataKey="month" tick={{ fontSize: 10 }} axisLine={false} tickLine={false} />
                   <YAxis hide yAxisId="left" orientation="left" />
                   <Tooltip />
-                  <Bar yAxisId="left" dataKey="actual" fill="#f59e0b" radius={[4, 4, 0, 0]} name="Actual" />
+                  <Bar yAxisId="left" dataKey="actual" fill="#3b82f6" radius={[4, 4, 0, 0]} name="Actual" />
                   <Line yAxisId="left" type="monotone" dataKey="target" stroke="#64748b" name="Target" strokeWidth={2} dot={false} />
                 </ComposedChart>
               </ResponsiveContainer>
@@ -394,9 +394,7 @@ export const MetricsTab = ({ selectedGoal }: MetricsTabProps) => {
             <CardContent className="pb-2">
               <div className="flex items-end justify-between">
                 <div>
-                  <div className={`text-2xl font-bold ${
-                    fuelKpiData.idlePercentage < 20 ? 'text-green-500' : 'text-red-500'
-                  }`}>
+                  <div className="text-2xl font-bold text-blue-500">
                     {formatValue(fuelKpiData.idlePercentage, '', '%')}
                   </div>
                   <div className="text-xs text-slate-500 mt-1">Target: &lt;15%</div>
@@ -414,8 +412,8 @@ export const MetricsTab = ({ selectedGoal }: MetricsTabProps) => {
                 <PieChart>
                   <Pie
                     data={[
-                      { name: 'Idle', value: fuelKpiData.idlePercentage, color: '#ef4444' },
-                      { name: 'Active', value: 100 - fuelKpiData.idlePercentage, color: '#22c55e' }
+                      { name: 'Idle', value: fuelKpiData.idlePercentage, color: '#3b82f6' },
+                      { name: 'Active', value: 100 - fuelKpiData.idlePercentage, color: '#93c5fd' }
                     ]}
                     cx="50%"
                     cy="50%"
@@ -425,8 +423,8 @@ export const MetricsTab = ({ selectedGoal }: MetricsTabProps) => {
                     dataKey="value"
                   >
                     {[
-                      { name: 'Idle', value: fuelKpiData.idlePercentage, color: '#ef4444' },
-                      { name: 'Active', value: 100 - fuelKpiData.idlePercentage, color: '#22c55e' }
+                      { name: 'Idle', value: fuelKpiData.idlePercentage, color: '#3b82f6' },
+                      { name: 'Active', value: 100 - fuelKpiData.idlePercentage, color: '#93c5fd' }
                     ].map((entry, index) => (
                       <Cell key={`cell-${index}`} fill={entry.color} />
                     ))}
@@ -691,7 +689,7 @@ export const MetricsTab = ({ selectedGoal }: MetricsTabProps) => {
             </CardHeader>
             <CardContent className="pb-2">
               <div className="flex items-center">
-                <div className="text-2xl font-bold text-amber-500">{maintenanceKpiData.openIssues}</div>
+                <div className="text-2xl font-bold text-blue-500">{maintenanceKpiData.openIssues}</div>
                 <div className="text-xs text-slate-500 ml-2">requires attention</div>
               </div>
               <div className="text-xs text-slate-500 mt-1">Avg. repair cost: ${maintenanceKpiData.avgRepairCost}</div>
@@ -734,9 +732,7 @@ export const MetricsTab = ({ selectedGoal }: MetricsTabProps) => {
             <CardContent className="pb-2">
               <div className="flex items-end justify-between">
                 <div>
-                  <div className={`text-2xl font-bold ${
-                    maintenanceKpiData.preventiveCompliance > 80 ? 'text-green-500' : 'text-yellow-500'
-                  }`}>
+                  <div className="text-2xl font-bold text-blue-500">
                     {formatValue(maintenanceKpiData.preventiveCompliance, '', '%')}
                   </div>
                   <div className="text-xs text-slate-500 mt-1">Compliance rate</div>
