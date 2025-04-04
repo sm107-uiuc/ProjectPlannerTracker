@@ -18,14 +18,17 @@ export const MetricsTab = ({ selectedGoal }: MetricsTabProps) => {
   const [timeframe, setTimeframe] = useState('month');
   
   // Fetch metrics from API (using mock data for now)
-  const { data: metricsData = mockMetricsData[selectedGoal], isLoading } = useQuery({
+  const { data: metricsData = mockMetricsData, isLoading } = useQuery({
     queryKey: [`/api/users/1/metrics`, selectedGoal],
     queryFn: ({ queryKey }) => {
       const baseUrl = queryKey[0] as string;
       const goalType = queryKey[1] as string;
-      return apiRequest(`${baseUrl}?goalType=${goalType}`).catch(() => mockMetricsData[selectedGoal]);
+      return apiRequest(`${baseUrl}?goalType=${goalType}`).catch(() => mockMetricsData);
     }
   });
+  
+  // Get the KPI metrics for the selected goal
+  const kpiData = metricsData.kpiMetrics[selectedGoal];
   
   // Format value for display
   const formatValue = (value: number, prefix: string = '', suffix: string = '') => {
