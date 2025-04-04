@@ -154,7 +154,7 @@ export const MetricsTab = ({ selectedGoal }: MetricsTabProps) => {
               <div className="flex flex-col items-start">
                 <div className="text-3xl font-bold text-slate-800 mb-2">{safetyKpiData.incidents}</div>
                 <div className="flex items-center mb-2">
-                  <AlertTriangle className="h-5 w-5 text-blue-500 mr-2" />
+                  <AlertTriangle className="h-5 w-5 text-amber-500 mr-2" />
                   <span className="text-sm text-slate-600">Average severity: {safetyKpiData.severity}</span>
                 </div>
               </div>
@@ -314,7 +314,6 @@ export const MetricsTab = ({ selectedGoal }: MetricsTabProps) => {
   // FUEL METRICS RENDERERS
   const renderFuelMetricsOverview = () => {
     const fuelKpiData = metricsData.kpiMetrics.fuel;
-    const CHART_COLOR = "#3b82f6"; // Consistent blue color for all charts
     return (
       <>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-4">
@@ -564,8 +563,8 @@ export const MetricsTab = ({ selectedGoal }: MetricsTabProps) => {
                     type="monotone" 
                     dataKey="diesel" 
                     stackId="1" 
-                    stroke="#3b82f6" 
-                    fill="#3b82f6" 
+                    stroke="#f59e0b" 
+                    fill="#f59e0b" 
                     name="Diesel"
                   />
                   <Area 
@@ -637,7 +636,6 @@ export const MetricsTab = ({ selectedGoal }: MetricsTabProps) => {
   // MAINTENANCE METRICS RENDERERS
   const renderMaintenanceMetricsOverview = () => {
     const maintenanceKpiData = metricsData.kpiMetrics.maintenance;
-    const CHART_COLOR = "#3b82f6"; // Consistent blue color for all charts
     return (
       <>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-4">
@@ -670,15 +668,15 @@ export const MetricsTab = ({ selectedGoal }: MetricsTabProps) => {
                 <AreaChart data={metricsData.monthlyTrends}>
                   <defs>
                     <linearGradient id="maintenanceGradient" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.8}/>
-                      <stop offset="95%" stopColor="#3b82f6" stopOpacity={0}/>
+                      <stop offset="5%" stopColor="#8b5cf6" stopOpacity={0.8}/>
+                      <stop offset="95%" stopColor="#8b5cf6" stopOpacity={0}/>
                     </linearGradient>
                   </defs>
                   <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e5e7eb" />
                   <XAxis dataKey="month" tick={{ fontSize: 10 }} axisLine={false} tickLine={false} />
                   <YAxis hide />
                   <Tooltip />
-                  <Area type="monotone" dataKey="maintenance" stroke="#3b82f6" fillOpacity={1} fill="url(#maintenanceGradient)" />
+                  <Area type="monotone" dataKey="maintenance" stroke="#8b5cf6" fillOpacity={1} fill="url(#maintenanceGradient)" />
                 </AreaChart>
               </ResponsiveContainer>
             </div>
@@ -714,7 +712,7 @@ export const MetricsTab = ({ selectedGoal }: MetricsTabProps) => {
                         key={`cell-${index}`} 
                         fill={
                           entry.status === 'On Schedule' ? '#22c55e' : 
-                          entry.status === 'Overdue' ? '#ef4444' : '#3b82f6'
+                          entry.status === 'Overdue' ? '#ef4444' : '#f59e0b'
                         } 
                       />
                     ))}
@@ -801,7 +799,7 @@ export const MetricsTab = ({ selectedGoal }: MetricsTabProps) => {
                       <Cell 
                         key={`cell-${index}`} 
                         fill={[
-                          '#3b82f6', '#3b82f6', '#22c55e', '#3b82f6', '#ef4444'
+                          '#8b5cf6', '#3b82f6', '#22c55e', '#f59e0b', '#ef4444'
                         ][index % 5]} 
                       />
                     ))}
@@ -828,7 +826,7 @@ export const MetricsTab = ({ selectedGoal }: MetricsTabProps) => {
                   <YAxis domain={[70, 85]} />
                   <Tooltip />
                   <Legend />
-                  <Bar dataKey="maintenance" fill="#3b82f6" name="Maintenance Score" radius={[4, 4, 0, 0]} />
+                  <Bar dataKey="maintenance" fill="#8b5cf6" name="Maintenance Score" radius={[4, 4, 0, 0]} />
                 </BarChart>
               </ResponsiveContainer>
             </CardContent>
@@ -859,7 +857,7 @@ export const MetricsTab = ({ selectedGoal }: MetricsTabProps) => {
                   <XAxis type="number" />
                   <YAxis dataKey="part" type="category" />
                   <Tooltip formatter={(value) => `${value} replacements`} />
-                  <Bar dataKey="frequency" fill="#3b82f6" radius={[0, 4, 4, 0]} />
+                  <Bar dataKey="frequency" fill="#8b5cf6" radius={[0, 4, 4, 0]} />
                 </BarChart>
               </ResponsiveContainer>
             </CardContent>
@@ -888,7 +886,7 @@ export const MetricsTab = ({ selectedGoal }: MetricsTabProps) => {
                         key={`cell-${index}`} 
                         fill={
                           entry.priority === 'Low' ? '#22c55e' : 
-                          entry.priority === 'Medium' ? '#3b82f6' : 
+                          entry.priority === 'Medium' ? '#f59e0b' : 
                           entry.priority === 'High' ? '#ef4444' : 
                           '#b91c1c'
                         } 
@@ -930,7 +928,7 @@ export const MetricsTab = ({ selectedGoal }: MetricsTabProps) => {
                 <Line
                   type="monotone"
                   dataKey="maintenance"
-                  stroke="#3b82f6"
+                  stroke="#8b5cf6"
                   strokeWidth={2}
                   name="Maintenance Score"
                   dot={{ r: 3 }}
@@ -947,7 +945,6 @@ export const MetricsTab = ({ selectedGoal }: MetricsTabProps) => {
   // UTILIZATION METRICS RENDERERS
   const renderUtilizationMetricsOverview = () => {
     const utilizationKpiData = metricsData.kpiMetrics.utilization;
-    const CHART_COLOR = "#3b82f6"; // Consistent blue color for all charts
     return (
       <>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-4">
@@ -980,15 +977,15 @@ export const MetricsTab = ({ selectedGoal }: MetricsTabProps) => {
                 <AreaChart data={metricsData.monthlyTrends}>
                   <defs>
                     <linearGradient id="utilizationGradient" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.8}/>
-                      <stop offset="95%" stopColor="#3b82f6" stopOpacity={0}/>
+                      <stop offset="5%" stopColor="#ec4899" stopOpacity={0.8}/>
+                      <stop offset="95%" stopColor="#ec4899" stopOpacity={0}/>
                     </linearGradient>
                   </defs>
                   <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e5e7eb" />
                   <XAxis dataKey="month" tick={{ fontSize: 10 }} axisLine={false} tickLine={false} />
                   <YAxis hide />
                   <Tooltip />
-                  <Area type="monotone" dataKey="utilization" stroke="#3b82f6" fillOpacity={1} fill="url(#utilizationGradient)" />
+                  <Area type="monotone" dataKey="utilization" stroke="#ec4899" fillOpacity={1} fill="url(#utilizationGradient)" />
                 </AreaChart>
               </ResponsiveContainer>
             </div>
@@ -1001,7 +998,7 @@ export const MetricsTab = ({ selectedGoal }: MetricsTabProps) => {
             </CardHeader>
             <CardContent className="pb-2">
               <div className="flex items-center">
-                <div className="text-2xl font-bold text-blue-500">{utilizationKpiData.utilizationRate}%</div>
+                <div className="text-2xl font-bold text-pink-500">{utilizationKpiData.utilizationRate}%</div>
                 <div className="text-xs text-slate-500 ml-2">of available hours</div>
               </div>
               <div className="text-xs text-slate-500 mt-1">Available hours: {utilizationKpiData.availableHours.toLocaleString()}</div>
@@ -1017,7 +1014,7 @@ export const MetricsTab = ({ selectedGoal }: MetricsTabProps) => {
                   <XAxis type="number" domain={[0, 100]} />
                   <YAxis dataKey="type" type="category" tick={{ fontSize: 10 }} width={90} />
                   <Tooltip formatter={(value) => `${value}%`} />
-                  <Bar dataKey="utilized" fill="#3b82f6" name="Utilization Rate" radius={[0, 4, 4, 0]} />
+                  <Bar dataKey="utilized" fill="#ec4899" name="Utilization Rate" radius={[0, 4, 4, 0]} />
                 </BarChart>
               </ResponsiveContainer>
             </div>
@@ -1093,7 +1090,7 @@ export const MetricsTab = ({ selectedGoal }: MetricsTabProps) => {
                   <YAxis domain={[80, 95]} />
                   <Tooltip formatter={(value) => `${value}%`} />
                   <Legend />
-                  <Bar dataKey="utilization" fill="#3b82f6" name="Utilization" radius={[4, 4, 0, 0]} />
+                  <Bar dataKey="utilization" fill="#ec4899" name="Utilization" radius={[4, 4, 0, 0]} />
                 </BarChart>
               </ResponsiveContainer>
             </CardContent>
@@ -1121,7 +1118,7 @@ export const MetricsTab = ({ selectedGoal }: MetricsTabProps) => {
                         fill={
                           entry.category === 'Excellent' ? '#22c55e' : 
                           entry.category === 'Good' ? '#84cc16' : 
-                          entry.category === 'Fair' ? '#3b82f6' : 
+                          entry.category === 'Fair' ? '#f59e0b' : 
                           entry.category === 'Needs Improvement' ? '#f97316' : 
                           '#ef4444'
                         } 
@@ -1165,14 +1162,14 @@ export const MetricsTab = ({ selectedGoal }: MetricsTabProps) => {
                   />
                   <defs>
                     <linearGradient id="utilizationTimeGradient" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.8}/>
-                      <stop offset="95%" stopColor="#3b82f6" stopOpacity={0.1}/>
+                      <stop offset="5%" stopColor="#ec4899" stopOpacity={0.8}/>
+                      <stop offset="95%" stopColor="#ec4899" stopOpacity={0.1}/>
                     </linearGradient>
                   </defs>
                   <Area 
                     type="monotone" 
                     dataKey="utilization" 
-                    stroke="#3b82f6" 
+                    stroke="#ec4899" 
                     fill="url(#utilizationTimeGradient)"
                     name="Utilization Rate"
                   />
@@ -1209,7 +1206,7 @@ export const MetricsTab = ({ selectedGoal }: MetricsTabProps) => {
                   <Scatter 
                     name="Route Efficiency" 
                     data={metricsData.routeEfficiency} 
-                    fill="#3b82f6" 
+                    fill="#ec4899" 
                   />
                 </ScatterChart>
               </ResponsiveContainer>

@@ -43,7 +43,6 @@ const RecommendationItem = ({
     <div 
       className="flex items-start p-4 hover:bg-slate-50 cursor-pointer transition-colors"
       onClick={handleItemClick}
-      style={{ pointerEvents: "all" }}
     >
       <div className="flex-shrink-0 mr-3 mt-1">
         {getTypeIcon(recommendation.type)}
