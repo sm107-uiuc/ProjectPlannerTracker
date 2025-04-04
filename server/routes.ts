@@ -5,7 +5,9 @@ import {
   insertUserSchema, 
   insertIntegrationServiceSchema, 
   insertFleetIntegrationSchema,
-  insertVehicleSchema
+  insertVehicleSchema,
+  insertRecommendationSchema,
+  insertRecommendationStepSchema
 } from "@shared/schema";
 import { z } from "zod";
 
@@ -208,6 +210,123 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.status(201).json(metric);
     } catch (error) {
       res.status(500).json({ error: "Could not create fleet metric" });
+    }
+  });
+
+  // Recommendations routes
+  app.get("/api/users/:userId/recommendations", async (req, res) => {
+    try {
+      const userId = parseInt(req.params.userId);
+      const goalType = req.query.goalType as string | undefined;
+      
+      const recommendations = await storage.getRecommendations(userId, goalType);
+      res.json(recommendations);
+    } catch (error) {
+      res.status(500).json({ error: "Could not fetch recommendations" });
+    }
+  });
+
+  app.get("/api/recommendations/:id", async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const recommendation = await storage.getRecommendationById(id);
+      
+      if (!recommendation) {
+        return res.status(404).json({ error: "Recommendation not found" });
+      }
+      
+      res.json(recommendation);
+    } catch (error) {
+      res.status(500).json({ error: "Could not fetch recommendation" });
+    }
+  });
+
+  app.post("/api/users/:userId/recommendations", async (req, res) => {
+    try {
+      const userId = parseInt(req.params.userId);
+      const recommendationData = insertRecommendationSchema.parse({
+        ...req.body,
+        userId
+      });
+      
+      const recommendation = await storage.createRecommendation(recommendationData);
+      res.status(201).json(recommendation);
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        return res.status(400).json({ errors: error.errors });
+      }
+      res.status(500).json({ error: "Could not create recommendation" });
+    }
+  });
+
+  app.patch("/api/recommendations/:id/status", async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const { status } = req.body;
+      
+      if (!status || typeof status !== 'string') {
+        return res.status(400).json({ error: "Status must be provided" });
+      }
+      
+      const recommendation = await storage.updateRecommendationStatus(id, status);
+      
+      if (!recommendation) {
+        return res.status(404).json({ error: "Recommendation not found" });
+      }
+      
+      res.json(recommendation);
+    } catch (error) {
+      res.status(500).json({ error: "Could not update recommendation status" });
+    }
+  });
+
+  // Recommendation Steps routes
+  app.get("/api/recommendations/:recommendationId/steps", async (req, res) => {
+    try {
+      const recommendationId = parseInt(req.params.recommendationId);
+      const steps = await storage.getRecommendationSteps(recommendationId);
+      res.json(steps);
+    } catch (error) {
+      res.status(500).json({ error: "Could not fetch recommendation steps" });
+    }
+  });
+
+  app.post("/api/recommendations/:recommendationId/steps", async (req, res) => {
+    try {
+      const recommendationId = parseInt(req.params.recommendationId);
+      const stepData = insertRecommendationStepSchema.parse({
+        ...req.body,
+        recommendationId
+      });
+      
+      const step = await storage.createRecommendationStep(stepData);
+      res.status(201).json(step);
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        return res.status(400).json({ errors: error.errors });
+      }
+      res.status(500).json({ error: "Could not create recommendation step" });
+    }
+  });
+
+  app.patch("/api/recommendation-steps/:id/complete", async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const { isCompleted } = req.body;
+      
+      if (typeof isCompleted !== 'boolean') {
+        return res.status(400).json({ error: "isCompleted must be a boolean" });
+      }
+      
+      const step = await storage.updateRecommendationStepStatus(id, isCompleted);
+      
+      if (!step) {
+        return res.status(404).json({ error: "Recommendation step not found" });
+      }
+      
+      res.json(step);
+    } catch (error) {
+      res.status(500).json({ error: "Could not update recommendation step status" });
     }
   });
 

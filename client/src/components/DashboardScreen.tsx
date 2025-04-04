@@ -8,6 +8,8 @@ import RecommendationsCard from "@/components/RecommendationsCard";
 import VehiclePerformanceTable from "@/components/VehiclePerformanceTable";
 import PerformersCard from "@/components/PerformersCard";
 import { IntegrationsScreen } from "@/components/IntegrationsScreen";
+import MetricsTab from "@/components/MetricsTab";
+import RecommendationsTab from "@/components/RecommendationsTab";
 import { 
   RefreshCw, 
   Filter, 
@@ -146,7 +148,7 @@ const DashboardScreen = ({ selectedGoal }: DashboardScreenProps) => {
             
             {/* Metrics Tab */}
             <TabsContent value="metrics" className="space-y-6">
-              {/* KPI Section */}
+              <MetricsTab selectedGoal={selectedGoal} />
               <div className="grid grid-cols-1 lg:grid-cols-4 gap-4 mb-8">
                 <Card>
                   <CardHeader className="py-4">

@@ -1,7 +1,17 @@
-import { pgTable, text, serial, integer, boolean, timestamp, json, real, date } from "drizzle-orm/pg-core";
+import { pgTable, text, serial, integer, boolean, timestamp, json, real, date, varchar } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
 import { relations } from "drizzle-orm";
+
+// Recommendation status enum
+export const RecommendationStatusEnum = z.enum([
+  "notified", 
+  "risk_accepted", 
+  "in_progress", 
+  "completed"
+]);
+
+export type RecommendationStatus = z.infer<typeof RecommendationStatusEnum>;
 
 // User management
 export const users = pgTable("users", {
@@ -134,6 +144,31 @@ export const fleetMetrics = pgTable("fleet_metrics", {
   createdAt: timestamp("created_at").defaultNow(),
 });
 
+// Recommendations
+export const recommendations = pgTable("recommendations", {
+  id: serial("id").primaryKey(),
+  userId: integer("user_id").notNull().references(() => users.id),
+  goalType: text("goal_type").notNull(), // safety, fuel, maintenance, utilization
+  title: text("title").notNull(),
+  description: text("description").notNull(),
+  type: text("type").notNull(), // warning, danger, info, success
+  icon: text("icon").notNull(),
+  status: text("status").default("notified").notNull(), // notified, risk_accepted, in_progress, completed
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+// Recommendation Checklist Items
+export const recommendationSteps = pgTable("recommendation_steps", {
+  id: serial("id").primaryKey(),
+  recommendationId: integer("recommendation_id").notNull().references(() => recommendations.id),
+  description: text("description").notNull(),
+  isCompleted: boolean("is_completed").default(false).notNull(),
+  completedAt: timestamp("completed_at"),
+  order: integer("order").notNull(),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
 // Schema for user insertion
 export const insertUserSchema = createInsertSchema(users).pick({
   username: true,
@@ -175,6 +210,25 @@ export const insertVehicleSchema = createInsertSchema(vehicles).pick({
   status: true,
 });
 
+// Schema for recommendations
+export const insertRecommendationSchema = createInsertSchema(recommendations).pick({
+  userId: true,
+  goalType: true,
+  title: true,
+  description: true,
+  type: true,
+  icon: true,
+  status: true,
+});
+
+// Schema for recommendation steps
+export const insertRecommendationStepSchema = createInsertSchema(recommendationSteps).pick({
+  recommendationId: true,
+  description: true,
+  isCompleted: true,
+  order: true,
+});
+
 // Export types
 export type InsertUser = z.infer<typeof insertUserSchema>;
 export type User = typeof users.$inferSelect;
@@ -187,3 +241,9 @@ export type FleetIntegration = typeof fleetIntegrations.$inferSelect;
 
 export type InsertVehicle = z.infer<typeof insertVehicleSchema>;
 export type Vehicle = typeof vehicles.$inferSelect;
+
+export type InsertRecommendation = z.infer<typeof insertRecommendationSchema>;
+export type Recommendation = typeof recommendations.$inferSelect;
+
+export type InsertRecommendationStep = z.infer<typeof insertRecommendationStepSchema>;
+export type RecommendationStep = typeof recommendationSteps.$inferSelect;

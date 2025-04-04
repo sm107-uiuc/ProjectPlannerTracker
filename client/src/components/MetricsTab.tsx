@@ -1,0 +1,774 @@
+import { useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
+import { AreaChart, Area, BarChart, Bar, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
+import { Calendar, ChevronDown, Clock, TrendingDown, TrendingUp, AlertTriangle } from 'lucide-react';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Progress } from '@/components/ui/progress';
+import { Goal } from '@/lib/types';
+import { apiRequest } from '@/lib/queryClient';
+import { mockMetricsData } from '@/lib/mockData';
+
+interface MetricsTabProps {
+  selectedGoal: Goal;
+}
+
+export const MetricsTab = ({ selectedGoal }: MetricsTabProps) => {
+  const [timeframe, setTimeframe] = useState('month');
+  
+  // Fetch metrics from API (using mock data for now)
+  const { data: metricsData = mockMetricsData[selectedGoal], isLoading } = useQuery({
+    queryKey: [`/api/users/1/metrics`, selectedGoal],
+    queryFn: ({ queryKey }) => {
+      const baseUrl = queryKey[0] as string;
+      const goalType = queryKey[1] as string;
+      return apiRequest(`${baseUrl}?goalType=${goalType}`).catch(() => mockMetricsData[selectedGoal]);
+    }
+  });
+  
+  // Format value for display
+  const formatValue = (value: number, prefix: string = '', suffix: string = '') => {
+    return `${prefix}${value.toLocaleString('en-US', {
+      maximumFractionDigits: 1,
+    })}${suffix}`;
+  };
+  
+  // Calculate trend indicator
+  const getTrendIndicator = (current: number, previous: number) => {
+    const percentage = ((current - previous) / previous) * 100;
+    const isPositive = percentage > 0;
+    
+    return (
+      <div className={`flex items-center ${isPositive ? 'text-green-500' : 'text-red-500'}`}>
+        {isPositive ? <TrendingUp className="h-4 w-4 mr-1" /> : <TrendingDown className="h-4 w-4 mr-1" />}
+        <span className="text-sm font-medium">{Math.abs(percentage).toFixed(1)}%</span>
+      </div>
+    );
+  };
+  
+  const getValueColor = (current: number, target: number, higherIsBetter: boolean = true) => {
+    if (higherIsBetter) {
+      return current >= target ? 'text-green-500' : 'text-red-500';
+    } else {
+      return current <= target ? 'text-green-500' : 'text-red-500';
+    }
+  };
+  
+  // Mock time series data
+  const timeSeriesData = [
+    { name: 'Jan', value: 65 },
+    { name: 'Feb', value: 59 },
+    { name: 'Mar', value: 80 },
+    { name: 'Apr', value: 81 },
+    { name: 'May', value: 56 },
+    { name: 'Jun', value: 55 },
+    { name: 'Jul', value: 40 },
+    { name: 'Aug', value: 70 },
+    { name: 'Sep', value: 90 },
+    { name: 'Oct', value: 85 },
+    { name: 'Nov', value: 95 },
+    { name: 'Dec', value: 89 }
+  ];
+  
+  // Mock distribution data
+  const pieData = [
+    { name: 'Critical', value: 15, color: '#ef4444' },
+    { name: 'High', value: 25, color: '#f97316' },
+    { name: 'Medium', value: 35, color: '#eab308' },
+    { name: 'Low', value: 25, color: '#22c55e' }
+  ];
+  
+  // Renderers for different goal types
+  const renderSafetyMetrics = () => {
+    return (
+      <>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-4">
+          <Card className="overflow-hidden">
+            <CardHeader className="pb-2">
+              <CardTitle className="text-base font-medium flex items-center justify-between">
+                <span>Safety Score</span>
+                {getTrendIndicator(metricsData.current, metricsData.previousPeriod)}
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="pb-4">
+              <div className="flex items-end justify-between">
+                <div>
+                  <div className={`text-2xl font-bold ${getValueColor(metricsData.current, metricsData.target)}`}>
+                    {formatValue(metricsData.current)}
+                  </div>
+                  <div className="text-xs text-slate-500 mt-1">Target: {formatValue(metricsData.target)}</div>
+                </div>
+                <div className="flex-1 ml-4">
+                  <Progress 
+                    value={(metricsData.current / metricsData.target) * 100} 
+                    className="h-2"
+                  />
+                </div>
+              </div>
+            </CardContent>
+            <div className="h-32 pt-2">
+              <ResponsiveContainer width="100%" height="100%">
+                <AreaChart data={timeSeriesData}>
+                  <defs>
+                    <linearGradient id="safetyGradient" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.8}/>
+                      <stop offset="95%" stopColor="#3b82f6" stopOpacity={0}/>
+                    </linearGradient>
+                  </defs>
+                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e5e7eb" />
+                  <XAxis dataKey="name" tick={{ fontSize: 10 }} axisLine={false} tickLine={false} />
+                  <YAxis hide />
+                  <Tooltip />
+                  <Area type="monotone" dataKey="value" stroke="#3b82f6" fillOpacity={1} fill="url(#safetyGradient)" />
+                </AreaChart>
+              </ResponsiveContainer>
+            </div>
+          </Card>
+          
+          <Card>
+            <CardHeader className="pb-2">
+              <CardTitle className="text-base font-medium">Safety Incidents</CardTitle>
+            </CardHeader>
+            <CardContent className="pb-2">
+              <div className="flex items-center">
+                <div className="text-2xl font-bold text-red-500">{metricsData.incidents}</div>
+                <div className="text-xs text-slate-500 ml-2">this month</div>
+              </div>
+              <div className="text-xs text-slate-500 mt-1">Severity: {metricsData.severity}</div>
+            </CardContent>
+            <div className="h-32 pt-2">
+              <ResponsiveContainer width="100%" height="100%">
+                <BarChart data={timeSeriesData.slice(6)}>
+                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e5e7eb" />
+                  <XAxis dataKey="name" tick={{ fontSize: 10 }} axisLine={false} tickLine={false} />
+                  <YAxis hide />
+                  <Tooltip />
+                  <Bar dataKey="value" fill="#ef4444" radius={[4, 4, 0, 0]} />
+                </BarChart>
+              </ResponsiveContainer>
+            </div>
+          </Card>
+          
+          <Card>
+            <CardHeader className="pb-2">
+              <CardTitle className="text-base font-medium">Training Compliance</CardTitle>
+            </CardHeader>
+            <CardContent className="pb-2">
+              <div className="flex items-end justify-between">
+                <div>
+                  <div className={`text-2xl font-bold ${
+                    metricsData.trainingCompliance > 80 ? 'text-green-500' : 'text-yellow-500'
+                  }`}>
+                    {formatValue(metricsData.trainingCompliance, '', '%')}
+                  </div>
+                  <div className="text-xs text-slate-500 mt-1">Target: 100%</div>
+                </div>
+                <div className="flex-1 ml-4">
+                  <Progress 
+                    value={metricsData.trainingCompliance} 
+                    className="h-2" 
+                  />
+                </div>
+              </div>
+            </CardContent>
+            <div className="h-32 pt-2">
+              <ResponsiveContainer width="100%" height="100%">
+                <PieChart>
+                  <Pie
+                    data={pieData}
+                    cx="50%"
+                    cy="50%"
+                    innerRadius={30}
+                    outerRadius={60}
+                    paddingAngle={5}
+                    dataKey="value"
+                  >
+                    {pieData.map((entry, index) => (
+                      <Cell key={`cell-${index}`} fill={entry.color} />
+                    ))}
+                  </Pie>
+                  <Tooltip />
+                </PieChart>
+              </ResponsiveContainer>
+            </div>
+          </Card>
+        </div>
+        
+        <Card>
+          <CardHeader className="pb-2">
+            <CardTitle className="text-base font-medium flex justify-between items-center">
+              <span>Driver Safety Trend</span>
+              <Select defaultValue="month" onValueChange={setTimeframe}>
+                <SelectTrigger className="w-[120px] h-8 text-xs">
+                  <SelectValue placeholder="Select timeframe" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="week">Last Week</SelectItem>
+                  <SelectItem value="month">Last Month</SelectItem>
+                  <SelectItem value="quarter">Last Quarter</SelectItem>
+                  <SelectItem value="year">Last Year</SelectItem>
+                </SelectContent>
+              </Select>
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="h-64">
+            <ResponsiveContainer width="100%" height="100%">
+              <LineChart data={timeSeriesData}>
+                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e5e7eb" />
+                <XAxis dataKey="name" tick={{ fontSize: 12 }} axisLine={false} tickLine={false} />
+                <YAxis tick={{ fontSize: 12 }} axisLine={false} tickLine={false} />
+                <Tooltip />
+                <Line
+                  type="monotone"
+                  dataKey="value"
+                  stroke="#3b82f6"
+                  strokeWidth={2}
+                  dot={{ r: 3 }}
+                  activeDot={{ r: 6 }}
+                />
+              </LineChart>
+            </ResponsiveContainer>
+          </CardContent>
+        </Card>
+      </>
+    );
+  };
+  
+  const renderFuelMetrics = () => {
+    return (
+      <>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-4">
+          <Card className="overflow-hidden">
+            <CardHeader className="pb-2">
+              <CardTitle className="text-base font-medium flex items-center justify-between">
+                <span>Fuel Efficiency</span>
+                {getTrendIndicator(metricsData.current, metricsData.previousPeriod)}
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="pb-4">
+              <div className="flex items-end justify-between">
+                <div>
+                  <div className={`text-2xl font-bold ${getValueColor(metricsData.current, metricsData.target)}`}>
+                    {formatValue(metricsData.current, '', ' mpg')}
+                  </div>
+                  <div className="text-xs text-slate-500 mt-1">Target: {formatValue(metricsData.target, '', ' mpg')}</div>
+                </div>
+                <div className="flex-1 ml-4">
+                  <Progress 
+                    value={(metricsData.current / metricsData.target) * 100} 
+                    className="h-2"
+                  />
+                </div>
+              </div>
+            </CardContent>
+            <div className="h-32 pt-2">
+              <ResponsiveContainer width="100%" height="100%">
+                <AreaChart data={timeSeriesData}>
+                  <defs>
+                    <linearGradient id="fuelGradient" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="5%" stopColor="#22c55e" stopOpacity={0.8}/>
+                      <stop offset="95%" stopColor="#22c55e" stopOpacity={0}/>
+                    </linearGradient>
+                  </defs>
+                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e5e7eb" />
+                  <XAxis dataKey="name" tick={{ fontSize: 10 }} axisLine={false} tickLine={false} />
+                  <YAxis hide />
+                  <Tooltip />
+                  <Area type="monotone" dataKey="value" stroke="#22c55e" fillOpacity={1} fill="url(#fuelGradient)" />
+                </AreaChart>
+              </ResponsiveContainer>
+            </div>
+          </Card>
+          
+          <Card>
+            <CardHeader className="pb-2">
+              <CardTitle className="text-base font-medium">Gallons Consumed</CardTitle>
+            </CardHeader>
+            <CardContent className="pb-2">
+              <div className="flex items-center">
+                <div className="text-2xl font-bold text-amber-500">{metricsData.gallonsConsumed.toLocaleString()}</div>
+                <div className="text-xs text-slate-500 ml-2">this month</div>
+              </div>
+              <div className="text-xs text-slate-500 mt-1">Cost per mile: ${metricsData.costPerMile.toFixed(2)}</div>
+            </CardContent>
+            <div className="h-32 pt-2">
+              <ResponsiveContainer width="100%" height="100%">
+                <BarChart data={timeSeriesData.slice(6)}>
+                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e5e7eb" />
+                  <XAxis dataKey="name" tick={{ fontSize: 10 }} axisLine={false} tickLine={false} />
+                  <YAxis hide />
+                  <Tooltip />
+                  <Bar dataKey="value" fill="#f59e0b" radius={[4, 4, 0, 0]} />
+                </BarChart>
+              </ResponsiveContainer>
+            </div>
+          </Card>
+          
+          <Card>
+            <CardHeader className="pb-2">
+              <CardTitle className="text-base font-medium">Idle Time</CardTitle>
+            </CardHeader>
+            <CardContent className="pb-2">
+              <div className="flex items-end justify-between">
+                <div>
+                  <div className={`text-2xl font-bold ${
+                    metricsData.idlePercentage < 20 ? 'text-green-500' : 'text-red-500'
+                  }`}>
+                    {formatValue(metricsData.idlePercentage, '', '%')}
+                  </div>
+                  <div className="text-xs text-slate-500 mt-1">Target: &lt;15%</div>
+                </div>
+                <div className="flex-1 ml-4">
+                  <Progress 
+                    value={metricsData.idlePercentage} 
+                    className="h-2" 
+                  />
+                </div>
+              </div>
+            </CardContent>
+            <div className="h-32 pt-2">
+              <ResponsiveContainer width="100%" height="100%">
+                <PieChart>
+                  <Pie
+                    data={[
+                      { name: 'Idle', value: metricsData.idlePercentage, color: '#ef4444' },
+                      { name: 'Active', value: 100 - metricsData.idlePercentage, color: '#22c55e' }
+                    ]}
+                    cx="50%"
+                    cy="50%"
+                    innerRadius={30}
+                    outerRadius={60}
+                    paddingAngle={5}
+                    dataKey="value"
+                  >
+                    {[
+                      { name: 'Idle', value: metricsData.idlePercentage, color: '#ef4444' },
+                      { name: 'Active', value: 100 - metricsData.idlePercentage, color: '#22c55e' }
+                    ].map((entry, index) => (
+                      <Cell key={`cell-${index}`} fill={entry.color} />
+                    ))}
+                  </Pie>
+                  <Tooltip />
+                </PieChart>
+              </ResponsiveContainer>
+            </div>
+          </Card>
+        </div>
+        
+        <Card>
+          <CardHeader className="pb-2">
+            <CardTitle className="text-base font-medium flex justify-between items-center">
+              <span>Fuel Consumption Trend</span>
+              <Select defaultValue="month" onValueChange={setTimeframe}>
+                <SelectTrigger className="w-[120px] h-8 text-xs">
+                  <SelectValue placeholder="Select timeframe" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="week">Last Week</SelectItem>
+                  <SelectItem value="month">Last Month</SelectItem>
+                  <SelectItem value="quarter">Last Quarter</SelectItem>
+                  <SelectItem value="year">Last Year</SelectItem>
+                </SelectContent>
+              </Select>
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="h-64">
+            <ResponsiveContainer width="100%" height="100%">
+              <LineChart data={timeSeriesData}>
+                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e5e7eb" />
+                <XAxis dataKey="name" tick={{ fontSize: 12 }} axisLine={false} tickLine={false} />
+                <YAxis tick={{ fontSize: 12 }} axisLine={false} tickLine={false} />
+                <Tooltip />
+                <Line
+                  type="monotone"
+                  dataKey="value"
+                  stroke="#22c55e"
+                  strokeWidth={2}
+                  dot={{ r: 3 }}
+                  activeDot={{ r: 6 }}
+                />
+              </LineChart>
+            </ResponsiveContainer>
+          </CardContent>
+        </Card>
+      </>
+    );
+  };
+  
+  const renderMaintenanceMetrics = () => {
+    return (
+      <>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-4">
+          <Card className="overflow-hidden">
+            <CardHeader className="pb-2">
+              <CardTitle className="text-base font-medium flex items-center justify-between">
+                <span>Maintenance Score</span>
+                {getTrendIndicator(metricsData.current, metricsData.previousPeriod)}
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="pb-4">
+              <div className="flex items-end justify-between">
+                <div>
+                  <div className={`text-2xl font-bold ${getValueColor(metricsData.current, metricsData.target)}`}>
+                    {formatValue(metricsData.current)}
+                  </div>
+                  <div className="text-xs text-slate-500 mt-1">Target: {formatValue(metricsData.target)}</div>
+                </div>
+                <div className="flex-1 ml-4">
+                  <Progress 
+                    value={(metricsData.current / metricsData.target) * 100} 
+                    className="h-2"
+                  />
+                </div>
+              </div>
+            </CardContent>
+            <div className="h-32 pt-2">
+              <ResponsiveContainer width="100%" height="100%">
+                <AreaChart data={timeSeriesData}>
+                  <defs>
+                    <linearGradient id="maintenanceGradient" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="5%" stopColor="#8b5cf6" stopOpacity={0.8}/>
+                      <stop offset="95%" stopColor="#8b5cf6" stopOpacity={0}/>
+                    </linearGradient>
+                  </defs>
+                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e5e7eb" />
+                  <XAxis dataKey="name" tick={{ fontSize: 10 }} axisLine={false} tickLine={false} />
+                  <YAxis hide />
+                  <Tooltip />
+                  <Area type="monotone" dataKey="value" stroke="#8b5cf6" fillOpacity={1} fill="url(#maintenanceGradient)" />
+                </AreaChart>
+              </ResponsiveContainer>
+            </div>
+          </Card>
+          
+          <Card>
+            <CardHeader className="pb-2">
+              <CardTitle className="text-base font-medium">Open Issues</CardTitle>
+            </CardHeader>
+            <CardContent className="pb-2">
+              <div className="flex items-center">
+                <div className="text-2xl font-bold text-amber-500">{metricsData.openIssues}</div>
+                <div className="text-xs text-slate-500 ml-2">current issues</div>
+              </div>
+              <div className="text-xs text-slate-500 mt-1">Avg repair cost: ${metricsData.avgRepairCost.toLocaleString()}</div>
+            </CardContent>
+            <div className="h-32 pt-2">
+              <ResponsiveContainer width="100%" height="100%">
+                <BarChart data={timeSeriesData.slice(6)}>
+                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e5e7eb" />
+                  <XAxis dataKey="name" tick={{ fontSize: 10 }} axisLine={false} tickLine={false} />
+                  <YAxis hide />
+                  <Tooltip />
+                  <Bar dataKey="value" fill="#9333ea" radius={[4, 4, 0, 0]} />
+                </BarChart>
+              </ResponsiveContainer>
+            </div>
+          </Card>
+          
+          <Card>
+            <CardHeader className="pb-2">
+              <CardTitle className="text-base font-medium">Preventive Maintenance</CardTitle>
+            </CardHeader>
+            <CardContent className="pb-2">
+              <div className="flex items-end justify-between">
+                <div>
+                  <div className={`text-2xl font-bold ${
+                    metricsData.preventiveCompliance > 80 ? 'text-green-500' : 'text-yellow-500'
+                  }`}>
+                    {formatValue(metricsData.preventiveCompliance, '', '%')}
+                  </div>
+                  <div className="text-xs text-slate-500 mt-1">Target: ≥95%</div>
+                </div>
+                <div className="flex-1 ml-4">
+                  <Progress 
+                    value={metricsData.preventiveCompliance} 
+                    className="h-2" 
+                  />
+                </div>
+              </div>
+            </CardContent>
+            <div className="h-32 pt-2">
+              <ResponsiveContainer width="100%" height="100%">
+                <PieChart>
+                  <Pie
+                    data={[
+                      { name: 'Completed', value: metricsData.preventiveCompliance, color: '#22c55e' },
+                      { name: 'Pending', value: 100 - metricsData.preventiveCompliance, color: '#f59e0b' }
+                    ]}
+                    cx="50%"
+                    cy="50%"
+                    innerRadius={30}
+                    outerRadius={60}
+                    paddingAngle={5}
+                    dataKey="value"
+                  >
+                    {[
+                      { name: 'Completed', value: metricsData.preventiveCompliance, color: '#22c55e' },
+                      { name: 'Pending', value: 100 - metricsData.preventiveCompliance, color: '#f59e0b' }
+                    ].map((entry, index) => (
+                      <Cell key={`cell-${index}`} fill={entry.color} />
+                    ))}
+                  </Pie>
+                  <Tooltip />
+                </PieChart>
+              </ResponsiveContainer>
+            </div>
+          </Card>
+        </div>
+        
+        <Card>
+          <CardHeader className="pb-2">
+            <CardTitle className="text-base font-medium flex justify-between items-center">
+              <span>Maintenance Status Trend</span>
+              <Select defaultValue="month" onValueChange={setTimeframe}>
+                <SelectTrigger className="w-[120px] h-8 text-xs">
+                  <SelectValue placeholder="Select timeframe" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="week">Last Week</SelectItem>
+                  <SelectItem value="month">Last Month</SelectItem>
+                  <SelectItem value="quarter">Last Quarter</SelectItem>
+                  <SelectItem value="year">Last Year</SelectItem>
+                </SelectContent>
+              </Select>
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="h-64">
+            <ResponsiveContainer width="100%" height="100%">
+              <LineChart data={timeSeriesData}>
+                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e5e7eb" />
+                <XAxis dataKey="name" tick={{ fontSize: 12 }} axisLine={false} tickLine={false} />
+                <YAxis tick={{ fontSize: 12 }} axisLine={false} tickLine={false} />
+                <Tooltip />
+                <Line
+                  type="monotone"
+                  dataKey="value"
+                  stroke="#8b5cf6"
+                  strokeWidth={2}
+                  dot={{ r: 3 }}
+                  activeDot={{ r: 6 }}
+                />
+              </LineChart>
+            </ResponsiveContainer>
+          </CardContent>
+        </Card>
+      </>
+    );
+  };
+  
+  const renderUtilizationMetrics = () => {
+    return (
+      <>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-4">
+          <Card className="overflow-hidden">
+            <CardHeader className="pb-2">
+              <CardTitle className="text-base font-medium flex items-center justify-between">
+                <span>Utilization Score</span>
+                {getTrendIndicator(metricsData.current, metricsData.previousPeriod)}
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="pb-4">
+              <div className="flex items-end justify-between">
+                <div>
+                  <div className={`text-2xl font-bold ${getValueColor(metricsData.current, metricsData.target)}`}>
+                    {formatValue(metricsData.current)}
+                  </div>
+                  <div className="text-xs text-slate-500 mt-1">Target: {formatValue(metricsData.target)}</div>
+                </div>
+                <div className="flex-1 ml-4">
+                  <Progress 
+                    value={(metricsData.current / metricsData.target) * 100} 
+                    className="h-2"
+                  />
+                </div>
+              </div>
+            </CardContent>
+            <div className="h-32 pt-2">
+              <ResponsiveContainer width="100%" height="100%">
+                <AreaChart data={timeSeriesData}>
+                  <defs>
+                    <linearGradient id="utilizationGradient" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="5%" stopColor="#0ea5e9" stopOpacity={0.8}/>
+                      <stop offset="95%" stopColor="#0ea5e9" stopOpacity={0}/>
+                    </linearGradient>
+                  </defs>
+                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e5e7eb" />
+                  <XAxis dataKey="name" tick={{ fontSize: 10 }} axisLine={false} tickLine={false} />
+                  <YAxis hide />
+                  <Tooltip />
+                  <Area type="monotone" dataKey="value" stroke="#0ea5e9" fillOpacity={1} fill="url(#utilizationGradient)" />
+                </AreaChart>
+              </ResponsiveContainer>
+            </div>
+          </Card>
+          
+          <Card>
+            <CardHeader className="pb-2">
+              <CardTitle className="text-base font-medium">Utilization Rate</CardTitle>
+            </CardHeader>
+            <CardContent className="pb-2">
+              <div className="flex items-center">
+                <div className={`text-2xl font-bold ${
+                  metricsData.utilizationRate > 70 ? 'text-green-500' : 'text-yellow-500'
+                }`}>
+                  {formatValue(metricsData.utilizationRate, '', '%')}
+                </div>
+                <div className="text-xs text-slate-500 ml-2">of capacity</div>
+              </div>
+              <div className="text-xs text-slate-500 mt-1">Target: ≥80%</div>
+            </CardContent>
+            <div className="h-32 pt-2">
+              <ResponsiveContainer width="100%" height="100%">
+                <BarChart data={timeSeriesData.slice(6)}>
+                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e5e7eb" />
+                  <XAxis dataKey="name" tick={{ fontSize: 10 }} axisLine={false} tickLine={false} />
+                  <YAxis hide />
+                  <Tooltip />
+                  <Bar dataKey="value" fill="#0ea5e9" radius={[4, 4, 0, 0]} />
+                </BarChart>
+              </ResponsiveContainer>
+            </div>
+          </Card>
+          
+          <Card>
+            <CardHeader className="pb-2">
+              <CardTitle className="text-base font-medium">Vehicle Downtime</CardTitle>
+            </CardHeader>
+            <CardContent className="pb-2">
+              <div className="flex items-end justify-between">
+                <div>
+                  <div className={`text-2xl font-bold ${
+                    metricsData.downtime < 10 ? 'text-green-500' : 'text-red-500'
+                  }`}>
+                    {formatValue(metricsData.downtime, '', '%')}
+                  </div>
+                  <div className="text-xs text-slate-500 mt-1">Target: &lt;5%</div>
+                </div>
+                <div className="flex-1 ml-4">
+                  <Progress 
+                    value={metricsData.downtime * 2} 
+                    className="h-2" 
+                  />
+                </div>
+              </div>
+            </CardContent>
+            <div className="h-32 pt-2">
+              <ResponsiveContainer width="100%" height="100%">
+                <PieChart>
+                  <Pie
+                    data={[
+                      { name: 'Downtime', value: metricsData.downtime, color: '#ef4444' },
+                      { name: 'Uptime', value: 100 - metricsData.downtime, color: '#22c55e' }
+                    ]}
+                    cx="50%"
+                    cy="50%"
+                    innerRadius={30}
+                    outerRadius={60}
+                    paddingAngle={5}
+                    dataKey="value"
+                  >
+                    {[
+                      { name: 'Downtime', value: metricsData.downtime, color: '#ef4444' },
+                      { name: 'Uptime', value: 100 - metricsData.downtime, color: '#22c55e' }
+                    ].map((entry, index) => (
+                      <Cell key={`cell-${index}`} fill={entry.color} />
+                    ))}
+                  </Pie>
+                  <Tooltip />
+                </PieChart>
+              </ResponsiveContainer>
+            </div>
+          </Card>
+        </div>
+        
+        <Card>
+          <CardHeader className="pb-2">
+            <CardTitle className="text-base font-medium flex justify-between items-center">
+              <span>Utilization Trend</span>
+              <Select defaultValue="month" onValueChange={setTimeframe}>
+                <SelectTrigger className="w-[120px] h-8 text-xs">
+                  <SelectValue placeholder="Select timeframe" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="week">Last Week</SelectItem>
+                  <SelectItem value="month">Last Month</SelectItem>
+                  <SelectItem value="quarter">Last Quarter</SelectItem>
+                  <SelectItem value="year">Last Year</SelectItem>
+                </SelectContent>
+              </Select>
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="h-64">
+            <ResponsiveContainer width="100%" height="100%">
+              <LineChart data={timeSeriesData}>
+                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e5e7eb" />
+                <XAxis dataKey="name" tick={{ fontSize: 12 }} axisLine={false} tickLine={false} />
+                <YAxis tick={{ fontSize: 12 }} axisLine={false} tickLine={false} />
+                <Tooltip />
+                <Line
+                  type="monotone"
+                  dataKey="value"
+                  stroke="#0ea5e9"
+                  strokeWidth={2}
+                  dot={{ r: 3 }}
+                  activeDot={{ r: 6 }}
+                />
+              </LineChart>
+            </ResponsiveContainer>
+          </CardContent>
+        </Card>
+      </>
+    );
+  };
+  
+  // Choose what to render based on the selected goal
+  const renderMetrics = () => {
+    if (isLoading) {
+      return (
+        <div className="flex items-center justify-center h-64">
+          <div className="text-center">
+            <div className="spinner h-8 w-8 border-4 border-blue-500 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+            <p className="text-slate-500">Loading metrics data...</p>
+          </div>
+        </div>
+      );
+    }
+    
+    switch (selectedGoal) {
+      case 'safety':
+        return renderSafetyMetrics();
+      case 'fuel':
+        return renderFuelMetrics();
+      case 'maintenance':
+        return renderMaintenanceMetrics();
+      case 'utilization':
+        return renderUtilizationMetrics();
+      default:
+        return <div>Select a goal to view metrics</div>;
+    }
+  };
+  
+  return (
+    <Card className="shadow-md border-slate-200">
+      <CardHeader className="pb-0 lg:pb-0 space-y-0">
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 sm:gap-0">
+          <CardTitle className="text-xl font-semibold text-slate-800">
+            Performance Metrics
+          </CardTitle>
+          <div className="flex items-center space-x-2 text-sm text-slate-500">
+            <Calendar className="h-4 w-4" />
+            <span>Last Updated: {new Date().toLocaleDateString()}</span>
+            <Clock className="h-4 w-4 ml-2" />
+            <span>{new Date().toLocaleTimeString()}</span>
+          </div>
+        </div>
+      </CardHeader>
+      <CardContent className="pt-4">
+        {renderMetrics()}
+      </CardContent>
+    </Card>
+  );
+};
+
+export default MetricsTab;

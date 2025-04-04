@@ -3,7 +3,9 @@ import {
   integrationServices, type IntegrationService, type InsertIntegrationService,
   fleetIntegrations, type FleetIntegration, type InsertFleetIntegration,
   vehicles, type Vehicle, type InsertVehicle,
-  repairOrders, fuelTransactions, safetyRecords, fleetMetrics
+  repairOrders, fuelTransactions, safetyRecords, fleetMetrics,
+  recommendations, type Recommendation, type InsertRecommendation,
+  recommendationSteps, type RecommendationStep, type InsertRecommendationStep
 } from "@shared/schema";
 import { db } from "./db";
 import { eq, and, desc, asc } from "drizzle-orm";
@@ -36,6 +38,18 @@ export interface IStorage {
   // Fleet metrics
   getFleetMetrics(userId: number, goalType: string): Promise<any[]>;
   createFleetMetric(metric: any): Promise<any>;
+  
+  // Recommendations
+  getRecommendations(userId: number, goalType?: string): Promise<Recommendation[]>;
+  getRecommendationById(id: number): Promise<Recommendation | undefined>;
+  createRecommendation(recommendation: InsertRecommendation): Promise<Recommendation>;
+  updateRecommendationStatus(id: number, status: string): Promise<Recommendation | undefined>;
+  
+  // Recommendation Steps
+  getRecommendationSteps(recommendationId: number): Promise<RecommendationStep[]>;
+  getRecommendationStepById(id: number): Promise<RecommendationStep | undefined>;
+  createRecommendationStep(step: InsertRecommendationStep): Promise<RecommendationStep>;
+  updateRecommendationStepStatus(id: number, isCompleted: boolean): Promise<RecommendationStep | undefined>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -156,6 +170,86 @@ export class DatabaseStorage implements IStorage {
   async createFleetMetric(metric: any): Promise<any> {
     const [newMetric] = await db.insert(fleetMetrics).values(metric).returning();
     return newMetric;
+  }
+
+  // Recommendations
+  async getRecommendations(userId: number, goalType?: string): Promise<Recommendation[]> {
+    if (goalType) {
+      return await db
+        .select()
+        .from(recommendations)
+        .where(
+          and(
+            eq(recommendations.userId, userId),
+            eq(recommendations.goalType, goalType)
+          )
+        )
+        .orderBy(desc(recommendations.createdAt));
+    } else {
+      return await db
+        .select()
+        .from(recommendations)
+        .where(eq(recommendations.userId, userId))
+        .orderBy(desc(recommendations.createdAt));
+    }
+  }
+  
+  async getRecommendationById(id: number): Promise<Recommendation | undefined> {
+    const [recommendation] = await db.select().from(recommendations).where(eq(recommendations.id, id));
+    return recommendation;
+  }
+  
+  async createRecommendation(recommendation: InsertRecommendation): Promise<Recommendation> {
+    const [newRecommendation] = await db.insert(recommendations).values(recommendation).returning();
+    return newRecommendation;
+  }
+  
+  async updateRecommendationStatus(id: number, status: string): Promise<Recommendation | undefined> {
+    const [updatedRecommendation] = await db
+      .update(recommendations)
+      .set({ 
+        status,
+        updatedAt: new Date()
+      })
+      .where(eq(recommendations.id, id))
+      .returning();
+    return updatedRecommendation;
+  }
+  
+  // Recommendation Steps
+  async getRecommendationSteps(recommendationId: number): Promise<RecommendationStep[]> {
+    return await db
+      .select()
+      .from(recommendationSteps)
+      .where(eq(recommendationSteps.recommendationId, recommendationId))
+      .orderBy(asc(recommendationSteps.order));
+  }
+  
+  async getRecommendationStepById(id: number): Promise<RecommendationStep | undefined> {
+    const [step] = await db.select().from(recommendationSteps).where(eq(recommendationSteps.id, id));
+    return step;
+  }
+  
+  async createRecommendationStep(step: InsertRecommendationStep): Promise<RecommendationStep> {
+    const [newStep] = await db.insert(recommendationSteps).values(step).returning();
+    return newStep;
+  }
+  
+  async updateRecommendationStepStatus(id: number, isCompleted: boolean): Promise<RecommendationStep | undefined> {
+    const data: Partial<RecommendationStep> = { 
+      isCompleted,
+    };
+    
+    if (isCompleted) {
+      data.completedAt = new Date();
+    }
+    
+    const [updatedStep] = await db
+      .update(recommendationSteps)
+      .set(data)
+      .where(eq(recommendationSteps.id, id))
+      .returning();
+    return updatedStep;
   }
 }
 
