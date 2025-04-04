@@ -1,13 +1,69 @@
 import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { AlertTriangle, AlertCircle, Info, CheckCircle2, Search } from 'lucide-react';
+import { AlertTriangle, AlertCircle, Info, CheckCircle2, Search, PlayCircle } from 'lucide-react';
 import { RecommendationInterface, Goal } from '@/lib/types';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Button } from '@/components/ui/button';
 import { apiRequest } from '@/lib/queryClient';
 import { RecommendationDetail } from './RecommendationDetail';
+import { ActionChecklistModal } from './ActionChecklistModal';
 import { goalDisplayText } from '@/lib/mockData';
+
+// Recommendation Item Component
+interface RecommendationItemProps {
+  recommendation: RecommendationInterface;
+  onClick: (rec: RecommendationInterface) => void;
+  onTakeAction: (rec: RecommendationInterface, e: React.MouseEvent) => void;
+  getTypeIcon: (type: string) => React.ReactNode;
+  getStatusColor: (status: string) => string;
+  getStatusText: (status: string) => string;
+}
+
+const RecommendationItem = ({ 
+  recommendation, 
+  onClick, 
+  onTakeAction, 
+  getTypeIcon, 
+  getStatusColor, 
+  getStatusText 
+}: RecommendationItemProps) => {
+  return (
+    <div 
+      key={recommendation.id} 
+      className="flex items-start p-4 hover:bg-slate-50 cursor-pointer transition-colors"
+      onClick={() => onClick(recommendation)}
+    >
+      <div className="flex-shrink-0 mr-3 mt-1">
+        {getTypeIcon(recommendation.type)}
+      </div>
+      <div className="flex-1">
+        <div className="flex items-center justify-between">
+          <h4 className="text-sm font-medium text-slate-800">{recommendation.title}</h4>
+          <span className={`text-xs px-2 py-1 rounded-full ${getStatusColor(recommendation.status)}`}>
+            {getStatusText(recommendation.status)}
+          </span>
+        </div>
+        <p className="text-xs text-slate-500 mt-1 line-clamp-2">{recommendation.description}</p>
+        <div className="mt-2 flex items-center justify-between">
+          <span className="text-xs text-slate-400">
+            Created {new Date(recommendation.createdAt).toLocaleDateString()}
+          </span>
+          <Button 
+            variant="outline" 
+            size="sm" 
+            className="text-blue-600 border-blue-200 hover:bg-blue-50"
+            onClick={(e) => onTakeAction(recommendation, e)}
+          >
+            <PlayCircle className="mr-1 h-3 w-3" />
+            Take Action
+          </Button>
+        </div>
+      </div>
+    </div>
+  );
+};
 
 interface RecommendationsTabProps {
   selectedGoal: Goal;
@@ -17,6 +73,8 @@ export const RecommendationsTab = ({ selectedGoal }: RecommendationsTabProps) =>
   const [searchTerm, setSearchTerm] = useState('');
   const [filterStatus, setFilterStatus] = useState('all');
   const [selectedRecommendation, setSelectedRecommendation] = useState<RecommendationInterface | null>(null);
+  const [actionModalOpen, setActionModalOpen] = useState(false);
+  const [actionRecommendation, setActionRecommendation] = useState<RecommendationInterface | null>(null);
 
   // Fetch recommendations from API
   const { data: recommendations = [], isLoading } = useQuery({
@@ -62,16 +120,29 @@ export const RecommendationsTab = ({ selectedGoal }: RecommendationsTabProps) =>
   const getStatusText = (status: string) => {
     switch (status) {
       case 'notified':
-        return 'Notified';
+        return 'Not Started';
       case 'risk_accepted':
         return 'Risk Accepted';
       case 'in_progress':
-        return 'In Progress';
+        return 'Partially Complete';
       case 'completed':
-        return 'Completed';
+        return 'Complete';
       default:
         return status;
     }
+  };
+
+  // Handle opening the action modal
+  const handleTakeAction = (rec: RecommendationInterface, e: React.MouseEvent) => {
+    e.stopPropagation(); // Prevent clicking through to the recommendation detail
+    setActionRecommendation(rec);
+    setActionModalOpen(true);
+  };
+
+  // Handle action modal completion
+  const handleActionComplete = () => {
+    // Refresh the recommendations data
+    // This happens automatically due to the cache invalidation in the modal
   };
 
   // Filter recommendations based on search term and status filter
@@ -134,19 +205,19 @@ export const RecommendationsTab = ({ selectedGoal }: RecommendationsTabProps) =>
                 value="notified" 
                 className="text-xs py-1.5 data-[state=active]:bg-white data-[state=active]:shadow-sm"
               >
-                Notified ({getCountByStatus('notified')})
+                Not Started ({getCountByStatus('notified')})
               </TabsTrigger>
               <TabsTrigger 
                 value="in_progress" 
                 className="text-xs py-1.5 data-[state=active]:bg-white data-[state=active]:shadow-sm"
               >
-                In Progress ({getCountByStatus('in_progress')})
+                Partially Complete ({getCountByStatus('in_progress')})
               </TabsTrigger>
               <TabsTrigger 
                 value="completed" 
                 className="text-xs py-1.5 data-[state=active]:bg-white data-[state=active]:shadow-sm"
               >
-                Completed ({getCountByStatus('completed')})
+                Complete ({getCountByStatus('completed')})
               </TabsTrigger>
             </TabsList>
           </div>
@@ -160,27 +231,15 @@ export const RecommendationsTab = ({ selectedGoal }: RecommendationsTabProps) =>
                 <div className="py-8 text-center text-slate-500">No recommendations found</div>
               ) : (
                 filteredRecommendations.map((rec: RecommendationInterface) => (
-                  <div 
-                    key={rec.id} 
-                    className="flex items-start p-4 hover:bg-slate-50 cursor-pointer transition-colors"
-                    onClick={() => setSelectedRecommendation(rec)}
-                  >
-                    <div className="flex-shrink-0 mr-3 mt-1">
-                      {getTypeIcon(rec.type)}
-                    </div>
-                    <div className="flex-1">
-                      <div className="flex items-center justify-between">
-                        <h4 className="text-sm font-medium text-slate-800">{rec.title}</h4>
-                        <span className={`text-xs px-2 py-1 rounded-full ${getStatusColor(rec.status)}`}>
-                          {getStatusText(rec.status)}
-                        </span>
-                      </div>
-                      <p className="text-xs text-slate-500 mt-1 line-clamp-2">{rec.description}</p>
-                      <div className="mt-2 text-xs text-slate-400">
-                        Created {new Date(rec.createdAt).toLocaleDateString()}
-                      </div>
-                    </div>
-                  </div>
+                  <RecommendationItem
+                    key={rec.id}
+                    recommendation={rec}
+                    onClick={setSelectedRecommendation}
+                    onTakeAction={handleTakeAction}
+                    getTypeIcon={getTypeIcon}
+                    getStatusColor={getStatusColor}
+                    getStatusText={getStatusText}
+                  />
                 ))
               )}
             </div>
@@ -189,30 +248,18 @@ export const RecommendationsTab = ({ selectedGoal }: RecommendationsTabProps) =>
           <TabsContent value="notified" className="m-0">
             <div className="divide-y divide-slate-200">
               {filteredRecommendations.length === 0 ? (
-                <div className="py-8 text-center text-slate-500">No notified recommendations</div>
+                <div className="py-8 text-center text-slate-500">No recommendations in Not Started status</div>
               ) : (
                 filteredRecommendations.map((rec: RecommendationInterface) => (
-                  <div 
-                    key={rec.id} 
-                    className="flex items-start p-4 hover:bg-slate-50 cursor-pointer transition-colors"
-                    onClick={() => setSelectedRecommendation(rec)}
-                  >
-                    <div className="flex-shrink-0 mr-3 mt-1">
-                      {getTypeIcon(rec.type)}
-                    </div>
-                    <div className="flex-1">
-                      <div className="flex items-center justify-between">
-                        <h4 className="text-sm font-medium text-slate-800">{rec.title}</h4>
-                        <span className={`text-xs px-2 py-1 rounded-full ${getStatusColor(rec.status)}`}>
-                          {getStatusText(rec.status)}
-                        </span>
-                      </div>
-                      <p className="text-xs text-slate-500 mt-1 line-clamp-2">{rec.description}</p>
-                      <div className="mt-2 text-xs text-slate-400">
-                        Created {new Date(rec.createdAt).toLocaleDateString()}
-                      </div>
-                    </div>
-                  </div>
+                  <RecommendationItem
+                    key={rec.id}
+                    recommendation={rec}
+                    onClick={setSelectedRecommendation}
+                    onTakeAction={handleTakeAction}
+                    getTypeIcon={getTypeIcon}
+                    getStatusColor={getStatusColor}
+                    getStatusText={getStatusText}
+                  />
                 ))
               )}
             </div>
@@ -221,30 +268,18 @@ export const RecommendationsTab = ({ selectedGoal }: RecommendationsTabProps) =>
           <TabsContent value="in_progress" className="m-0">
             <div className="divide-y divide-slate-200">
               {filteredRecommendations.length === 0 ? (
-                <div className="py-8 text-center text-slate-500">No in-progress recommendations</div>
+                <div className="py-8 text-center text-slate-500">No recommendations in Partially Complete status</div>
               ) : (
                 filteredRecommendations.map((rec: RecommendationInterface) => (
-                  <div 
-                    key={rec.id} 
-                    className="flex items-start p-4 hover:bg-slate-50 cursor-pointer transition-colors"
-                    onClick={() => setSelectedRecommendation(rec)}
-                  >
-                    <div className="flex-shrink-0 mr-3 mt-1">
-                      {getTypeIcon(rec.type)}
-                    </div>
-                    <div className="flex-1">
-                      <div className="flex items-center justify-between">
-                        <h4 className="text-sm font-medium text-slate-800">{rec.title}</h4>
-                        <span className={`text-xs px-2 py-1 rounded-full ${getStatusColor(rec.status)}`}>
-                          {getStatusText(rec.status)}
-                        </span>
-                      </div>
-                      <p className="text-xs text-slate-500 mt-1 line-clamp-2">{rec.description}</p>
-                      <div className="mt-2 text-xs text-slate-400">
-                        Created {new Date(rec.createdAt).toLocaleDateString()}
-                      </div>
-                    </div>
-                  </div>
+                  <RecommendationItem
+                    key={rec.id}
+                    recommendation={rec}
+                    onClick={setSelectedRecommendation}
+                    onTakeAction={handleTakeAction}
+                    getTypeIcon={getTypeIcon}
+                    getStatusColor={getStatusColor}
+                    getStatusText={getStatusText}
+                  />
                 ))
               )}
             </div>
@@ -253,36 +288,34 @@ export const RecommendationsTab = ({ selectedGoal }: RecommendationsTabProps) =>
           <TabsContent value="completed" className="m-0">
             <div className="divide-y divide-slate-200">
               {filteredRecommendations.length === 0 ? (
-                <div className="py-8 text-center text-slate-500">No completed recommendations</div>
+                <div className="py-8 text-center text-slate-500">No recommendations in Complete status</div>
               ) : (
                 filteredRecommendations.map((rec: RecommendationInterface) => (
-                  <div 
-                    key={rec.id} 
-                    className="flex items-start p-4 hover:bg-slate-50 cursor-pointer transition-colors"
-                    onClick={() => setSelectedRecommendation(rec)}
-                  >
-                    <div className="flex-shrink-0 mr-3 mt-1">
-                      {getTypeIcon(rec.type)}
-                    </div>
-                    <div className="flex-1">
-                      <div className="flex items-center justify-between">
-                        <h4 className="text-sm font-medium text-slate-800">{rec.title}</h4>
-                        <span className={`text-xs px-2 py-1 rounded-full ${getStatusColor(rec.status)}`}>
-                          {getStatusText(rec.status)}
-                        </span>
-                      </div>
-                      <p className="text-xs text-slate-500 mt-1 line-clamp-2">{rec.description}</p>
-                      <div className="mt-2 text-xs text-slate-400">
-                        Created {new Date(rec.createdAt).toLocaleDateString()}
-                      </div>
-                    </div>
-                  </div>
+                  <RecommendationItem
+                    key={rec.id}
+                    recommendation={rec}
+                    onClick={setSelectedRecommendation}
+                    onTakeAction={handleTakeAction}
+                    getTypeIcon={getTypeIcon}
+                    getStatusColor={getStatusColor}
+                    getStatusText={getStatusText}
+                  />
                 ))
               )}
             </div>
           </TabsContent>
         </Tabs>
       </CardContent>
+      
+      {/* Action Checklist Modal */}
+      {actionRecommendation && (
+        <ActionChecklistModal
+          recommendation={actionRecommendation}
+          open={actionModalOpen}
+          onOpenChange={setActionModalOpen}
+          onComplete={handleActionComplete}
+        />
+      )}
     </Card>
   );
 };
