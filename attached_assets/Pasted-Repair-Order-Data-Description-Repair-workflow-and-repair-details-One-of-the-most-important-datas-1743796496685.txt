@@ -1,0 +1,39 @@
+Repair Order Data. 
+Description: Repair workflow and repair details. One of the most important datasets for a fleet.   
+Primary Master Data: Autointegrate network (this is a company that created a standard protocol for    
+Typical Data fields:  Repair order number (RO number), Repair quote ($ - labor, $ - parts), repair authorization status (authorized, rejected), authorizer name, authorizer date, repair date, components repaired, mechanic comments (free form), odometer.  
+
+Car Data / Telematics 
+OEM direct (what we do)
+After-market Device (Geotab, Samsara, Motive, FleetComplete, Etc.)
+You know most fields here already. 
+
+License, Titling, and Registration 
+Description: Workflows to first register a vehicle, renew annual registrations, and transfer titles as needed. 
+Primary Vendors: Verra Mobility 
+Typical data fields: Date of delivery at the dealer (end of pre-delivery), Vehicle Class (size), Date of registration, Date of expiry, date of renewal, Annual registration fee for state DMV. 
+ 
+Driver Safety Records and Accident Mgmt. 
+Description: Service that monitors and trains drivers   
+Primary Vendors: CEI, Samba Safety 
+Typical Data fields: Driver license number, license expiry date, license class (e.g., heavy duty truck), Traffic violation ticket date, ticket type (e.g., speeding), ticket severity (e.g., points on license), accident date, accident type, accident severity, accident injuries, accident location. 
+ 
+Lease data. 
+Description: MASTER data for vehicle lease issued by FMC to fleet customer. 
+Primary Master Data Vendors: all our FMC customers.   
+Typical Data fields:  Lease origination date, Lease type (open-ended or closed-ended), lease monthly dollar amount, lease expiry date (for closed-end leases), lease termination date (for open-ended leases), monthly management fee, monthly maintenance fee. 
+
+Fuel card. 
+Description: Standard fuel card to drivers. These cards work only at certain types of stores, and the transaction auth patterns can be controlled. 
+Primary Vendors: WEX, Fleetcor, Coast. 
+Typical Data fields: Date and time of transaction; store ID (gas station ID), store address, fuel type (gas/diesel), fuel dispensed, fuel price per gallon, gallons dispensed, total transaction value ($), odo reading entered (driver sometimes needs to enter the odo into the gas pump).    
+
+EV Charging Data  
+Description: Data from an EV charger installed at a driver's home location, or at an office. This could also be public charging card (e.g., Chargepoint).   
+Primary Master Data: EV charging services co - e.g., chargepoint, EVGO. 
+Typical Data fields:  Charger ID, charge session start time, charge session end time, kwH added, energy cost rate ($/kwh), total dollar, charger level (2 or 3). 
+
+Tolls and violations 
+Description: Data on tolls that a vehicle has incurred.  
+Primary Master Data: Verra Mobility 
+Typical Data fields:  Toll method (LPR or Toll Tag), Toll Tag ID, Time of Toll, Gantry ID (gantry is the toll gate), Gantry Lane, Gantry location, Hwy name, Toll amount ($).
