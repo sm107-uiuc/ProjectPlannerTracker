@@ -70,145 +70,32 @@ export const MetricsTab = ({ selectedGoal }: MetricsTabProps) => {
     const safetyKpiData = metricsData.kpiMetrics.safety;
     return (
       <>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-4">
-          {/* Safety Score Card */}
-          <Card className="overflow-hidden">
-            <CardHeader className="pb-2">
-              <CardTitle className="text-base font-medium flex items-center justify-between">
-                <span>Safety Score</span>
-                {getTrendIndicator(safetyKpiData.current, safetyKpiData.previousPeriod)}
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="pb-4">
-              <div className="flex items-end justify-between">
-                <div>
-                  <div className={`text-2xl font-bold ${getValueColor(safetyKpiData.current, safetyKpiData.target)}`}>
-                    {formatValue(safetyKpiData.current)}
-                  </div>
-                  <div className="text-xs text-slate-500 mt-1">Target: {formatValue(safetyKpiData.target)}</div>
-                </div>
-                <div className="flex-1 ml-4">
-                  <Progress 
-                    value={(safetyKpiData.current / safetyKpiData.target) * 100} 
-                    className="h-2"
-                  />
-                </div>
-              </div>
-            </CardContent>
-            <div className="h-32 pt-2">
-              <ResponsiveContainer width="100%" height="100%">
-                <AreaChart data={metricsData.monthlyTrends}>
-                  <defs>
-                    <linearGradient id="safetyGradient" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.8}/>
-                      <stop offset="95%" stopColor="#3b82f6" stopOpacity={0}/>
-                    </linearGradient>
-                  </defs>
-                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e5e7eb" />
-                  <XAxis dataKey="month" tick={{ fontSize: 10 }} axisLine={false} tickLine={false} />
-                  <YAxis hide />
-                  <Tooltip />
-                  <Area type="monotone" dataKey="safety" stroke="#3b82f6" fillOpacity={1} fill="url(#safetyGradient)" />
-                </AreaChart>
-              </ResponsiveContainer>
-            </div>
-          </Card>
-          
-          {/* Safety Incidents Card */}
-          <Card>
-            <CardHeader className="pb-2">
-              <CardTitle className="text-base font-medium">Safety Incidents</CardTitle>
-            </CardHeader>
-            <CardContent className="pb-2">
-              <div className="flex items-center">
-                <div className="text-2xl font-bold text-red-500">{safetyKpiData.incidents}</div>
-                <div className="text-xs text-slate-500 ml-2">this month</div>
-              </div>
-              <div className="text-xs text-slate-500 mt-1">Severity: {safetyKpiData.severity}</div>
-            </CardContent>
-            <div className="h-32 pt-2">
-              <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={metricsData.monthlyTrends.slice(6)}>
-                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e5e7eb" />
-                  <XAxis dataKey="month" tick={{ fontSize: 10 }} axisLine={false} tickLine={false} />
-                  <YAxis hide />
-                  <Tooltip />
-                  <Bar dataKey="safety" fill="#3b82f6" radius={[4, 4, 0, 0]} />
-                </BarChart>
-              </ResponsiveContainer>
-            </div>
-          </Card>
-          
-          {/* Training Compliance Card */}
-          <Card>
-            <CardHeader className="pb-2">
-              <CardTitle className="text-base font-medium">Training Compliance</CardTitle>
-            </CardHeader>
-            <CardContent className="pb-2">
-              <div className="flex items-end justify-between">
-                <div>
-                  <div className={`text-2xl font-bold ${
-                    safetyKpiData.trainingCompliance > 80 ? 'text-green-500' : 'text-yellow-500'
-                  }`}>
-                    {formatValue(safetyKpiData.trainingCompliance, '', '%')}
-                  </div>
-                  <div className="text-xs text-slate-500 mt-1">Target: 100%</div>
-                </div>
-                <div className="flex-1 ml-4">
-                  <Progress 
-                    value={safetyKpiData.trainingCompliance} 
-                    className="h-2" 
-                  />
-                </div>
-              </div>
-            </CardContent>
-            <div className="h-32 pt-2">
-              <ResponsiveContainer width="100%" height="100%">
-                <PieChart>
-                  <Pie
-                    data={[
-                      { name: 'Compliant', value: safetyKpiData.trainingCompliance, color: '#22c55e' },
-                      { name: 'Non-Compliant', value: 100 - safetyKpiData.trainingCompliance, color: '#ef4444' }
-                    ]}
-                    cx="50%"
-                    cy="50%"
-                    innerRadius={30}
-                    outerRadius={60}
-                    paddingAngle={5}
-                    dataKey="value"
-                  >
-                    {[
-                      { name: 'Compliant', value: safetyKpiData.trainingCompliance, color: '#22c55e' },
-                      { name: 'Non-Compliant', value: 100 - safetyKpiData.trainingCompliance, color: '#ef4444' }
-                    ].map((entry, index) => (
-                      <Cell key={`cell-${index}`} fill={entry.color} />
-                    ))}
-                  </Pie>
-                  <Tooltip />
-                </PieChart>
-              </ResponsiveContainer>
-            </div>
-          </Card>
-        </div>
-        
-        {/* Incident Types Summary */}
+        {/* Top row - Risk factors and US map */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+          {/* Risk Factors */}
           <Card>
             <CardHeader className="pb-2">
-              <CardTitle className="text-base font-medium">Incident Types</CardTitle>
+              <CardTitle className="text-base font-medium">Driver Risk Factors</CardTitle>
             </CardHeader>
             <CardContent className="h-64">
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart
                   data={metricsData.incidentTypes}
                   layout="vertical"
-                  margin={{ top: 5, right: 30, left: 60, bottom: 5 }}
+                  margin={{ top: 5, right: 30, left: 90, bottom: 5 }}
                 >
-                  <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis type="number" />
-                  <YAxis dataKey="name" type="category" tick={{ fontSize: 12 }} />
+                  <CartesianGrid strokeDasharray="3 3" horizontal={true} vertical={false} />
+                  <XAxis type="number" axisLine={false} tickLine={false} />
+                  <YAxis 
+                    dataKey="name" 
+                    type="category" 
+                    axisLine={false}  
+                    tickLine={false} 
+                    width={120}
+                    tick={{ fontSize: 12 }}
+                  />
                   <Tooltip />
-                  <Bar dataKey="value" fill="#3b82f6" radius={[0, 4, 4, 0]} />
+                  <Bar dataKey="value" fill="#3b82f6" radius={[0, 4, 4, 0]} barSize={20} />
                 </BarChart>
               </ResponsiveContainer>
             </CardContent>
@@ -217,7 +104,7 @@ export const MetricsTab = ({ selectedGoal }: MetricsTabProps) => {
           {/* Incident Map */}
           <Card>
             <CardHeader className="pb-2">
-              <CardTitle className="text-base font-medium">Incident Geographic Distribution</CardTitle>
+              <CardTitle className="text-base font-medium">Incident Map</CardTitle>
             </CardHeader>
             <CardContent className="h-64">
               <GeographyUSA 
@@ -225,6 +112,120 @@ export const MetricsTab = ({ selectedGoal }: MetricsTabProps) => {
                 title=""
                 color="#3b82f6"
               />
+            </CardContent>
+          </Card>
+        </div>
+        
+        {/* Second row - KPI Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+          {/* Current Score Card */}
+          <Card className="overflow-hidden">
+            <CardHeader className="pb-2">
+              <CardTitle className="text-base font-medium">Current Score</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="flex flex-col items-start">
+                <div className="flex items-center mb-2">
+                  <div className="text-3xl font-bold text-slate-800">{safetyKpiData.current}</div>
+                  <div className="text-sm text-slate-500 ml-2">/ {safetyKpiData.target}</div>
+                </div>
+                <div className="w-full mb-2">
+                  <Progress 
+                    value={(safetyKpiData.current / safetyKpiData.target) * 100} 
+                    className="h-2"
+                  />
+                </div>
+                <div className="text-sm text-slate-600 flex items-center mt-1">
+                  <TrendingUp className="h-4 w-4 mr-1 text-green-500" />
+                  <span>Up 4% from last period</span>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+          
+          {/* Incidents this Month Card */}
+          <Card>
+            <CardHeader className="pb-2">
+              <CardTitle className="text-base font-medium">Incidents this Month</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="flex flex-col items-start">
+                <div className="text-3xl font-bold text-slate-800 mb-2">{safetyKpiData.incidents}</div>
+                <div className="flex items-center mb-2">
+                  <AlertTriangle className="h-5 w-5 text-amber-500 mr-2" />
+                  <span className="text-sm text-slate-600">Average severity: {safetyKpiData.severity}</span>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+          
+          {/* Training Compliance Card */}
+          <Card>
+            <CardHeader className="pb-2">
+              <CardTitle className="text-base font-medium">Training Compliance</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="flex flex-col items-start">
+                <div className="text-3xl font-bold text-slate-800 mb-2">{safetyKpiData.trainingCompliance}%</div>
+                <div className="w-full mb-2">
+                  <Progress 
+                    value={safetyKpiData.trainingCompliance} 
+                    className="h-2" 
+                  />
+                </div>
+                <div className="text-sm text-slate-600">Target: 100%</div>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+        
+        {/* Third row - Trend and Vehicle Distribution */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+          {/* 12-Month Score Trend */}
+          <Card>
+            <CardHeader className="pb-2">
+              <CardTitle className="text-base font-medium">12-Month Score Trend</CardTitle>
+              <CardDescription className="text-xs text-slate-500">Performance metrics over the past year</CardDescription>
+            </CardHeader>
+            <CardContent className="h-64">
+              <ResponsiveContainer width="100%" height="100%">
+                <LineChart data={metricsData.monthlyTrends}>
+                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e5e7eb" />
+                  <XAxis dataKey="month" tick={{ fontSize: 10 }} axisLine={false} tickLine={false} />
+                  <YAxis domain={[50, 100]} tick={{ fontSize: 10 }} axisLine={false} tickLine={false} />
+                  <Tooltip />
+                  <Line 
+                    type="monotone" 
+                    dataKey="safety" 
+                    stroke="#3b82f6" 
+                    strokeWidth={2}
+                    dot={{ r: 4, strokeWidth: 2 }} 
+                    activeDot={{ r: 6 }} 
+                  />
+                </LineChart>
+              </ResponsiveContainer>
+            </CardContent>
+          </Card>
+          
+          {/* Vehicle Score Distribution */}
+          <Card>
+            <CardHeader className="pb-2">
+              <CardTitle className="text-base font-medium">Vehicle Score Distribution</CardTitle>
+              <CardDescription className="text-xs text-slate-500">Distribution of fleet by performance score</CardDescription>
+            </CardHeader>
+            <CardContent className="h-64">
+              <ResponsiveContainer width="100%" height="100%">
+                <BarChart
+                  data={metricsData.vehicleScoreDistribution}
+                  margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
+                >
+                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e5e7eb" />
+                  <XAxis dataKey="range" tick={{ fontSize: 10 }} axisLine={false} tickLine={false} />
+                  <YAxis tick={{ fontSize: 10 }} axisLine={false} tickLine={false} />
+                  <Tooltip />
+                  <Bar dataKey="count" fill="#3b82f6" radius={[4, 4, 0, 0]} />
+                </BarChart>
+              </ResponsiveContainer>
             </CardContent>
           </Card>
         </div>
