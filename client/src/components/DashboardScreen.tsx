@@ -8,8 +8,8 @@ import RecommendationsCard from "@/components/RecommendationsCard";
 import VehiclePerformanceTable from "@/components/VehiclePerformanceTable";
 import PerformersCard from "@/components/PerformersCard";
 import { IntegrationsScreen } from "@/components/IntegrationsScreen";
-import MetricsTab from "@/components/MetricsTab";
-import RecommendationsTab from "@/components/RecommendationsTab";
+import { MetricsTab } from "@/components/MetricsTab";
+import { RecommendationsTab } from "@/components/RecommendationsTab";
 import { 
   RefreshCw, 
   Filter, 

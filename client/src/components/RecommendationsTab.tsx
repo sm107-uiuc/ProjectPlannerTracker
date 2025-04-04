@@ -6,7 +6,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Input } from '@/components/ui/input';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { apiRequest } from '@/lib/queryClient';
-import RecommendationDetail from './RecommendationDetail';
+import { RecommendationDetail } from './RecommendationDetail';
 import { goalDisplayText } from '@/lib/mockData';
 
 interface RecommendationsTabProps {
@@ -287,4 +287,3 @@ export const RecommendationsTab = ({ selectedGoal }: RecommendationsTabProps) =>
   );
 };
 
-export default RecommendationsTab;

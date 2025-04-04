@@ -245,6 +245,60 @@ export const mockMetricsData = {
     { name: 'Fatigue', value: 10 }
   ],
   
+  // Incident map data
+  incidentMap: [
+    { state: 'California', value: 28 },
+    { state: 'Texas', value: 22 },
+    { state: 'Florida', value: 18 },
+    { state: 'New York', value: 15 },
+    { state: 'Pennsylvania', value: 12 },
+    { state: 'Illinois', value: 14 },
+    { state: 'Ohio', value: 11 },
+    { state: 'Georgia', value: 16 },
+    { state: 'North Carolina', value: 13 },
+    { state: 'Michigan', value: 12 },
+    { state: 'New Jersey', value: 10 },
+    { state: 'Virginia', value: 9 },
+    { state: 'Washington', value: 11 },
+    { state: 'Arizona', value: 13 },
+    { state: 'Massachusetts', value: 8 },
+    { state: 'Tennessee', value: 9 },
+    { state: 'Indiana', value: 7 },
+    { state: 'Missouri', value: 8 },
+    { state: 'Maryland', value: 7 },
+    { state: 'Wisconsin', value: 6 },
+    { state: 'Minnesota', value: 5 },
+    { state: 'Colorado', value: 8 },
+    { state: 'Alabama', value: 7 },
+    { state: 'South Carolina', value: 8 },
+    { state: 'Louisiana', value: 7 },
+    { state: 'Kentucky', value: 5 },
+    { state: 'Oregon', value: 6 },
+    { state: 'Oklahoma', value: 6 },
+    { state: 'Connecticut', value: 4 },
+    { state: 'Iowa', value: 3 },
+    { state: 'Mississippi', value: 5 },
+    { state: 'Arkansas', value: 4 },
+    { state: 'Kansas', value: 3 },
+    { state: 'Utah', value: 5 },
+    { state: 'Nevada', value: 6 },
+    { state: 'New Mexico', value: 4 },
+    { state: 'Nebraska', value: 2 },
+    { state: 'West Virginia', value: 3 },
+    { state: 'Idaho', value: 2 },
+    { state: 'Hawaii', value: 1 },
+    { state: 'Maine', value: 2 },
+    { state: 'New Hampshire', value: 2 },
+    { state: 'Rhode Island', value: 1 },
+    { state: 'Montana', value: 2 },
+    { state: 'Delaware', value: 1 },
+    { state: 'South Dakota', value: 1 },
+    { state: 'Alaska', value: 1 },
+    { state: 'North Dakota', value: 1 },
+    { state: 'Vermont', value: 1 },
+    { state: 'Wyoming', value: 1 }
+  ],
+  
   // Maintenance costs
   maintenanceCosts: [
     { name: 'Preventive', value: 42 },
@@ -304,6 +358,118 @@ export const mockMetricsData = {
     { type: 'Light Duty', utilized: 82, idle: 18 },
     { type: 'Passenger', utilized: 78, idle: 22 },
     { type: 'Specialty', utilized: 69, idle: 31 }
+  ],
+  
+  // Fuel efficiency by weather
+  fuelEfficiencyByWeather: [
+    { temperature: 20, mpg: 22.1 },
+    { temperature: 30, mpg: 23.5 },
+    { temperature: 40, mpg: 24.8 },
+    { temperature: 50, mpg: 25.7 },
+    { temperature: 60, mpg: 26.2 },
+    { temperature: 70, mpg: 25.9 },
+    { temperature: 80, mpg: 24.7 },
+    { temperature: 90, mpg: 23.2 },
+    { temperature: 100, mpg: 22.0 }
+  ],
+  
+  // Alternative fuel adoption
+  alternativeFuelAdoption: [
+    { month: 'Jan', electric: 5, hybrid: 12, diesel: 65, gasoline: 93 },
+    { month: 'Feb', electric: 6, hybrid: 14, diesel: 64, gasoline: 91 },
+    { month: 'Mar', electric: 8, hybrid: 15, diesel: 63, gasoline: 89 },
+    { month: 'Apr', electric: 10, hybrid: 17, diesel: 62, gasoline: 86 },
+    { month: 'May', electric: 12, hybrid: 18, diesel: 61, gasoline: 84 },
+    { month: 'Jun', electric: 15, hybrid: 20, diesel: 60, gasoline: 80 },
+    { month: 'Jul', electric: 18, hybrid: 22, diesel: 58, gasoline: 77 },
+    { month: 'Aug', electric: 20, hybrid: 24, diesel: 56, gasoline: 75 },
+    { month: 'Sep', electric: 23, hybrid: 26, diesel: 54, gasoline: 72 },
+    { month: 'Oct', electric: 25, hybrid: 28, diesel: 52, gasoline: 70 },
+    { month: 'Nov', electric: 28, hybrid: 30, diesel: 50, gasoline: 67 },
+    { month: 'Dec', electric: 30, hybrid: 32, diesel: 48, gasoline: 65 }
+  ],
+  
+  // Parts replacement frequency
+  partsReplacement: [
+    { part: 'Brakes', frequency: 42 },
+    { part: 'Oil Filters', frequency: 135 },
+    { part: 'Air Filters', frequency: 92 },
+    { part: 'Tires', frequency: 68 },
+    { part: 'Wiper Blades', frequency: 53 },
+    { part: 'Batteries', frequency: 27 },
+    { part: 'Spark Plugs', frequency: 38 },
+    { part: 'Fuel Pumps', frequency: 15 },
+    { part: 'Alternators', frequency: 19 },
+    { part: 'Starters', frequency: 21 }
+  ],
+  
+  // Repair order aging
+  repairOrderAging: [
+    { dayRange: '0-1', count: 42, priority: 'Low' },
+    { dayRange: '2-3', count: 28, priority: 'Low' },
+    { dayRange: '4-5', count: 18, priority: 'Medium' },
+    { dayRange: '6-7', count: 12, priority: 'Medium' },
+    { dayRange: '8-10', count: 8, priority: 'High' },
+    { dayRange: '11+', count: 5, priority: 'Critical' }
+  ],
+  
+  // Utilization by time of day
+  utilizationByHour: [
+    { hour: 0, utilization: 15 }, { hour: 1, utilization: 12 }, { hour: 2, utilization: 8 },
+    { hour: 3, utilization: 5 }, { hour: 4, utilization: 10 }, { hour: 5, utilization: 22 },
+    { hour: 6, utilization: 35 }, { hour: 7, utilization: 55 }, { hour: 8, utilization: 75 },
+    { hour: 9, utilization: 85 }, { hour: 10, utilization: 90 }, { hour: 11, utilization: 92 },
+    { hour: 12, utilization: 88 }, { hour: 13, utilization: 85 }, { hour: 14, utilization: 82 },
+    { hour: 15, utilization: 80 }, { hour: 16, utilization: 78 }, { hour: 17, utilization: 75 },
+    { hour: 18, utilization: 65 }, { hour: 19, utilization: 55 }, { hour: 20, utilization: 48 },
+    { hour: 21, utilization: 40 }, { hour: 22, utilization: 30 }, { hour: 23, utilization: 20 }
+  ],
+  
+  // Route efficiency 
+  routeEfficiency: [
+    { distance: 15, time: 22, id: 'R-001' }, { distance: 28, time: 42, id: 'R-002' },
+    { distance: 12, time: 18, id: 'R-003' }, { distance: 35, time: 48, id: 'R-004' },
+    { distance: 42, time: 65, id: 'R-005' }, { distance: 8, time: 15, id: 'R-006' },
+    { distance: 22, time: 30, id: 'R-007' }, { distance: 18, time: 25, id: 'R-008' },
+    { distance: 31, time: 40, id: 'R-009' }, { distance: 25, time: 38, id: 'R-010' },
+    { distance: 15, time: 28, id: 'R-011' }, { distance: 40, time: 52, id: 'R-012' }
+  ],
+  
+  // Incident time by hour chart
+  incidentTimeByHour: [
+    { state: 'CA', value: 32 }, { state: 'TX', value: 28 }, { state: 'FL', value: 25 },
+    { state: 'NY', value: 22 }, { state: 'IL', value: 20 }, { state: 'PA', value: 18 },
+    { state: 'OH', value: 17 }, { state: 'GA', value: 16 }, { state: 'NC', value: 14 },
+    { state: 'MI', value: 13 }, { state: 'NJ', value: 12 }, { state: 'VA', value: 11 },
+    { state: 'WA', value: 10 }, { state: 'AZ', value: 9 }, { state: 'MA', value: 8 },
+    { state: 'TN', value: 7 }, { state: 'IN', value: 6 }, { state: 'MO', value: 5 },
+    { state: 'MD', value: 4 }, { state: 'WI', value: 3 }
+  ],
+  
+  // Incident time distribution (hour of day)
+  incidentTimeDistribution: [
+    { hour: 0, count: 5 }, { hour: 1, count: 3 }, { hour: 2, count: 2 }, { hour: 3, count: 2 },
+    { hour: 4, count: 3 }, { hour: 5, count: 8 }, { hour: 6, count: 12 }, { hour: 7, count: 18 },
+    { hour: 8, count: 15 }, { hour: 9, count: 10 }, { hour: 10, count: 8 }, { hour: 11, count: 7 },
+    { hour: 12, count: 9 }, { hour: 13, count: 8 }, { hour: 14, count: 7 }, { hour: 15, count: 10 },
+    { hour: 16, count: 15 }, { hour: 17, count: 20 }, { hour: 18, count: 18 }, { hour: 19, count: 12 },
+    { hour: 20, count: 10 }, { hour: 21, count: 8 }, { hour: 22, count: 6 }, { hour: 23, count: 4 }
+  ],
+  
+  // Seasonal utilization
+  seasonalUtilization: [
+    { month: 'Jan', regular: 65, seasonal: 8 },
+    { month: 'Feb', regular: 68, seasonal: 10 },
+    { month: 'Mar', regular: 70, seasonal: 15 },
+    { month: 'Apr', regular: 72, seasonal: 20 },
+    { month: 'May', regular: 75, seasonal: 30 },
+    { month: 'Jun', regular: 80, seasonal: 38 },
+    { month: 'Jul', regular: 82, seasonal: 40 },
+    { month: 'Aug', regular: 80, seasonal: 42 },
+    { month: 'Sep', regular: 78, seasonal: 35 },
+    { month: 'Oct', regular: 75, seasonal: 25 },
+    { month: 'Nov', regular: 70, seasonal: 15 },
+    { month: 'Dec', regular: 68, seasonal: 12 }
   ],
   
   // KPI metrics
