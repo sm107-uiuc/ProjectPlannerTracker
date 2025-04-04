@@ -231,15 +231,50 @@ export const RecommendationsTab = ({ selectedGoal }: RecommendationsTabProps) =>
                 <div className="py-8 text-center text-slate-500">No recommendations found</div>
               ) : (
                 filteredRecommendations.map((rec: RecommendationInterface) => (
-                  <RecommendationItem
-                    key={rec.id}
-                    recommendation={rec}
-                    onClick={setSelectedRecommendation}
-                    onTakeAction={handleTakeAction}
-                    getTypeIcon={getTypeIcon}
-                    getStatusColor={getStatusColor}
-                    getStatusText={getStatusText}
-                  />
+                  <div 
+                    key={rec.id} 
+                    className="flex items-start p-4 hover:bg-slate-50 cursor-pointer transition-colors"
+                  >
+                    <div className="flex-shrink-0 mr-3 mt-1">
+                      {getTypeIcon(rec.type)}
+                    </div>
+                    <div className="flex-1">
+                      <div className="flex items-center justify-between">
+                        <h4 
+                          className="text-sm font-medium text-slate-800"
+                          onClick={() => setSelectedRecommendation(rec)}
+                        >
+                          {rec.title}
+                        </h4>
+                        <span className={`text-xs px-2 py-1 rounded-full ${getStatusColor(rec.status)}`}>
+                          {getStatusText(rec.status)}
+                        </span>
+                      </div>
+                      <p 
+                        className="text-xs text-slate-500 mt-1 line-clamp-2"
+                        onClick={() => setSelectedRecommendation(rec)}
+                      >
+                        {rec.description}
+                      </p>
+                      <div className="mt-2 flex items-center justify-between">
+                        <span className="text-xs text-slate-400">
+                          Created {new Date(rec.createdAt).toLocaleDateString()}
+                        </span>
+                        <Button 
+                          variant="outline" 
+                          size="sm" 
+                          className="text-blue-600 border-blue-200 hover:bg-blue-50"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleTakeAction(rec, e);
+                          }}
+                        >
+                          <PlayCircle className="mr-1 h-3 w-3" />
+                          Take Action
+                        </Button>
+                      </div>
+                    </div>
+                  </div>
                 ))
               )}
             </div>
@@ -251,15 +286,50 @@ export const RecommendationsTab = ({ selectedGoal }: RecommendationsTabProps) =>
                 <div className="py-8 text-center text-slate-500">No recommendations in Not Started status</div>
               ) : (
                 filteredRecommendations.map((rec: RecommendationInterface) => (
-                  <RecommendationItem
-                    key={rec.id}
-                    recommendation={rec}
-                    onClick={setSelectedRecommendation}
-                    onTakeAction={handleTakeAction}
-                    getTypeIcon={getTypeIcon}
-                    getStatusColor={getStatusColor}
-                    getStatusText={getStatusText}
-                  />
+                  <div 
+                    key={rec.id} 
+                    className="flex items-start p-4 hover:bg-slate-50 cursor-pointer transition-colors"
+                  >
+                    <div className="flex-shrink-0 mr-3 mt-1">
+                      {getTypeIcon(rec.type)}
+                    </div>
+                    <div className="flex-1">
+                      <div className="flex items-center justify-between">
+                        <h4 
+                          className="text-sm font-medium text-slate-800"
+                          onClick={() => setSelectedRecommendation(rec)}
+                        >
+                          {rec.title}
+                        </h4>
+                        <span className={`text-xs px-2 py-1 rounded-full ${getStatusColor(rec.status)}`}>
+                          {getStatusText(rec.status)}
+                        </span>
+                      </div>
+                      <p 
+                        className="text-xs text-slate-500 mt-1 line-clamp-2"
+                        onClick={() => setSelectedRecommendation(rec)}
+                      >
+                        {rec.description}
+                      </p>
+                      <div className="mt-2 flex items-center justify-between">
+                        <span className="text-xs text-slate-400">
+                          Created {new Date(rec.createdAt).toLocaleDateString()}
+                        </span>
+                        <Button 
+                          variant="outline" 
+                          size="sm" 
+                          className="text-blue-600 border-blue-200 hover:bg-blue-50"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleTakeAction(rec, e);
+                          }}
+                        >
+                          <PlayCircle className="mr-1 h-3 w-3" />
+                          Take Action
+                        </Button>
+                      </div>
+                    </div>
+                  </div>
                 ))
               )}
             </div>
@@ -271,15 +341,50 @@ export const RecommendationsTab = ({ selectedGoal }: RecommendationsTabProps) =>
                 <div className="py-8 text-center text-slate-500">No recommendations in Partially Complete status</div>
               ) : (
                 filteredRecommendations.map((rec: RecommendationInterface) => (
-                  <RecommendationItem
-                    key={rec.id}
-                    recommendation={rec}
-                    onClick={setSelectedRecommendation}
-                    onTakeAction={handleTakeAction}
-                    getTypeIcon={getTypeIcon}
-                    getStatusColor={getStatusColor}
-                    getStatusText={getStatusText}
-                  />
+                  <div 
+                    key={rec.id} 
+                    className="flex items-start p-4 hover:bg-slate-50 cursor-pointer transition-colors"
+                  >
+                    <div className="flex-shrink-0 mr-3 mt-1">
+                      {getTypeIcon(rec.type)}
+                    </div>
+                    <div className="flex-1">
+                      <div className="flex items-center justify-between">
+                        <h4 
+                          className="text-sm font-medium text-slate-800"
+                          onClick={() => setSelectedRecommendation(rec)}
+                        >
+                          {rec.title}
+                        </h4>
+                        <span className={`text-xs px-2 py-1 rounded-full ${getStatusColor(rec.status)}`}>
+                          {getStatusText(rec.status)}
+                        </span>
+                      </div>
+                      <p 
+                        className="text-xs text-slate-500 mt-1 line-clamp-2"
+                        onClick={() => setSelectedRecommendation(rec)}
+                      >
+                        {rec.description}
+                      </p>
+                      <div className="mt-2 flex items-center justify-between">
+                        <span className="text-xs text-slate-400">
+                          Created {new Date(rec.createdAt).toLocaleDateString()}
+                        </span>
+                        <Button 
+                          variant="outline" 
+                          size="sm" 
+                          className="text-blue-600 border-blue-200 hover:bg-blue-50"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleTakeAction(rec, e);
+                          }}
+                        >
+                          <PlayCircle className="mr-1 h-3 w-3" />
+                          Take Action
+                        </Button>
+                      </div>
+                    </div>
+                  </div>
                 ))
               )}
             </div>
@@ -291,15 +396,50 @@ export const RecommendationsTab = ({ selectedGoal }: RecommendationsTabProps) =>
                 <div className="py-8 text-center text-slate-500">No recommendations in Complete status</div>
               ) : (
                 filteredRecommendations.map((rec: RecommendationInterface) => (
-                  <RecommendationItem
-                    key={rec.id}
-                    recommendation={rec}
-                    onClick={setSelectedRecommendation}
-                    onTakeAction={handleTakeAction}
-                    getTypeIcon={getTypeIcon}
-                    getStatusColor={getStatusColor}
-                    getStatusText={getStatusText}
-                  />
+                  <div 
+                    key={rec.id} 
+                    className="flex items-start p-4 hover:bg-slate-50 cursor-pointer transition-colors"
+                  >
+                    <div className="flex-shrink-0 mr-3 mt-1">
+                      {getTypeIcon(rec.type)}
+                    </div>
+                    <div className="flex-1">
+                      <div className="flex items-center justify-between">
+                        <h4 
+                          className="text-sm font-medium text-slate-800"
+                          onClick={() => setSelectedRecommendation(rec)}
+                        >
+                          {rec.title}
+                        </h4>
+                        <span className={`text-xs px-2 py-1 rounded-full ${getStatusColor(rec.status)}`}>
+                          {getStatusText(rec.status)}
+                        </span>
+                      </div>
+                      <p 
+                        className="text-xs text-slate-500 mt-1 line-clamp-2"
+                        onClick={() => setSelectedRecommendation(rec)}
+                      >
+                        {rec.description}
+                      </p>
+                      <div className="mt-2 flex items-center justify-between">
+                        <span className="text-xs text-slate-400">
+                          Created {new Date(rec.createdAt).toLocaleDateString()}
+                        </span>
+                        <Button 
+                          variant="outline" 
+                          size="sm" 
+                          className="text-blue-600 border-blue-200 hover:bg-blue-50"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleTakeAction(rec, e);
+                          }}
+                        >
+                          <PlayCircle className="mr-1 h-3 w-3" />
+                          Take Action
+                        </Button>
+                      </div>
+                    </div>
+                  </div>
                 ))
               )}
             </div>
