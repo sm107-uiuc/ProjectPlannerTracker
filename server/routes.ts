@@ -454,14 +454,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
 I'm trying to create a fleet management scoring system for the following goal:
 "${goalDescription}"
 
-Below is a list of fleet events that we track. Please assign a weight to each event 
-on a scale of 0-10 based on how relevant it is to achieving the above goal, where:
-- 0 = Not relevant at all
-- 10 = Extremely relevant
+Below is a list of fleet events that we track. Please assign a percentage weight to each event based on how relevant it is to achieving the above goal.
+
+IMPORTANT REQUIREMENTS:
+- All weights must be INTEGER percentages (no decimals)
+- The weights must SUM to EXACTLY 100%
+- Higher percentages should be assigned to more important events
+- Lower percentages should be assigned to less important events
 
 For each event, I need:
 1. The event name
-2. The assigned weight (0-10)
+2. The assigned weight (percentage of 100%)
 3. A brief explanation for why you assigned this weight
 
 Events:
@@ -472,12 +475,14 @@ Format your response as a JSON object with this structure:
   "weights": [
     {
       "eventName": "[Event Name]",
-      "weight": [0-10],
+      "weight": [percentage weight],
       "explanation": "[Brief explanation]"
     },
     ...
   ]
 }
+
+VERIFY: The sum of all weights MUST equal exactly 100%.
 `;
       
       // Call the Perplexity API

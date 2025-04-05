@@ -289,7 +289,7 @@ const GoalSelectionScreen = ({
                       <thead>
                         <tr className="bg-gray-100">
                           <th className="p-2 text-left border">Event</th>
-                          <th className="p-2 text-left border w-20">Weight (0-10)</th>
+                          <th className="p-2 text-left border w-20">Weight (%)</th>
                           <th className="p-2 text-left border">Explanation</th>
                         </tr>
                       </thead>
@@ -300,12 +300,12 @@ const GoalSelectionScreen = ({
                             <td className="p-2 border text-center">
                               <span 
                                 className={`inline-block rounded-full px-3 py-1 text-sm font-semibold ${
-                                  item.weight >= 8 ? 'bg-red-100 text-red-800' : 
-                                  item.weight >= 5 ? 'bg-yellow-100 text-yellow-800' : 
+                                  item.weight >= 20 ? 'bg-red-100 text-red-800' : 
+                                  item.weight >= 10 ? 'bg-yellow-100 text-yellow-800' : 
                                   'bg-green-100 text-green-800'
                                 }`}
                               >
-                                {item.weight}
+                                {item.weight}%
                               </span>
                             </td>
                             <td className="p-2 border">{item.explanation}</td>
