@@ -56,56 +56,80 @@ export const TabLoader: React.FC<TabLoaderProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 flex flex-col items-center justify-center bg-white z-50">
-      <div className="flex flex-col items-center max-w-md w-full">
-        {/* Top Tab Navigation (non-functional) */}
-        <div className="flex mb-8 bg-slate-100 rounded-xl p-1 self-start">
-          <div className={`px-4 py-2 rounded-lg ${tabName === 'overview' ? 'bg-white shadow-sm' : ''}`}>Overview</div>
-          <div className={`px-4 py-2 rounded-lg ${tabName === 'metrics' ? 'bg-white shadow-sm' : ''}`}>Metrics</div>
-          <div className={`px-4 py-2 rounded-lg ${tabName === 'recommendations' ? 'bg-white shadow-sm' : ''}`}>Recommendations</div>
-        </div>
+    <div className="w-full space-y-4 py-4">
+      {/* Skeleton Loader based on tab type */}
+      <div className="space-y-6 w-full animate-pulse">
+        {tabName === 'overview' && (
+          <>
+            {/* First row - Goal Description Card skeleton */}
+            <div className="w-full h-40 bg-gray-200 rounded-md"></div>
+            
+            {/* Second row - 3 cards skeleton */}
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+              <div className="h-32 bg-gray-200 rounded-md"></div>
+              <div className="h-32 bg-gray-200 rounded-md"></div>
+              <div className="h-32 bg-gray-200 rounded-md"></div>
+            </div>
+            
+            {/* Third row - Recommendations Card skeleton */}
+            <div className="w-full h-64 bg-gray-200 rounded-md"></div>
+            
+            {/* Fourth row - Table skeleton */}
+            <div className="w-full h-72 bg-gray-200 rounded-md"></div>
+            
+            {/* Fifth row - Two cards skeleton */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="h-48 bg-gray-200 rounded-md"></div>
+              <div className="h-48 bg-gray-200 rounded-md"></div>
+            </div>
+          </>
+        )}
         
-        {/* Icon */}
-        <motion.div
-          initial={{ scale: 0.8, opacity: 0 }}
-          animate={{ 
-            scale: 1, 
-            opacity: 1,
-            rotate: [0, 360],
-          }}
-          transition={{
-            duration: 1.8,
-            repeat: Infinity,
-            ease: "easeInOut",
-          }}
-          className="mb-8"
-        >
-          <div className="w-20 h-20 rounded-full bg-blue-500 flex items-center justify-center shadow-lg">
-            {getIcon()}
+        {tabName === 'metrics' && (
+          <>
+            {/* Metrics charts skeleton */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="h-64 bg-gray-200 rounded-md"></div>
+              <div className="h-64 bg-gray-200 rounded-md"></div>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="h-64 bg-gray-200 rounded-md"></div>
+              <div className="h-64 bg-gray-200 rounded-md"></div>
+            </div>
+            <div className="w-full h-80 bg-gray-200 rounded-md"></div>
+          </>
+        )}
+        
+        {tabName === 'recommendations' && (
+          <>
+            {/* Recommendations tab skeleton */}
+            <div className="flex space-x-4 mb-4">
+              <div className="w-24 h-10 bg-gray-200 rounded-md"></div>
+              <div className="w-24 h-10 bg-gray-200 rounded-md"></div>
+              <div className="w-24 h-10 bg-gray-200 rounded-md"></div>
+            </div>
+            <div className="w-full h-96 bg-gray-200 rounded-md"></div>
+            <div className="w-full h-16 bg-gray-200 rounded-md"></div>
+          </>
+        )}
+      </div>
+      
+      {/* Loading indicator overlay */}
+      <div className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-10">
+        <div className="flex flex-col items-center">
+          <div className="relative">
+            <div className="w-16 h-16 rounded-full bg-blue-500 flex items-center justify-center shadow-lg">
+              {getIcon()}
+            </div>
+            
+            {/* Animated ring */}
+            <div className="absolute inset-0 rounded-full border-4 border-blue-300 opacity-75 animate-ping"></div>
           </div>
-        </motion.div>
-        
-        {/* Message */}
-        <motion.div
-          initial={{ y: 10, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          transition={{ duration: 0.5 }}
-          className="text-lg font-medium text-blue-600 mb-6 flex items-center justify-center text-center"
-        >
-          {getMessage()}
-        </motion.div>
-        
-        {/* Progress Bar */}
-        <motion.div 
-          initial={{ width: "0%" }}
-          animate={{ width: "100%" }}
-          transition={{ duration: duration / 1000, ease: "easeInOut" }}
-          className="w-full max-w-sm bg-blue-500 h-2 rounded-full mb-3"
-        />
-        
-        {/* Progress Text */}
-        <div className="text-sm text-gray-500 font-medium">
-          {progress}% complete
+          
+          <div className="mt-4 text-center">
+            <div className="text-sm font-medium text-blue-600">{getMessage()}</div>
+            <div className="text-xs text-gray-500 mt-1">{progress}% complete</div>
+          </div>
         </div>
       </div>
     </div>
