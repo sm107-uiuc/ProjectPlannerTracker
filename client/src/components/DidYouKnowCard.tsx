@@ -1,14 +1,15 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Goal } from "@/lib/types";
-import { LightbulbIcon } from "lucide-react";
+import { LightbulbIcon, ChevronRight, ChevronLeft } from "lucide-react";
 import { useState, useEffect } from "react";
+import { Button } from "@/components/ui/button";
 
 interface DidYouKnowCardProps {
   goal: Goal;
 }
 
 const DidYouKnowCard = ({ goal }: DidYouKnowCardProps) => {
-  const [fact, setFact] = useState<string>("");
+  const [currentFactIndex, setCurrentFactIndex] = useState<number>(0);
   
   const safetyFacts = [
     "Regular vehicle inspections can reduce accident rates by up to 30%.",
@@ -42,30 +43,37 @@ const DidYouKnowCard = ({ goal }: DidYouKnowCardProps) => {
     "Tracking idle vehicles can identify up to 15% of unused capacity in most fleets."
   ];
 
-  useEffect(() => {
-    // Select a random fact based on the selected goal
-    let facts: string[] = [];
-    
+  // Get facts based on the selected goal
+  const getFacts = (): string[] => {
     switch (goal) {
       case 'safety':
-        facts = safetyFacts;
-        break;
+        return safetyFacts;
       case 'fuel':
-        facts = fuelFacts;
-        break;
+        return fuelFacts;
       case 'maintenance':
-        facts = maintenanceFacts;
-        break;
+        return maintenanceFacts;
       case 'utilization':
-        facts = utilizationFacts;
-        break;
+        return utilizationFacts;
       default:
-        facts = safetyFacts;
+        return safetyFacts;
     }
-    
-    const randomIndex = Math.floor(Math.random() * facts.length);
-    setFact(facts[randomIndex]);
+  };
+  
+  // Reset fact index when goal changes
+  useEffect(() => {
+    setCurrentFactIndex(0);
   }, [goal]);
+
+  const facts = getFacts();
+  const currentFact = facts[currentFactIndex];
+  
+  const handlePrevFact = () => {
+    setCurrentFactIndex(prev => (prev > 0 ? prev - 1 : facts.length - 1));
+  };
+  
+  const handleNextFact = () => {
+    setCurrentFactIndex(prev => (prev < facts.length - 1 ? prev + 1 : 0));
+  };
 
   return (
     <Card className="bg-blue-50">
@@ -74,9 +82,45 @@ const DidYouKnowCard = ({ goal }: DidYouKnowCardProps) => {
           <div className="mr-4 flex-shrink-0 bg-blue-500 rounded-full p-2">
             <LightbulbIcon className="h-5 w-5 text-white" />
           </div>
-          <div>
-            <h3 className="text-lg font-semibold text-blue-700 mb-1">Did You Know?</h3>
-            <p className="text-sm text-gray-700">{fact}</p>
+          <div className="flex-1">
+            <div className="flex items-center justify-between">
+              <h3 className="text-lg font-semibold text-blue-700 mb-1">Did You Know?</h3>
+              <div className="text-xs text-gray-500">
+                Fact {currentFactIndex + 1} of {facts.length}
+              </div>
+            </div>
+            <p className="text-sm text-gray-700 mb-3">{currentFact}</p>
+            
+            <div className="flex justify-between items-center">
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                onClick={handlePrevFact}
+                className="p-1 h-8 w-8"
+              >
+                <ChevronLeft className="h-5 w-5" />
+              </Button>
+              
+              <div className="flex space-x-1">
+                {facts.map((_, index) => (
+                  <div 
+                    key={index} 
+                    className={`h-1.5 w-1.5 rounded-full ${
+                      index === currentFactIndex ? 'bg-blue-500' : 'bg-gray-300'
+                    }`}
+                  />
+                ))}
+              </div>
+              
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                onClick={handleNextFact}
+                className="p-1 h-8 w-8"
+              >
+                <ChevronRight className="h-5 w-5" />
+              </Button>
+            </div>
           </div>
         </div>
       </CardContent>

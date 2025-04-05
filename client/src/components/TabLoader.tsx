@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { BarChart3, ListTodo, LineChart, ArrowRight } from 'lucide-react';
+import { BarChart3, ListTodo, LineChart, ArrowRight, Hourglass } from 'lucide-react';
 
 interface TabLoaderProps {
   tabName: 'overview' | 'metrics' | 'recommendations';
@@ -39,15 +39,9 @@ export const TabLoader: React.FC<TabLoaderProps> = ({
     };
   }, [duration, onComplete]);
 
+  // Always show hourglass as requested
   const getIcon = () => {
-    switch (tabName) {
-      case 'overview':
-        return <BarChart3 className="h-8 w-8 text-white" />;
-      case 'metrics':
-        return <LineChart className="h-8 w-8 text-white" />;
-      case 'recommendations':
-        return <ListTodo className="h-8 w-8 text-white" />;
-    }
+    return <Hourglass className="h-10 w-10 text-white" />;
   };
 
   const getMessage = () => {

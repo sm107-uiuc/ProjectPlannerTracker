@@ -13,6 +13,7 @@ import { RecommendationsTab } from "@/components/RecommendationsTab";
 import { TabLoader } from "@/components/TabLoader";
 import DidYouKnowCard from "@/components/DidYouKnowCard";
 import ChatbotIcon from "@/components/ChatbotIcon";
+import GoalDescriptionCard from "@/components/GoalDescriptionCard";
 import { 
   RefreshCw, 
   Filter, 
@@ -130,8 +131,13 @@ const DashboardScreen = ({ selectedGoal }: DashboardScreenProps) => {
                     />
                   </div>
                   
-                  <div className="mb-6">
-                    <DidYouKnowCard goal={selectedGoal} />
+                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+                    <div>
+                      <GoalDescriptionCard goal={selectedGoal} />
+                    </div>
+                    <div>
+                      <DidYouKnowCard goal={selectedGoal} />
+                    </div>
                   </div>
 
                   <VehiclePerformanceTable 

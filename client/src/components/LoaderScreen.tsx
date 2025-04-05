@@ -1,16 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { 
-  BarChart3, 
+  Hourglass,
   Calculator, 
   LineChart, 
   Lightbulb, 
-  CheckCircle,
-  ShieldCheck,
-  Fuel,
-  Wrench,
-  Car,
-  Binary
+  CheckCircle
 } from 'lucide-react';
 
 interface LoaderScreenProps {
@@ -49,13 +44,8 @@ export const LoaderScreen: React.FC<LoaderScreenProps> = ({
     }
   }, [currentStep, messages.length, onComplete, stepDuration]);
 
-  const icons = [
-    <Binary key="data" className="h-8 w-8" />,
-    <Calculator key="calculator" className="h-8 w-8" />,
-    <LineChart key="chart" className="h-8 w-8" />,
-    <Lightbulb key="lightbulb" className="h-8 w-8" />,
-    <CheckCircle key="check" className="h-8 w-8" />
-  ];
+  // Use hourglass for all steps
+  const hourglass = <Hourglass className="h-10 w-10 text-white" />;
 
   const containerClasses = variant === 'full' 
     ? "fixed inset-0 flex flex-col items-center justify-center bg-white z-50"
@@ -81,7 +71,7 @@ export const LoaderScreen: React.FC<LoaderScreenProps> = ({
         >
           <div className="w-24 h-24 rounded-full bg-blue-500 flex items-center justify-center text-white shadow-lg">
             <motion.div className="flex items-center justify-center">
-              {icons[Math.min(currentStep, icons.length - 1)]}
+              {hourglass}
             </motion.div>
           </div>
         </motion.div>
