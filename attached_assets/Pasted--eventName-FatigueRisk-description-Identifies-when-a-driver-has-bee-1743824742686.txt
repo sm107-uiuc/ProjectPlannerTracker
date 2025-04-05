@@ -1,0 +1,146 @@
+[
+    {
+        "eventName": "FatigueRisk",
+        "description": "Identifies when a driver has been operating the vehicle for extended periods (e.g., 6+ hours) without adequate breaks. Derived from trip chaining and time-on-road analysis. Correlates strongly with drowsy driving and accident risk."
+    },
+    {
+        "eventName": "UnderutilizedVehicles",
+        "description": "Flags vehicles that are rarely dispatched or driven significantly less than fleet average. Useful for rotation policies, cost per mile analysis, and ROI improvement."
+    },
+    {
+        "eventName": "EVChargingInefficiency",
+        "description": "EVs are plugged in and charged often but have very low trip miles afterward. Suggests inefficient planning or charging-for-idle behavior, reducing ROI on EV assets."
+    },
+    {
+        "eventName": "CheckEngineLightOn",
+        "description": "Light remains on for 3+ consecutive days. Unlike real-time DTCs, this focuses on unresolved mechanical issues or maintenance neglect by the driver."
+    },
+    {
+        "eventName": "FuelInefficiency",
+        "description": "MPG/MPGe significantly lower than expected for trip length and vehicle class. Can indicate poor driver habits, tire underinflation, payload issues, or vehicle health degradation."
+    },
+    {
+        "eventName": "RouteDeviation",
+        "description": "Driver strays from the recommended or assigned route, increasing fuel usage and potentially violating compliance or SLA targets. Derived from GPS path vs route plan."
+    },
+    {
+        "eventName": "FuelCardMisuse",
+        "description": "Frequent low-quantity fuel purchases or fueling far from assigned routes. Indicates possible fraud, theft, or fuel policy violation. Requires integration with fuel card transaction data."
+    },
+    {
+        "eventName": "UnderutilizedEVs",
+        "description": "EVs are assigned fewer trips than ICE counterparts, even for short or local routes where they are more optimal. Results in missed emission reduction opportunities."
+    },
+    {
+        "eventName": "EVBatteryMisuse",
+        "description": "Fully charged EVs remain idle for extended periods (e.g., more than 1 day). Suggests poor scheduling or lack of driver routing tools that prioritize EVs."
+    },
+    {
+        "eventName": "DriveTimeOutsideShiftWindow",
+        "description": "Trips occurring outside assigned shift windows (e.g., late night or early morning) may indicate policy breaches or driver fatigue risk."
+    },
+    {
+        "eventName": "MultiDayNoActivity",
+        "description": "Vehicle has had no ignition or trip activity for several consecutive days. May signal operational bottleneck, assignment issue, or unreported downtime."
+    },
+    {
+        "eventName": "BackToBackTripsNoBreak",
+        "description": "Driver completes multiple consecutive trips with no significant rest time between them, increasing fatigue and potential for driving errors."
+    },
+    {
+        "eventName": "TollViolation",
+        "description": "A toll was incurred but not properly paid or registered (e.g., missing Toll Tag or invalid plate). May result in fines or administrative fees. Indicates potential policy breaches or tagging issues."
+    },
+    {
+        "eventName": "FrequentTollRoutes",
+        "description": "Driver or vehicle frequently uses high-cost toll routes when viable alternatives exist. May be optimized through better routing or schedule planning."
+    },
+    {
+        "eventName": "DriverLicenseExpired",
+        "description": "Driver's license has passed its expiration date. A high-risk compliance issue that could result in legal liability during an incident or audit."
+    },
+    {
+        "eventName": "DriverTrafficViolation",
+        "description": "A traffic ticket or moving violation was recorded against the driver. May include speeding, reckless driving, or other infractions. Severity can be linked to license points or fine amounts."
+    },
+    {
+        "eventName": "DriverAccidentReported",
+        "description": "A vehicle and/or driver was involved in an accident. May include injury info, severity score, and fault. Sourced from safety program providers (e.g., CEI, Samba Safety)."
+    },
+    {
+        "eventName": "HighRepairCostVehicle",
+        "description": "A vehicle has incurred unusually high repair costs (e.g., repeated large quotes or part replacements). Helps identify candidates for replacement or deep diagnostic inspection."
+    },
+    {
+        "eventName": "UnauthorizedRepairAttempt",
+        "description": "A repair was started or completed without formal authorization. Highlights gaps in policy adherence and cost control processes."
+    }
+]
+
+[
+    {
+      "eventName": "HarshBraking",
+      "description": "Triggered when the vehicle decelerates sharply, indicating late reactions or potential near-miss events. Often correlated with driver distraction or following too closely."
+    },
+    {
+      "eventName": "HarshAcceleration",
+      "description": "Detected when the driver accelerates rapidly, commonly after stops or during merging. Impacts fuel economy, driveline stress, and passenger comfort."
+    },
+    {
+      "eventName": "HarshCornering",
+      "description": "Identifies sudden, tight turns at speed. Associated with rollover risk, tire wear, and poor control in commercial vehicles or passenger vans."
+    },
+    {
+      "eventName": "AbsoluteSpeeding",
+      "description": "Occurs when a vehicle exceeds posted speed limits, regardless of surrounding traffic. Strongly linked to high-severity accidents and traffic violations."
+    },
+    {
+      "eventName": "RelativeSpeeding",
+      "description": "Driver is moving significantly faster than surrounding traffic, even if under the posted limit. Indicates aggressive driving and higher crash likelihood in mixed-speed environments."
+    },
+    {
+      "eventName": "SeatbeltViolation",
+      "description": "Driver or passenger moved the vehicle without fastening the seatbelt. Increases injury risk and violates compliance rules."
+    },
+    {
+      "eventName": "Collision",
+      "description": "Telematics-verified collision event based on g-force or OEM event data. High severity, direct safety impact."
+    },
+    {
+      "eventName": "LongIdling",
+      "description": "Vehicle remained stationary with engine running beyond a set threshold. Increases fuel waste, emissions, and may indicate inefficiencies in routing or driver behavior."
+    },
+    {
+      "eventName": "DTCSetCount",
+      "description": "Diagnostic Trouble Codes (DTCs) have been triggered by the vehicle's onboard system. Indicates potential mechanical issues requiring attention."
+    },
+    {
+      "eventName": "ServiceWarningSetCount",
+      "description": "Service light or maintenance alert triggered. Ignoring it may lead to long-term damage or breakdowns."
+    },
+    {
+      "eventName": "EngineOilLifeLowCount",
+      "description": "The vehicle has low oil life but continues to operate. Increases the risk of engine damage and unscheduled downtime."
+    },
+    {
+      "eventName": "TirePressureCriticalCount",
+      "description": "Critical tire pressure levels have been detected. Increases risk of blowouts, poor handling, and fuel inefficiency."
+    },
+    {
+      "eventName": "PowerTakeOff",
+      "description": "Tracks use of auxiliary equipment (like cranes, lifts) powered by the vehicle. Affects utilization and fuel tracking."
+    },
+    {
+      "eventName": "EvBatteryLevelCritical",
+      "description": "Battery level is critically low — may result in vehicle stalling if not charged soon. High operational impact."
+    },
+    {
+      "eventName": "OilLifeLow",
+      "description": "Generic indicator that oil life is low, similar to engineOilLifeLowCount. Triggers preventive maintenance."
+    },
+    {
+      "eventName": "BatteryVoltageCritical",
+      "description": "Critically low battery voltage detected. May lead to vehicle not starting, especially in cold climates or older batteries."
+    }
+  ]
+  

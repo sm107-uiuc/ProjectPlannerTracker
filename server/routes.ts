@@ -424,6 +424,123 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
   
+  app.post('/api/ai/generate-weights', async (req, res) => {
+    try {
+      // Validate request body
+      const { goalDescription, events } = req.body;
+      
+      if (!goalDescription || typeof goalDescription !== 'string' || goalDescription.length < 200) {
+        return res.status(400).json({ 
+          error: 'Goal description must be at least 200 characters long'
+        });
+      }
+      
+      if (!events || !Array.isArray(events)) {
+        return res.status(400).json({ 
+          error: 'Events must be provided as an array'
+        });
+      }
+      
+      // Check if we have the Perplexity API key
+      if (!process.env.PERPLEXITY_API_KEY) {
+        return res.status(503).json({ 
+          error: 'Perplexity API key not configured',
+          content: 'I cannot generate weights at this time. Please set up the Perplexity API key.'
+        });
+      }
+      
+      // Create a prompt for the AI model
+      const prompt = `
+I'm trying to create a fleet management scoring system for the following goal:
+"${goalDescription}"
+
+Below is a list of fleet events that we track. Please assign a weight to each event 
+on a scale of 0-10 based on how relevant it is to achieving the above goal, where:
+- 0 = Not relevant at all
+- 10 = Extremely relevant
+
+For each event, I need:
+1. The event name
+2. The assigned weight (0-10)
+3. A brief explanation for why you assigned this weight
+
+Events:
+${events.map((event: any, index: number) => `${index + 1}. ${event.eventName}: ${event.description}`).join('\n')}
+
+Format your response as a JSON object with this structure:
+{
+  "weights": [
+    {
+      "eventName": "[Event Name]",
+      "weight": [0-10],
+      "explanation": "[Brief explanation]"
+    },
+    ...
+  ]
+}
+`;
+      
+      // Call the Perplexity API
+      const response = await fetch('https://api.perplexity.ai/chat/completions', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${process.env.PERPLEXITY_API_KEY}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          model: "llama-3.1-sonar-small-128k-online",
+          messages: [
+            {
+              role: "system",
+              content: "You are an expert in fleet management and vehicle telematics. Your task is to analyze fleet events and assign appropriate weights based on the user's goal. The weights should reflect how relevant each event is to achieving the described goal."
+            },
+            {
+              role: "user",
+              content: prompt
+            }
+          ],
+          temperature: 0.2,
+          max_tokens: 1000,
+          top_p: 0.9,
+          stream: false
+        })
+      });
+      
+      if (!response.ok) {
+        const errorData = await response.json();
+        console.error('Perplexity API error:', errorData);
+        throw new Error(`API request failed with status ${response.status}`);
+      }
+      
+      const data = await response.json();
+      const aiResponse = data.choices[0].message.content;
+      
+      // Parse the response to extract the JSON
+      try {
+        // Find the JSON object in the response
+        const jsonMatch = aiResponse.match(/\{[\s\S]*\}/);
+        if (jsonMatch) {
+          const weightsData = JSON.parse(jsonMatch[0]);
+          return res.json(weightsData);
+        } else {
+          throw new Error("No JSON found in AI response");
+        }
+      } catch (parseError) {
+        console.error("Error parsing AI response:", parseError);
+        return res.status(500).json({ 
+          error: "Could not parse AI response",
+          aiResponse 
+        });
+      }
+    } catch (error: any) {
+      console.error('Error generating weights:', error);
+      return res.status(500).json({ 
+        error: 'Failed to generate weights',
+        message: error.message || 'An unexpected error occurred'
+      });
+    }
+  });
+
   app.post('/api/ai/chat', async (req, res) => {
     try {
       const { message, goal } = req.body;
@@ -486,7 +603,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const content = data.choices[0].message.content;
       
       res.json({ content });
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error calling Perplexity API:', error);
       res.status(500).json({ 
         error: 'Failed to get AI response',
