@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { 
   AlertTriangle, 
@@ -10,7 +10,8 @@ import {
   MoreHorizontal, 
   ArrowUpDown, 
   CheckCheck, 
-  ExternalLink
+  ExternalLink,
+  TrendingUp
 } from 'lucide-react';
 import { RecommendationInterface, Goal, RecommendationStatus } from '@/lib/types';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -37,6 +38,7 @@ import { apiRequest } from '@/lib/queryClient';
 import { RecommendationDetail } from './RecommendationDetail';
 import { ActionChecklistModal } from './ActionChecklistModal';
 import { goalDisplayText } from '@/lib/mockData';
+import Confetti from 'react-confetti';
 
 // Table row component for recommendations
 interface RecommendationRowProps {
@@ -44,13 +46,15 @@ interface RecommendationRowProps {
   onViewDetails: (rec: RecommendationInterface) => void;
   onTakeAction: (rec: RecommendationInterface, e: React.MouseEvent) => void;
   onMarkComplete: (rec: RecommendationInterface) => void;
+  improvementPercentage?: number;
 }
 
 const RecommendationRow = ({ 
   recommendation, 
   onViewDetails, 
   onTakeAction,
-  onMarkComplete
+  onMarkComplete,
+  improvementPercentage = 0.5 // Default value if not provided
 }: RecommendationRowProps) => {
   const getTypeIcon = (type: string) => {
     switch (type) {
@@ -162,6 +166,28 @@ export const RecommendationsTab = ({ selectedGoal }: RecommendationsTabProps) =>
   const [selectedRecommendation, setSelectedRecommendation] = useState<RecommendationInterface | null>(null);
   const [actionModalOpen, setActionModalOpen] = useState(false);
   const [actionRecommendation, setActionRecommendation] = useState<RecommendationInterface | null>(null);
+  const [showConfetti, setShowConfetti] = useState(false);
+  const [completeMessage, setCompleteMessage] = useState('');
+  
+  // Helper function to generate random improvement percentage between 0.1 and 0.9
+  const getRandomImprovement = () => {
+    return (Math.floor(Math.random() * 9) + 1) / 10; // 0.1 to 0.9
+  };
+  
+  // Random success messages 
+  const successMessages = [
+    "Great job! Fleet performance improved!",
+    "Excellent work! Your fleet is running better!",
+    "Success! Fleet efficiency improving!",
+    "Well done! Making progress on fleet goals!",
+    "Fantastic! Keep up the good work!"
+  ];
+  
+  // Get random success message
+  const getRandomSuccessMessage = () => {
+    const index = Math.floor(Math.random() * successMessages.length);
+    return successMessages[index];
+  };
 
   // Fetch recommendations from API
   const { data: recommendations = [], isLoading } = useQuery({
@@ -212,14 +238,90 @@ export const RecommendationsTab = ({ selectedGoal }: RecommendationsTabProps) =>
     // This happens automatically due to the cache invalidation in the modal
   };
   
+  // Fetch the current fleet score
+  const { data: fleetScoreData } = useQuery({
+    queryKey: [`/api/users/1/fleet-score`, selectedGoal],
+    queryFn: ({ queryKey }) => {
+      const baseUrl = queryKey[0] as string;
+      const goalType = queryKey[1] as string;
+      const url = goalType ? `${baseUrl}?goalType=${goalType}` : baseUrl;
+      return apiRequest(url);
+    }
+  });
+  
+  // Update fleet score mutation
+  const updateFleetScoreMutation = useMutation({
+    mutationFn: async ({ goalType, score, improvementPercentage }: { goalType: string, score: number, improvementPercentage: number }) => {
+      return apiRequest({
+        url: `/api/users/1/fleet-score`,
+        method: 'POST',
+        body: { goalType, score, improvementPercentage }
+      });
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: [`/api/users/1/fleet-score`] });
+    },
+    onError: () => {
+      console.error('Failed to update fleet score');
+    }
+  });
+  
   // Handle marking a recommendation as complete
   const handleMarkComplete = (rec: RecommendationInterface) => {
+    // Generate a random improvement percentage between 0.1 and 0.9
+    const improvementPercentage = getRandomImprovement();
+    
+    // Calculate new score
+    const currentScore = fleetScoreData?.fleetScore || 0;
+    const newScore = Math.min(currentScore + improvementPercentage, 100);
+    
+    // Mark recommendation as complete
     updateStatusMutation.mutate({ 
       id: rec.id, 
       status: 'completed' 
+    }, {
+      onSuccess: () => {
+        // Update fleet score
+        updateFleetScoreMutation.mutate({
+          goalType: selectedGoal,
+          score: newScore,
+          improvementPercentage
+        });
+        
+        // Show confetti and success message
+        setCompleteMessage(`${getRandomSuccessMessage()} (${improvementPercentage.toFixed(1)}% ↑)`);
+        setShowConfetti(true);
+        
+        // Hide confetti after 5 seconds
+        setTimeout(() => {
+          setShowConfetti(false);
+        }, 5000);
+      }
     });
   };
 
+  // Effect to reset recommendation statuses on page refresh
+  useEffect(() => {
+    // Only reset if we have recommendations and none are already reset
+    if (recommendations.length > 0 && recommendations.some((r: RecommendationInterface) => r.status !== 'notified')) {
+      // Reset all recommendations to "notified" status
+      recommendations.forEach((rec: RecommendationInterface) => {
+        if (rec.status !== 'notified') {
+          updateStatusMutation.mutate({
+            id: rec.id,
+            status: 'notified'
+          });
+        }
+      });
+    }
+  }, []);
+  
+  // Calculate improvement percentage for each recommendation
+  const recommendationImprovements = recommendations.reduce((acc: Record<number, number>, rec: RecommendationInterface) => {
+    acc[rec.id] = getRandomImprovement();
+    return acc;
+  }, {} as Record<number, number>);
+  
   // Filter recommendations based on search term and status filter
   const filteredRecommendations = recommendations.filter((rec: RecommendationInterface) => {
     const matchesSearch = 
@@ -248,7 +350,26 @@ export const RecommendationsTab = ({ selectedGoal }: RecommendationsTabProps) =>
   }
 
   return (
-    <Card className="shadow-md border-slate-200">
+    <Card className="shadow-md border-slate-200 relative">
+      {/* Confetti animation when a recommendation is marked as complete */}
+      {showConfetti && (
+        <div className="absolute inset-0 z-50 pointer-events-none overflow-hidden">
+          <Confetti 
+            width={window.innerWidth} 
+            height={window.innerHeight}
+            recycle={false}
+            numberOfPieces={300}
+            gravity={0.25}
+          />
+          <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white px-6 py-4 rounded-lg shadow-xl border border-green-200 z-10">
+            <div className="flex items-center gap-2">
+              <TrendingUp className="h-5 w-5 text-green-500" />
+              <span className="text-lg font-medium text-green-600">{completeMessage}</span>
+            </div>
+          </div>
+        </div>
+      )}
+      
       <CardHeader className="pb-3">
         <CardTitle className="text-xl font-semibold text-slate-800">
           {goalDisplayText[selectedGoal]} Recommendations

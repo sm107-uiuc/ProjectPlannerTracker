@@ -330,6 +330,72 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Fleet score routes
+  app.get('/api/users/:userId/fleet-score', async (req, res) => {
+    try {
+      const userId = parseInt(req.params.userId);
+      const goalType = req.query.goalType as string || 'safety'; // Default to safety goal
+      
+      // Get the current fleet score
+      // This would typically come from a database table, but we'll use the metrics for now
+      const metrics = await storage.getFleetMetrics(userId, goalType);
+      const fleetScore = metrics?.length > 0 && metrics[0].fleetScore 
+        ? metrics[0].fleetScore 
+        : goalType === 'safety' ? 75 : goalType === 'fuel' ? 68 : goalType === 'maintenance' ? 82 : 71;
+      
+      res.json({ fleetScore });
+    } catch (error) {
+      console.error('Error fetching fleet score:', error);
+      res.status(500).json({ error: 'Server error fetching fleet score' });
+    }
+  });
+  
+  app.post('/api/users/:userId/fleet-score', async (req, res) => {
+    try {
+      const userId = parseInt(req.params.userId);
+      const { goalType, score, improvementPercentage } = req.body;
+      
+      if (!goalType || typeof score !== 'number') {
+        return res.status(400).json({ error: 'Goal type and score are required' });
+      }
+      
+      // Get existing metrics
+      const metrics = await storage.getFleetMetrics(userId, goalType);
+      
+      // If metrics exist, update them, otherwise create new
+      if (metrics?.length > 0) {
+        // Get the latest metric
+        const latestMetric = metrics[0];
+        
+        // Update the metric (this is a simplified example)
+        const updatedMetric = await storage.createFleetMetric({
+          ...latestMetric,
+          fleetScore: Math.min(score, 100), // Ensure score doesn't exceed 100
+          updatedAt: new Date().toISOString()
+        });
+        
+        res.json(updatedMetric);
+      } else {
+        // Create new metric
+        const newMetric = await storage.createFleetMetric({
+          userId,
+          goalType,
+          fleetScore: Math.min(score, 100), // Ensure score doesn't exceed 100
+          trend: improvementPercentage ? `+${improvementPercentage}%` : '+0.0%',
+          isTrendPositive: true,
+          date: new Date().toISOString(),
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString()
+        });
+        
+        res.json(newMetric);
+      }
+    } catch (error) {
+      console.error('Error updating fleet score:', error);
+      res.status(500).json({ error: 'Server error updating fleet score' });
+    }
+  });
+
   // AI chatbot routes
   app.get('/api/ai/has-key', async (req, res) => {
     try {
@@ -359,14 +425,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
       
       // Prepare the system message based on the selected goal
-      const systemMessages = {
+      const systemMessages: Record<string, string> = {
         safety: "You are an expert fleet safety advisor. Provide helpful, concise advice about fleet safety, accident prevention, driver training, and safety metrics. Your answers should be practical and actionable for fleet managers.",
         fuel: "You are an expert in fleet fuel efficiency. Provide helpful, concise advice about fuel optimization, eco-driving, fuel cost reduction, and related metrics. Your answers should be practical and actionable for fleet managers.",
         maintenance: "You are an expert in fleet maintenance. Provide helpful, concise advice about vehicle maintenance, downtime reduction, preventative maintenance, and related metrics. Your answers should be practical and actionable for fleet managers.",
         utilization: "You are an expert in fleet utilization. Provide helpful, concise advice about maximizing vehicle usage, optimizing routes, right-sizing fleets, and related metrics. Your answers should be practical and actionable for fleet managers."
       };
       
-      const systemMessage = systemMessages[goal] || systemMessages.safety;
+      const systemMessage = systemMessages[goal as string] || systemMessages.safety;
       
       // Call the Perplexity API
       const response = await fetch('https://api.perplexity.ai/chat/completions', {
