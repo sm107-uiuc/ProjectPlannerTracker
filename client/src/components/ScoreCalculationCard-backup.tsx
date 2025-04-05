@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import { Goal } from '../lib/types';
-import { scoringData } from '../lib/scoreData';
+import { Goal } from '@/lib/types';
+import { scoringData } from '@/lib/scoreData';
 import { 
   Card, 
   CardContent, 
