@@ -31,8 +31,8 @@ export const Sidebar = () => {
   return (
     <div className="w-[68px] bg-sidebar flex flex-col items-center py-4 flex-shrink-0">
       {/* MotorQ logo at the top with white background */}
-      <div className="sidebar-icon mb-8 bg-white rounded-sm p-1">
-        <img src={motorqLogo} alt="MotorQ Logo" className="w-8 h-8" />
+      <div className="sidebar-icon mb-8 bg-white rounded-md p-1.5 w-12 h-12 flex items-center justify-center">
+        <img src={motorqLogo} alt="MotorQ Logo" className="w-10 h-10" />
       </div>
       
       {/* Only rendering the Dashboard icon */}
