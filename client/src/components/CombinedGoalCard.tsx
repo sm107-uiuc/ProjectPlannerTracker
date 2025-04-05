@@ -116,41 +116,26 @@ const CombinedGoalCard = ({ goal }: CombinedGoalCardProps) => {
                   View Event Weights
                 </AccordionTrigger>
                 <AccordionContent>
-                  <div className="space-y-4 max-h-60 overflow-auto">
-                    {/* High Impact Events */}
-                    <div>
-                      <h5 className="text-sm font-medium flex items-center">
-                        High Impact Events
-                        <Badge className="ml-2 bg-blue-100 text-blue-800">{highWeightEvents.length}</Badge>
+                  <div className="space-y-4 max-h-80 overflow-auto">
+                    <div className="overflow-x-auto">
+                      <h5 className="text-sm font-medium py-1 px-2 bg-blue-50 rounded-t border border-blue-100 flex justify-between">
+                        <span>Event Name</span>
+                        <span>Description</span>
+                        <span>Weight</span>
                       </h5>
-                      <ul className="mt-2 space-y-2">
-                        {highWeightEvents.map((event) => (
-                          <li key={event.eventName} className="text-sm">
-                            <div className="flex items-center justify-between mb-1">
-                              <span className="font-medium">{event.eventName}</span>
-                              <Badge className="bg-blue-500">{event.weight}%</Badge>
-                            </div>
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                    
-                    {/* Medium Impact Events */}
-                    <div>
-                      <h5 className="text-sm font-medium flex items-center">
-                        Medium Impact Events
-                        <Badge className="ml-2 bg-blue-100 text-blue-800">{mediumWeightEvents.length}</Badge>
-                      </h5>
-                      <ul className="mt-2 space-y-2">
-                        {mediumWeightEvents.map((event) => (
-                          <li key={event.eventName} className="text-sm">
-                            <div className="flex items-center justify-between mb-1">
-                              <span className="font-medium">{event.eventName}</span>
-                              <Badge className="bg-blue-500">{event.weight}%</Badge>
-                            </div>
-                          </li>
-                        ))}
-                      </ul>
+                      <table className="w-full text-sm">
+                        <tbody>
+                          {sortedEvents.map((event) => (
+                            <tr key={event.eventName} className="border-b border-gray-100">
+                              <td className="py-2 px-2 font-medium">{event.eventName}</td>
+                              <td className="py-2 px-2 text-xs text-gray-600">{event.description}</td>
+                              <td className="py-2 px-2 text-right">
+                                <Badge className="bg-blue-500">{event.weight}%</Badge>
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
                     </div>
                   </div>
                 </AccordionContent>
