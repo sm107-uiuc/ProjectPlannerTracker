@@ -12,13 +12,12 @@ const FleetScoreTrendCard = ({ trend, isTrendPositive }: FleetScoreTrendCardProp
   const [dataPoints, setDataPoints] = useState<number[]>([]);
   
   useEffect(() => {
-    // Create a data pattern that exactly matches the screenshot
+    // Create a data pattern that resembles the latest screenshot
     const generatePatternData = () => {
-      // Pattern exactly matching the screenshot example
-      // Start low, rise quickly, make peak, dip, small peak, dip, then steady rise to end
+      // Pattern based on the latest example
       const pattern = [
-        20, 22, 30, 45, 60, 70, 65, 60, 55, 48, 42, 40, 40, 38, 42, 38, 
-        40, 45, 50, 55, 60, 65, 70, 75, 80, 85, 88, 92, 95, 98
+        30, 25, 20, 18, 25, 45, 70, 65, 60, 55, 50, 45, 40, 38, 35, 34, 
+        32, 30, 32, 35, 38, 40, 42, 45, 55, 65, 75, 85, 92, 98
       ];
       
       return pattern;
@@ -70,19 +69,18 @@ const FleetScoreTrendCard = ({ trend, isTrendPositive }: FleetScoreTrendCardProp
                     }).join(' ')}`}
                     fill="none"
                     stroke="#4285F4"
-                    strokeWidth="0.7"
+                    strokeWidth="1"
                   />
                 </svg>
                 
-                {/* Bottom dot markers - positioned to match example */}
-                <div className="absolute bottom-0 left-0 w-full h-8 flex justify-between px-4">
-                  {[0, 5, 10, 15, 20, 25, 29].map((index) => {
-                    // Calculate position percentage based on the index
-                    const position = (index / 29) * 100;
+                {/* Evenly spaced dots at the bottom */}
+                <div className="absolute bottom-0 left-0 w-full">
+                  {Array.from({ length: 7 }).map((_, index) => {
+                    const position = (index / 6) * 100;
                     return (
                       <div 
                         key={index}
-                        className="absolute bottom-1.5 w-2 h-2 bg-blue-500 rounded-full"
+                        className="absolute bottom-2 w-2 h-2 bg-blue-500 rounded-full"
                         style={{ left: `${position}%` }}
                       />
                     );
@@ -92,7 +90,7 @@ const FleetScoreTrendCard = ({ trend, isTrendPositive }: FleetScoreTrendCardProp
             )}
           </div>
           
-          {/* Trend indicator and value - exactly matching the screenshot */}
+          {/* Trend indicator and value */}
           <div className="flex items-center">
             <div 
               className={`text-sm font-medium px-4 py-2.5 rounded-full flex items-center ${
