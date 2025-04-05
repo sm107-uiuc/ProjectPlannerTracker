@@ -113,7 +113,15 @@ const RecommendationRow = ({
         </div>
       </TableCell>
       <TableCell>
-        <p className="text-sm text-slate-600 line-clamp-1">{recommendation.description}</p>
+        <div>
+          <p className="text-sm text-slate-600 line-clamp-1">{recommendation.description}</p>
+          {improvementPercentage > 0 && (
+            <span className="inline-flex items-center mt-1 text-xs font-medium text-green-600">
+              <TrendingUp className="mr-1 h-3 w-3" />
+              {improvementPercentage.toFixed(1)}% improvement
+            </span>
+          )}
+        </div>
       </TableCell>
       <TableCell>{getStatusBadge(recommendation.status)}</TableCell>
       <TableCell>
@@ -435,13 +443,14 @@ export const RecommendationsTab = ({ selectedGoal }: RecommendationsTabProps) =>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {filteredRecommendations.map((rec) => (
+                  {filteredRecommendations.map((rec: RecommendationInterface) => (
                     <RecommendationRow
                       key={rec.id}
                       recommendation={rec}
                       onViewDetails={setSelectedRecommendation}
                       onTakeAction={handleTakeAction}
                       onMarkComplete={handleMarkComplete}
+                      improvementPercentage={recommendationImprovements[rec.id]}
                     />
                   ))}
                 </TableBody>
@@ -463,13 +472,14 @@ export const RecommendationsTab = ({ selectedGoal }: RecommendationsTabProps) =>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {filteredRecommendations.map((rec) => (
+                  {filteredRecommendations.map((rec: RecommendationInterface) => (
                     <RecommendationRow
                       key={rec.id}
                       recommendation={rec}
                       onViewDetails={setSelectedRecommendation}
                       onTakeAction={handleTakeAction}
                       onMarkComplete={handleMarkComplete}
+                      improvementPercentage={recommendationImprovements[rec.id]}
                     />
                   ))}
                 </TableBody>
@@ -491,13 +501,14 @@ export const RecommendationsTab = ({ selectedGoal }: RecommendationsTabProps) =>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {filteredRecommendations.map((rec) => (
+                  {filteredRecommendations.map((rec: RecommendationInterface) => (
                     <RecommendationRow
                       key={rec.id}
                       recommendation={rec}
                       onViewDetails={setSelectedRecommendation}
                       onTakeAction={handleTakeAction}
                       onMarkComplete={handleMarkComplete}
+                      improvementPercentage={recommendationImprovements[rec.id]}
                     />
                   ))}
                 </TableBody>
@@ -519,13 +530,14 @@ export const RecommendationsTab = ({ selectedGoal }: RecommendationsTabProps) =>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {filteredRecommendations.map((rec) => (
+                  {filteredRecommendations.map((rec: RecommendationInterface) => (
                     <RecommendationRow
                       key={rec.id}
                       recommendation={rec}
                       onViewDetails={setSelectedRecommendation}
                       onTakeAction={handleTakeAction}
                       onMarkComplete={handleMarkComplete}
+                      improvementPercentage={recommendationImprovements[rec.id]}
                     />
                   ))}
                 </TableBody>
