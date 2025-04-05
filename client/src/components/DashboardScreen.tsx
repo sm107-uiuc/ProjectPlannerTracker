@@ -119,6 +119,11 @@ const DashboardScreen = ({ selectedGoal }: DashboardScreenProps) => {
                 </div>
               ) : (
                 <>
+                  {/* Goal Description Card at the top */}
+                  <div className="mb-6">
+                    <GoalDescriptionCard goal={selectedGoal} />
+                  </div>
+                  
                   <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
                     <FleetScoreCard fleetScore={data.fleetScore} />
                     <FleetScoreTrendCard 
@@ -131,13 +136,8 @@ const DashboardScreen = ({ selectedGoal }: DashboardScreenProps) => {
                     />
                   </div>
                   
-                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
-                    <div>
-                      <GoalDescriptionCard goal={selectedGoal} />
-                    </div>
-                    <div>
-                      <DidYouKnowCard goal={selectedGoal} />
-                    </div>
+                  <div className="mb-6">
+                    <DidYouKnowCard goal={selectedGoal} />
                   </div>
 
                   <VehiclePerformanceTable 
