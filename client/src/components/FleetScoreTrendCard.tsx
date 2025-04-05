@@ -61,57 +61,53 @@ const FleetScoreTrendCard = ({ trend, isTrendPositive }: FleetScoreTrendCardProp
           <div className="relative h-36 w-full mb-4">
             {dataPoints.length > 0 && (
               <>
-                {/* Draw the line chart */}
+                {/* Draw the area chart */}
                 <svg className="w-full h-full" viewBox={`0 0 ${dataPoints.length - 1} 100`} preserveAspectRatio="none">
+                  <defs>
+                    <linearGradient id="areaGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+                      <stop offset="0%" stopColor="#4285F4" stopOpacity="1" />
+                      <stop offset="100%" stopColor="#4285F4" stopOpacity="0.1" />
+                    </linearGradient>
+                  </defs>
                   <path
                     d={`M0,${100 - ((dataPoints[0] - lowestPoint) / (highestPoint - lowestPoint) * 100)} ${dataPoints.slice(1).map((point, i) => {
                       const yValue = 100 - ((point - lowestPoint) / (highestPoint - lowestPoint) * 100);
                       return `L${i + 1},${yValue}`;
-                    }).join(' ')}`}
-                    fill="none"
-                    stroke="#3b82f6"
+                    }).join(' ')} L${dataPoints.length - 1},100 L0,100 Z`}
+                    fill="url(#areaGradient)"
+                    stroke="#4285F4"
                     strokeWidth="2"
                   />
                 </svg>
                 
-                {/* Line chart points */}
-                <div className="absolute top-0 left-0 w-full h-full flex justify-between items-end">
-                  {dataPoints.map((point, index) => {
-                    if (index % 5 === 0 || index === dataPoints.length - 1) { // Show only every 5th point for clarity
-                      const height = ((point - lowestPoint) / (highestPoint - lowestPoint) * 100);
-                      return (
-                        <div 
-                          key={index}
-                          className="relative"
-                          style={{ height: `${height}%` }}
-                        >
-                          <div className="absolute bottom-0 w-2 h-2 bg-blue-600 rounded-full" />
-                        </div>
-                      );
-                    }
-                    return null;
-                  })}
+                {/* Bottom dot markers */}
+                <div className="absolute bottom-0 left-0 w-full h-10 flex justify-between items-center">
+                  {[0, 1, 2, 3, 4, 5, 6].map((index) => (
+                    <div 
+                      key={index}
+                      className="w-3 h-3 bg-blue-500 rounded-full"
+                    />
+                  ))}
                 </div>
               </>
             )}
           </div>
           
-          {/* Trend indicator and value */}
+          {/* Trend indicator and value - improved to match the screenshot */}
           <div className="flex items-center">
             <div 
-              className={`text-sm font-medium px-2 py-1 rounded-full ${
+              className={`text-sm font-medium px-3 py-2 rounded-full flex items-center ${
                 isTrendPositive 
                   ? 'bg-green-100 text-green-600' 
                   : 'bg-red-100 text-red-600'
               }`}
             >
-              {isTrendPositive 
-                ? <ArrowUpRight className="w-4 h-4 inline mr-1" /> 
-                : <TrendingDown className="w-4 h-4 inline mr-1" />
-              }
-              {formattedTrend}
+              <span className="mr-1.5 text-lg">
+                {isTrendPositive ? "↗" : "↘"}
+              </span>
+              <span className="font-semibold">{formattedTrend}</span>
             </div>
-            <span className="text-sm text-gray-500 ml-2">from previous period</span>
+            <span className="text-sm text-gray-500 ml-3">from previous period</span>
           </div>
         </div>
       </CardContent>
