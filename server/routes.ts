@@ -336,14 +336,23 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const userId = parseInt(req.params.userId);
       const goalType = req.query.goalType as string || 'safety'; // Default to safety goal
       
-      // Get the current fleet score
-      // This would typically come from a database table, but we'll use the metrics for now
+      // Get the current fleet score from metrics
       const metrics = await storage.getFleetMetrics(userId, goalType);
-      const fleetScore = metrics?.length > 0 && metrics[0].fleetScore 
-        ? metrics[0].fleetScore 
+      
+      // Find the latest fleet score metric
+      const fleetScoreMetric = metrics.find(m => m.metricName === 'fleetScore');
+      const fleetScore = fleetScoreMetric?.metricValue 
+        ? fleetScoreMetric.metricValue 
         : goalType === 'safety' ? 75 : goalType === 'fuel' ? 68 : goalType === 'maintenance' ? 82 : 71;
       
-      res.json({ fleetScore });
+      // Get the trend data
+      const trend = fleetScoreMetric?.trend || 5.2; // Default to 5.2% if not found
+      
+      res.json({ 
+        fleetScore,
+        trend: `+${trend}%`,
+        isTrendPositive: true
+      });
     } catch (error) {
       console.error('Error fetching fleet score:', error);
       res.status(500).json({ error: 'Server error fetching fleet score' });
@@ -369,9 +378,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
         
         // Update the metric (this is a simplified example)
         const updatedMetric = await storage.createFleetMetric({
-          ...latestMetric,
-          fleetScore: Math.min(score, 100), // Ensure score doesn't exceed 100
-          updatedAt: new Date().toISOString()
+          userId,
+          metricName: 'fleetScore',
+          metricValue: Math.min(score, 100), // Ensure score doesn't exceed 100
+          goalType,
+          recordDate: new Date(),
+          trend: improvementPercentage || 0
         });
         
         res.json(updatedMetric);
@@ -379,13 +391,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
         // Create new metric
         const newMetric = await storage.createFleetMetric({
           userId,
+          metricName: 'fleetScore',
+          metricValue: Math.min(score, 100), // Ensure score doesn't exceed 100
           goalType,
-          fleetScore: Math.min(score, 100), // Ensure score doesn't exceed 100
-          trend: improvementPercentage ? `+${improvementPercentage}%` : '+0.0%',
-          isTrendPositive: true,
-          date: new Date().toISOString(),
-          createdAt: new Date().toISOString(),
-          updatedAt: new Date().toISOString()
+          recordDate: new Date(),
+          trend: improvementPercentage || 0
         });
         
         res.json(newMetric);

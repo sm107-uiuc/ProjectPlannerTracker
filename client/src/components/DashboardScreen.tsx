@@ -14,6 +14,8 @@ import { TabLoader } from "../components/TabLoader";
 import DidYouKnowCard from "../components/DidYouKnowCard";
 import ChatbotIcon from "../components/ChatbotIcon";
 import CombinedGoalCard from "../components/CombinedGoalCard";
+import { useQuery } from "@tanstack/react-query";
+import { apiRequest } from "@/lib/queryClient";
 import { 
   RefreshCw, 
   Filter, 
@@ -37,9 +39,28 @@ const DashboardScreen = ({ selectedGoal }: DashboardScreenProps) => {
   const topPerformers = getTopPerformers(mockVehicles);
   const vehiclesNeedingAttention = getVehiclesNeedingAttention(mockVehicles);
   
+  // Fetch fleet score data
+  const { 
+    data: fleetScoreData, 
+    isLoading: isFleetScoreLoading,
+    refetch: refetchFleetScore
+  } = useQuery({
+    queryKey: [`/api/users/1/fleet-score`, selectedGoal],
+    queryFn: ({ queryKey }) => {
+      const baseUrl = queryKey[0] as string;
+      const goalType = queryKey[1] as string;
+      const url = goalType ? `${baseUrl}?goalType=${goalType}` : baseUrl;
+      return apiRequest(url);
+    }
+  });
+  
   const handleTabChange = (tab: 'overview' | 'metrics' | 'recommendations') => {
     setIsTabLoading(true);
     setActiveTab(tab);
+  };
+  
+  const handleRefresh = () => {
+    refetchFleetScore();
   };
   
   return (
@@ -65,8 +86,13 @@ const DashboardScreen = ({ selectedGoal }: DashboardScreenProps) => {
               <LinkIcon className="w-4 h-4 mr-2" />
               Integrations
             </Button>
-            <Button variant="outline" size="sm" className="bg-gray-100 text-gray-700 hover:bg-gray-200">
-              <RefreshCw className="w-4 h-4 mr-2" />
+            <Button 
+              variant="outline" 
+              size="sm" 
+              className="bg-gray-100 text-gray-700 hover:bg-gray-200"
+              onClick={handleRefresh}
+            >
+              <RefreshCw className={`w-4 h-4 mr-2 ${isFleetScoreLoading ? 'animate-spin' : ''}`} />
               Refresh
             </Button>
             <Button variant="outline" size="sm" className="bg-gray-100 text-gray-700 hover:bg-gray-200">
@@ -126,10 +152,10 @@ const DashboardScreen = ({ selectedGoal }: DashboardScreenProps) => {
                     
                     {/* Fleet Score Cards stacked vertically (1/3 width) */}
                     <div className="flex flex-col gap-6">
-                      <FleetScoreCard fleetScore={data.fleetScore} />
+                      <FleetScoreCard fleetScore={fleetScoreData?.fleetScore || data.fleetScore} />
                       <FleetScoreTrendCard 
-                        trend={data.trend} 
-                        isTrendPositive={data.isTrendPositive} 
+                        trend={fleetScoreData?.trend || data.trend} 
+                        isTrendPositive={fleetScoreData?.isTrendPositive || data.isTrendPositive} 
                       />
                     </div>
                   </div>
