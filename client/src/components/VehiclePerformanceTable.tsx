@@ -39,7 +39,7 @@ const VehiclePerformanceTable = ({ vehicles, columnEmphasis }: VehiclePerformanc
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>Vehicle ID</TableHead>
+                <TableHead>VIN</TableHead>
                 <TableHead className={getColumnClassName('driver-score-col')} id="driver-score-col">Driver Score</TableHead>
                 <TableHead className={getColumnClassName('maintenance-score-col')} id="maintenance-score-col">Maintenance Score</TableHead>
                 <TableHead className={getColumnClassName('overall-score-col')} id="overall-score-col">
@@ -51,7 +51,7 @@ const VehiclePerformanceTable = ({ vehicles, columnEmphasis }: VehiclePerformanc
             <TableBody>
               {vehicles.map((vehicle) => (
                 <TableRow key={vehicle.id} className="hover:bg-gray-50 cursor-pointer">
-                  <TableCell className="font-medium">{vehicle.id}</TableCell>
+                  <TableCell className="font-medium">{vehicle.vin}</TableCell>
                   <TableCell>{vehicle.driverScore}</TableCell>
                   <TableCell>{vehicle.maintenanceScore}</TableCell>
                   <TableCell className="font-medium">{vehicle.overallScore}</TableCell>

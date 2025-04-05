@@ -50,6 +50,10 @@ export interface GoalData {
 
 export interface Vehicle {
   id: string;
+  vin: string;
+  make?: string;
+  model?: string;
+  year?: number;
   driverScore: number;
   maintenanceScore: number;
   overallScore: number;
