@@ -3,7 +3,7 @@ import { Goal } from "@/lib/types";
 import { goalDisplayText } from "@/lib/mockData";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import { Sidebar } from "@/components/Sidebar";
 import { LoaderScreen } from "@/components/LoaderScreen";
 import { 
@@ -145,9 +145,11 @@ const GoalSelectionScreen = ({
 
             <div className="mb-8">
               <label className="block text-sm font-medium text-gray-700 mb-1">Or describe your goal:</label>
-              <Input 
-                className="w-full" 
-                placeholder="e.g., Reduce carbon footprint and increase sustainability" 
+              <Textarea 
+                className="w-full min-h-[10rem] bg-white" 
+                placeholder="e.g., Reduce carbon footprint and increase sustainability"
+                rows={10}
+                minLength={600}
               />
             </div>
 
