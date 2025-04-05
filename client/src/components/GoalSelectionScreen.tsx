@@ -1,9 +1,11 @@
+import { useState } from "react";
 import { Goal } from "@/lib/types";
 import { goalDisplayText } from "@/lib/mockData";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Sidebar } from "@/components/Sidebar";
+import { LoaderScreen } from "@/components/LoaderScreen";
 import { 
   Shield, 
   Fuel, 
@@ -68,6 +70,8 @@ const GoalSelectionScreen = ({
   onGoalSelect, 
   onViewDashboard 
 }: GoalSelectionScreenProps) => {
+  const [isLoading, setIsLoading] = useState(false);
+  
   const goals: { 
     goal: Goal; 
     title: string; 
@@ -104,48 +108,60 @@ const GoalSelectionScreen = ({
       benefits: ['Reduce downtime', 'Optimize scheduling']
     }
   ];
+  
+  const handleViewDashboard = () => {
+    setIsLoading(true);
+    // The loader will automatically call onViewDashboard after 5 seconds
+  };
 
   return (
     <>
       <Sidebar />
       <div className="flex-1 p-6 flex flex-col items-center justify-center bg-background">
-        <div className="max-w-3xl w-full">
-          <h1 className="text-2xl font-bold text-gray-800 mb-2">What are you trying to achieve?</h1>
-          <p className="text-gray-600 mb-8">Select your primary fleet goal to see a personalized dashboard</p>
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
-            {goals.map((goal) => (
-              <GoalCard
-                key={goal.goal}
-                goal={goal.goal}
-                title={goal.title}
-                description={goal.description}
-                icon={goal.icon}
-                benefits={goal.benefits}
-                selected={selectedGoal === goal.goal}
-                onClick={() => onGoalSelect(goal.goal)}
+        {isLoading ? (
+          <LoaderScreen 
+            duration={5000} 
+            onComplete={onViewDashboard}
+          />
+        ) : (
+          <div className="max-w-3xl w-full">
+            <h1 className="text-2xl font-bold text-gray-800 mb-2">What are you trying to achieve?</h1>
+            <p className="text-gray-600 mb-8">Select your primary fleet goal to see a personalized dashboard</p>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
+              {goals.map((goal) => (
+                <GoalCard
+                  key={goal.goal}
+                  goal={goal.goal}
+                  title={goal.title}
+                  description={goal.description}
+                  icon={goal.icon}
+                  benefits={goal.benefits}
+                  selected={selectedGoal === goal.goal}
+                  onClick={() => onGoalSelect(goal.goal)}
+                />
+              ))}
+            </div>
+
+            <div className="mb-8">
+              <label className="block text-sm font-medium text-gray-700 mb-1">Or describe your goal:</label>
+              <Input 
+                className="w-full" 
+                placeholder="e.g., Reduce carbon footprint and increase sustainability" 
               />
-            ))}
-          </div>
+            </div>
 
-          <div className="mb-8">
-            <label className="block text-sm font-medium text-gray-700 mb-1">Or describe your goal:</label>
-            <Input 
-              className="w-full" 
-              placeholder="e.g., Reduce carbon footprint and increase sustainability" 
-            />
+            <div className="flex justify-end">
+              <Button 
+                className="bg-primary text-white hover:bg-primary/90"
+                onClick={handleViewDashboard}
+                disabled={!selectedGoal}
+              >
+                View Dashboard
+              </Button>
+            </div>
           </div>
-
-          <div className="flex justify-end">
-            <Button 
-              className="bg-primary text-white hover:bg-primary/90"
-              onClick={onViewDashboard}
-              disabled={!selectedGoal}
-            >
-              View Dashboard
-            </Button>
-          </div>
-        </div>
+        )}
       </div>
     </>
   );
