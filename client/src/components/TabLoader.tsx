@@ -114,24 +114,8 @@ export const TabLoader: React.FC<TabLoaderProps> = ({
         )}
       </div>
       
-      {/* Loading indicator overlay */}
-      <div className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-10">
-        <div className="flex flex-col items-center">
-          <div className="relative">
-            <div className="w-16 h-16 rounded-full bg-blue-500 flex items-center justify-center shadow-lg">
-              {getIcon()}
-            </div>
-            
-            {/* Animated ring */}
-            <div className="absolute inset-0 rounded-full border-4 border-blue-300 opacity-75 animate-ping"></div>
-          </div>
-          
-          <div className="mt-4 text-center">
-            <div className="text-sm font-medium text-blue-600">{getMessage()}</div>
-            <div className="text-xs text-gray-500 mt-1">{progress}% complete</div>
-          </div>
-        </div>
-      </div>
+      {/* Simple loading text at bottom */}
+      <div className="w-full text-center text-sm text-blue-500">{getMessage()}</div>
     </div>
   );
 };
