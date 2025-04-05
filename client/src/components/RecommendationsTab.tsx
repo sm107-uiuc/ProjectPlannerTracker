@@ -118,7 +118,7 @@ const RecommendationRow = ({
           {improvementPercentage > 0 && (
             <span className="inline-flex items-center mt-1 text-xs font-medium text-green-600">
               <TrendingUp className="mr-1 h-3 w-3" />
-              {improvementPercentage.toFixed(1)}% improvement
+              Up to {improvementPercentage.toFixed(1)}% score boost
             </span>
           )}
         </div>
@@ -279,9 +279,13 @@ export const RecommendationsTab = ({ selectedGoal }: RecommendationsTabProps) =>
     // Generate a random improvement percentage between 0.1 and 0.9
     const improvementPercentage = getRandomImprovement();
     
-    // Calculate new score
-    const currentScore = fleetScoreData?.fleetScore || 0;
+    // Calculate new score (ensure we're adding to the current score)
+    const currentScore = fleetScoreData?.fleetScore || 82; // Default to 82 if no score is available
     const newScore = Math.min(currentScore + improvementPercentage, 100);
+    
+    console.log('Current score:', currentScore);
+    console.log('Improvement percentage:', improvementPercentage);
+    console.log('New score:', newScore);
     
     // Mark recommendation as complete
     updateStatusMutation.mutate({ 
@@ -294,6 +298,15 @@ export const RecommendationsTab = ({ selectedGoal }: RecommendationsTabProps) =>
           goalType: selectedGoal,
           score: newScore,
           improvementPercentage
+        }, {
+          onSuccess: () => {
+            console.log('Fleet score updated successfully to:', newScore);
+            // Invalidate fleet score queries to refresh the UI
+            queryClient.invalidateQueries({ queryKey: [`/api/users/1/fleet-score`] });
+          },
+          onError: (error) => {
+            console.error('Error updating fleet score:', error);
+          }
         });
         
         // Show confetti and success message

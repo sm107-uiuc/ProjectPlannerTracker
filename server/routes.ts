@@ -339,11 +339,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Get the current fleet score from metrics
       const metrics = await storage.getFleetMetrics(userId, goalType);
       
+      // Get default score based on goal type (don't override existing scores)
+      const defaultScore = goalType === 'safety' ? 82 : goalType === 'fuel' ? 68 : goalType === 'maintenance' ? 82 : 71;
+      
       // Find the latest fleet score metric
       const fleetScoreMetric = metrics.find(m => m.metricName === 'fleetScore');
       const fleetScore = fleetScoreMetric?.metricValue 
         ? fleetScoreMetric.metricValue 
-        : goalType === 'safety' ? 75 : goalType === 'fuel' ? 68 : goalType === 'maintenance' ? 82 : 71;
+        : defaultScore;
       
       // Get the trend data
       const trend = fleetScoreMetric?.trend || 5.2; // Default to 5.2% if not found
@@ -371,6 +374,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Get existing metrics
       const metrics = await storage.getFleetMetrics(userId, goalType);
       
+      // Format the date as ISO string for PostgreSQL
+      const currentDate = new Date().toISOString();
+      
       // If metrics exist, update them, otherwise create new
       if (metrics?.length > 0) {
         // Get the latest metric
@@ -382,7 +388,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           metricName: 'fleetScore',
           metricValue: Math.min(score, 100), // Ensure score doesn't exceed 100
           goalType,
-          recordDate: new Date(),
+          recordDate: currentDate,
           trend: improvementPercentage || 0
         });
         
@@ -394,7 +400,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           metricName: 'fleetScore',
           metricValue: Math.min(score, 100), // Ensure score doesn't exceed 100
           goalType,
-          recordDate: new Date(),
+          recordDate: currentDate,
           trend: improvementPercentage || 0
         });
         
