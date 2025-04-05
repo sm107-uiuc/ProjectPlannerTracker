@@ -118,8 +118,10 @@ const DashboardScreen = ({ selectedGoal }: DashboardScreenProps) => {
                 />
               ) : (
                 <>
-                  <div className="mb-6">
+                  {/* Goal Description and Score Calculation Cards in the same row */}
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
                     <GoalDescriptionCard goal={selectedGoal} />
+                    <ScoreCalculationCard goal={selectedGoal} />
                   </div>
                   
                   <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
@@ -129,11 +131,6 @@ const DashboardScreen = ({ selectedGoal }: DashboardScreenProps) => {
                       isTrendPositive={data.isTrendPositive} 
                     />
                     <DidYouKnowCard goal={selectedGoal} />
-                  </div>
-                  
-                  {/* Score Calculation Card */}
-                  <div className="mb-6">
-                    <ScoreCalculationCard goal={selectedGoal} />
                   </div>
                   
                   <div className="mb-6">

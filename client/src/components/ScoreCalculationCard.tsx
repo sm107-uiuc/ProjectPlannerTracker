@@ -8,17 +8,17 @@ import {
   CardFooter, 
   CardHeader, 
   CardTitle 
-} from '@/components/ui/card';
+} from '../components/ui/card';
 import { 
   Accordion, 
   AccordionContent, 
   AccordionItem, 
   AccordionTrigger 
-} from '@/components/ui/accordion';
-import { ScrollArea } from '@/components/ui/scroll-area';
+} from '../components/ui/accordion';
+import { ScrollArea } from '../components/ui/scroll-area';
 import { Info, Calculator, ChevronRight, Percent } from 'lucide-react';
-import { Badge } from '@/components/ui/badge';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Badge } from '../components/ui/badge';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '../components/ui/tabs';
 
 interface ScoreCalculationCardProps {
   goal: Goal;
@@ -37,7 +37,7 @@ const ScoreCalculationCard = ({ goal }: ScoreCalculationCardProps) => {
   const lowWeightEvents = sortedEvents.filter(e => e.weight < 10);
   
   return (
-    <Card className="shadow-md">
+    <Card className="shadow-md overflow-hidden relative h-full" style={{ background: "linear-gradient(to bottom right, #f0f9ff, #ffffff, #ebf5ff)" }}>
       <CardHeader className="pb-2">
         <div className="flex items-center justify-between">
           <CardTitle className="text-base font-medium flex items-center">
