@@ -1,5 +1,6 @@
 import { Card } from "../components/ui/card";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "../components/ui/accordion";
+import { ScrollArea } from "../components/ui/scroll-area";
 import { Badge } from "../components/ui/badge";
 import { Goal } from "../lib/types";
 import { scoringData } from "../lib/scoreData";
@@ -21,6 +22,7 @@ const CombinedGoalCard = ({ goal }: CombinedGoalCardProps) => {
   // Group events by importance
   const highWeightEvents = sortedEvents.filter(e => e.weight >= 15);
   const mediumWeightEvents = sortedEvents.filter(e => e.weight >= 10 && e.weight < 15);
+  const lowWeightEvents = sortedEvents.filter(e => e.weight < 10);
   
   const getGoalDescription = (): { title: string, description: string, targetValue: string } => {
     switch (goal) {
