@@ -1,0 +1,610 @@
+// Safety
+Goal: Minimize risky driving in the fleet ( improve driver safety)
+[
+  {
+    "vin": "1G2NF52E8XM7600000",
+    "date": "2025-04-01",
+    "HardAcceleration": {
+      "count": 4,
+      "ContextualInsight": "Acceleration >0.5g detected after stop sign in residential zone with no merging or traffic pressure.",
+      "RecommendedAction": "Fleet manager should coach driver to apply throttle more gradually in low-speed urban zones."
+    },
+    "Collision": {
+      "count": 2,
+      "ContextualInsight": "Side swipe detected while changing lanes; lateral g-force spike occurred without turn signal usage.",
+      "RecommendedAction": "Fleet manager should assign targeted backing-up training or review camera/sensor usage."
+    }
+  },
+  {
+    "vin": "1G2NF52E8XM7600000",
+    "date": "2025-04-04",
+    "HardAcceleration": {
+      "count": 1,
+      "ContextualInsight": "Reduced frequency observed in same context zones, indicating driver improvement.",
+      "RecommendedAction": "Fleet manager should coach driver to apply throttle more gradually in low-speed urban zones."
+    },
+    "Collision": {
+      "count": 1,
+      "ContextualInsight": "Reduced frequency observed in same context zones, indicating driver improvement.",
+      "RecommendedAction": "Fleet manager should assign targeted backing-up training or review camera/sensor usage."
+    }
+  },
+  {
+    "vin": "1G2NF52E8XM7600001",
+    "date": "2025-04-01",
+    "LongIdling": {
+      "count": 5,
+      "ContextualInsight": "Vehicle idled for over 12 minutes after trip end, parked, gear in neutral, and outside temp was 65\u00b0F.",
+      "RecommendedAction": "Fleet manager should instruct drivers to use engine-off if waiting exceeds 5 minutes during stops."
+    },
+    "HardAcceleration": {
+      "count": 5,
+      "ContextualInsight": "Harsh acceleration repeatedly observed post-idle (e.g., after traffic lights or drive-thru exits).",
+      "RecommendedAction": "Fleet manager should coach driver to apply throttle more gradually in low-speed urban zones."
+    }
+  },
+  {
+    "vin": "1G2NF52E8XM7600001",
+    "date": "2025-04-04",
+    "LongIdling": {
+      "count": 1,
+      "ContextualInsight": "Reduced frequency observed in same context zones, indicating driver improvement.",
+      "RecommendedAction": "Fleet manager should instruct drivers to use engine-off if waiting exceeds 5 minutes during stops."
+    },
+    "HardAcceleration": {
+      "count": 3,
+      "ContextualInsight": "Reduced frequency observed in same context zones, indicating driver improvement.",
+      "RecommendedAction": "Fleet manager should coach driver to apply throttle more gradually in low-speed urban zones."
+    }
+  },
+  {
+    "vin": "1G2NF52E8XM7600002",
+    "date": "2025-04-01",
+    "HardBraking": {
+      "count": 5,
+      "ContextualInsight": "Multiple hard braking events occurred at signalized intersections with speed above 30 mph prior to braking.",
+      "RecommendedAction": "Fleet manager should recommend practicing smoother deceleration when approaching intersections."
+    },
+    "LongIdling": {
+      "count": 4,
+      "ContextualInsight": "Vehicle idled for over 12 minutes after trip end, parked, gear in neutral, and outside temp was 65\u00b0F.",
+      "RecommendedAction": "Fleet manager should instruct drivers to use engine-off if waiting exceeds 5 minutes during stops."
+    }
+  },
+  {
+    "vin": "1G2NF52E8XM7600002",
+    "date": "2025-04-04",
+    "HardBraking": {
+      "count": 4,
+      "ContextualInsight": "Reduced frequency observed in same context zones, indicating driver improvement.",
+      "RecommendedAction": "Fleet manager should recommend practicing smoother deceleration when approaching intersections."
+    },
+    "LongIdling": {
+      "count": 0,
+      "ContextualInsight": "No similar event detected this week in high-risk zones.",
+      "RecommendedAction": "Fleet manager should instruct drivers to use engine-off if waiting exceeds 5 minutes during stops."
+    }
+  },
+  {
+    "vin": "1G2NF52E8XM7600003",
+    "date": "2025-04-01",
+    "FatigueRisk": {
+      "count": 5,
+      "ContextualInsight": "Driver completed 3 trips totaling 220 miles with <2 minutes rest between ignition cycles.",
+      "RecommendedAction": "Fleet manager should enforce rest stop policy and review trip plans for break opportunities."
+    },
+    "LongIdling": {
+      "count": 5,
+      "ContextualInsight": "Vehicle idled for over 12 minutes after trip end, parked, gear in neutral, and outside temp was 65\u00b0F.",
+      "RecommendedAction": "Fleet manager should instruct drivers to use engine-off if waiting exceeds 5 minutes during stops."
+    }
+  },
+  {
+    "vin": "1G2NF52E8XM7600003",
+    "date": "2025-04-04",
+    "FatigueRisk": {
+      "count": 3,
+      "ContextualInsight": "Reduced frequency observed in same context zones, indicating driver improvement.",
+      "RecommendedAction": "Fleet manager should enforce rest stop policy and review trip plans for break opportunities."
+    },
+    "LongIdling": {
+      "count": 3,
+      "ContextualInsight": "Reduced frequency observed in same context zones, indicating driver improvement.",
+      "RecommendedAction": "Fleet manager should instruct drivers to use engine-off if waiting exceeds 5 minutes during stops."
+    }
+  },
+  {
+    "vin": "1G2NF52E8XM7600004",
+    "date": "2025-04-01",
+    "Collision": {
+      "count": 3,
+      "ContextualInsight": "Side swipe detected while changing lanes; lateral g-force spike occurred without turn signal usage.",
+      "RecommendedAction": "Fleet manager should assign targeted backing-up training or review camera/sensor usage."
+    },
+    "LongIdling": {
+      "count": 2,
+      "ContextualInsight": "Repeated idle events of 8+ minutes detected outside delivery locations with no movement.",
+      "RecommendedAction": "Fleet manager should instruct drivers to use engine-off if waiting exceeds 5 minutes during stops."
+    }
+  },
+  {
+    "vin": "1G2NF52E8XM7600004",
+    "date": "2025-04-04",
+    "Collision": {
+      "count": 0,
+      "ContextualInsight": "No similar event detected this week in high-risk zones.",
+      "RecommendedAction": "Fleet manager should assign targeted backing-up training or review camera/sensor usage."
+    },
+    "LongIdling": {
+      "count": 0,
+      "ContextualInsight": "No similar event detected this week in high-risk zones.",
+      "RecommendedAction": "Fleet manager should instruct drivers to use engine-off if waiting exceeds 5 minutes during stops."
+    }
+  },
+  {
+    "vin": "1G2NF52E8XM7600005",
+    "date": "2025-04-01",
+    "HardAcceleration": {
+      "count": 4,
+      "ContextualInsight": "Harsh acceleration repeatedly observed post-idle (e.g., after traffic lights or drive-thru exits).",
+      "RecommendedAction": "Fleet manager should coach driver to apply throttle more gradually in low-speed urban zones."
+    },
+    "HardBraking": {
+      "count": 5,
+      "ContextualInsight": "Driver was going 38 mph in a 25 mph zone and braked hard near a known intersection.",
+      "RecommendedAction": "Fleet manager should recommend practicing smoother deceleration when approaching intersections."
+    }
+  },
+  {
+    "vin": "1G2NF52E8XM7600005",
+    "date": "2025-04-04",
+    "HardAcceleration": {
+      "count": 2,
+      "ContextualInsight": "Reduced frequency observed in same context zones, indicating driver improvement.",
+      "RecommendedAction": "Fleet manager should coach driver to apply throttle more gradually in low-speed urban zones."
+    },
+    "HardBraking": {
+      "count": 0,
+      "ContextualInsight": "No similar event detected this week in high-risk zones.",
+      "RecommendedAction": "Fleet manager should recommend practicing smoother deceleration when approaching intersections."
+    }
+  },
+  {
+    "vin": "1G2NF52E8XM7600006",
+    "date": "2025-04-01",
+    "LongIdling": {
+      "count": 4,
+      "ContextualInsight": "Repeated idle events of 8+ minutes detected outside delivery locations with no movement.",
+      "RecommendedAction": "Fleet manager should instruct drivers to use engine-off if waiting exceeds 5 minutes during stops."
+    },
+    "SeatbeltViolation": {
+      "count": 5,
+      "ContextualInsight": "Seatbelt remained unlatched for the first 3 minutes of the trip despite speeds exceeding 20 mph.",
+      "RecommendedAction": "Fleet manager should enforce reminder training to buckle up before every trip."
+    }
+  },
+  {
+    "vin": "1G2NF52E8XM7600006",
+    "date": "2025-04-04",
+    "LongIdling": {
+      "count": 0,
+      "ContextualInsight": "No similar event detected this week in high-risk zones.",
+      "RecommendedAction": "Fleet manager should instruct drivers to use engine-off if waiting exceeds 5 minutes during stops."
+    },
+    "SeatbeltViolation": {
+      "count": 4,
+      "ContextualInsight": "Reduced frequency observed in same context zones, indicating driver improvement.",
+      "RecommendedAction": "Fleet manager should enforce reminder training to buckle up before every trip."
+    }
+  }
+]
+
+
+
+// maintenance
+Goal: Timely maintenance and high uptime for the vehicles - 
+[
+  {
+    "vin": "3HGRM2H5XFL80000",
+    "date": "2025-04-01",
+    "ServiceWarningSetCount": {
+      "count": 2,
+      "ContextualInsight": "Service reminder triggered 4 times this month and dismissed by driver each time without follow-up.",
+      "RecommendedAction": "Fleet manager should enforce service compliance checks weekly and notify driver supervisors if ignored."
+    },
+    "CheckEngineLightOn": {
+      "count": 3,
+      "ContextualInsight": "Check engine light has remained on for 3+ consecutive days. No vehicle downtime or shop visit recorded.",
+      "RecommendedAction": "Fleet manager should escalate this vehicle for immediate service center evaluation."
+    }
+  },
+  {
+    "vin": "3HGRM2H5XFL80000",
+    "date": "2025-04-04",
+    "ServiceWarningSetCount": {
+      "count": 1,
+      "ContextualInsight": "Reduced maintenance triggers observed \u2014 indicates compliance improvement."
+    },
+    "CheckEngineLightOn": {
+      "count": 1,
+      "ContextualInsight": "Reduced maintenance triggers observed \u2014 indicates compliance improvement."
+    }
+  },
+  {
+    "vin": "3HGRM2H5XFL80001",
+    "date": "2025-04-01",
+    "CheckEngineLightOn": {
+      "count": 4,
+      "ContextualInsight": "Check engine light has remained on for 3+ consecutive days. No vehicle downtime or shop visit recorded.",
+      "RecommendedAction": "Fleet manager should escalate this vehicle for immediate service center evaluation."
+    },
+    "DTCSetCount": {
+      "count": 4,
+      "ContextualInsight": "Multiple diagnostic codes triggered this week including emissions and transmission warnings. No service logged afterward.",
+      "RecommendedAction": "Fleet manager should schedule a mechanic inspection when DTCs are triggered more than once per week."
+    }
+  },
+  {
+    "vin": "3HGRM2H5XFL80001",
+    "date": "2025-04-04",
+    "CheckEngineLightOn": {
+      "count": 1,
+      "ContextualInsight": "Reduced maintenance triggers observed \u2014 indicates compliance improvement."
+    },
+    "DTCSetCount": {
+      "count": 0,
+      "ContextualInsight": "No recent maintenance issue detected in this category."
+    }
+  },
+  {
+    "vin": "3HGRM2H5XFL80002",
+    "date": "2025-04-01",
+    "DTCSetCount": {
+      "count": 2,
+      "ContextualInsight": "Multiple diagnostic codes triggered this week including emissions and transmission warnings. No service logged afterward.",
+      "RecommendedAction": "Fleet manager should schedule a mechanic inspection when DTCs are triggered more than once per week."
+    },
+    "OilLifeLow": {
+      "count": 4,
+      "ContextualInsight": "Oil life dropped rapidly over 2 days of city trips. High idle time detected during those trips.",
+      "RecommendedAction": "Fleet manager should correlate idle-heavy vehicles with faster oil wear and shorten oil change cycles for them."
+    }
+  },
+  {
+    "vin": "3HGRM2H5XFL80002",
+    "date": "2025-04-04",
+    "DTCSetCount": {
+      "count": 0,
+      "ContextualInsight": "No recent maintenance issue detected in this category."
+    },
+    "OilLifeLow": {
+      "count": 2,
+      "ContextualInsight": "Reduced maintenance triggers observed \u2014 indicates compliance improvement."
+    }
+  },
+  {
+    "vin": "3HGRM2H5XFL80003",
+    "date": "2025-04-01",
+    "TirePressureCriticalCount": {
+      "count": 4,
+      "ContextualInsight": "Left rear tire dropped below safe PSI threshold 3 times this week \u2014 pressure restored but no tire replacement logged.",
+      "RecommendedAction": "Fleet manager should schedule tire inspection for slow leak or structural damage."
+    },
+    "OilLifeLow": {
+      "count": 3,
+      "ContextualInsight": "Oil life dropped rapidly over 2 days of city trips. High idle time detected during those trips.",
+      "RecommendedAction": "Fleet manager should correlate idle-heavy vehicles with faster oil wear and shorten oil change cycles for them."
+    }
+  },
+  {
+    "vin": "3HGRM2H5XFL80003",
+    "date": "2025-04-04",
+    "TirePressureCriticalCount": {
+      "count": 0,
+      "ContextualInsight": "No recent maintenance issue detected in this category."
+    },
+    "OilLifeLow": {
+      "count": 2,
+      "ContextualInsight": "Reduced maintenance triggers observed \u2014 indicates compliance improvement."
+    }
+  },
+  {
+    "vin": "3HGRM2H5XFL80004",
+    "date": "2025-04-01",
+    "ServiceWarningSetCount": {
+      "count": 4,
+      "ContextualInsight": "Service reminder triggered 4 times this month and dismissed by driver each time without follow-up.",
+      "RecommendedAction": "Fleet manager should enforce service compliance checks weekly and notify driver supervisors if ignored."
+    },
+    "CheckEngineLightOn": {
+      "count": 2,
+      "ContextualInsight": "Check engine light has remained on for 3+ consecutive days. No vehicle downtime or shop visit recorded.",
+      "RecommendedAction": "Fleet manager should escalate this vehicle for immediate service center evaluation."
+    }
+  },
+  {
+    "vin": "3HGRM2H5XFL80004",
+    "date": "2025-04-04",
+    "ServiceWarningSetCount": {
+      "count": 3,
+      "ContextualInsight": "Reduced maintenance triggers observed \u2014 indicates compliance improvement."
+    },
+    "CheckEngineLightOn": {
+      "count": 1,
+      "ContextualInsight": "Reduced maintenance triggers observed \u2014 indicates compliance improvement."
+    }
+  }
+]
+
+
+
+// emissions
+Goal: Minimize carbon emissions in my fleet   
+[
+  {
+    "vin": "5LMFU28R1XJ30000",
+    "date": "2025-04-01",
+    "PoorFuelEfficiencyVehicles": {
+      "count": 2,
+      "ContextualInsight": "Vehicle consistently shows lower MPG than peers in the same class over a 2-week period.",
+      "RecommendedAction": "Fleet manager should inspect the vehicle and consider route reassignment or phased retirement."
+    },
+    "ICEonShortRoutes": {
+      "count": 3,
+      "ContextualInsight": "Short trips under 5 miles assigned to ICE vehicles even when EVs were available in the yard.",
+      "RecommendedAction": "Fleet manager should realign route assignment logic to favor EVs for last-mile deliveries."
+    }
+  },
+  {
+    "vin": "5LMFU28R1XJ30000",
+    "date": "2025-04-04",
+    "PoorFuelEfficiencyVehicles": {
+      "count": 0,
+      "ContextualInsight": "No idle-related emissions or EV underuse detected this period."
+    },
+    "ICEonShortRoutes": {
+      "count": 0,
+      "ContextualInsight": "No idle-related emissions or EV underuse detected this period."
+    }
+  },
+  {
+    "vin": "5LMFU28R1XJ30001",
+    "date": "2025-04-01",
+    "EVBatteryMisuse": {
+      "count": 2,
+      "ContextualInsight": "EV battery was fully charged and vehicle remained idle for 2 days. No trips assigned or logged.",
+      "RecommendedAction": "Fleet manager should integrate EVs into regular dispatch cycles to avoid idle charging."
+    },
+    "PoorFuelEfficiencyVehicles": {
+      "count": 2,
+      "ContextualInsight": "Vehicle consistently shows lower MPG than peers in the same class over a 2-week period.",
+      "RecommendedAction": "Fleet manager should inspect the vehicle and consider route reassignment or phased retirement."
+    }
+  },
+  {
+    "vin": "5LMFU28R1XJ30001",
+    "date": "2025-04-04",
+    "EVBatteryMisuse": {
+      "count": 0,
+      "ContextualInsight": "No idle-related emissions or EV underuse detected this period."
+    },
+    "PoorFuelEfficiencyVehicles": {
+      "count": 1,
+      "ContextualInsight": "Reduced emission triggers observed this week \u2014 indicates better route and engine usage."
+    }
+  },
+  {
+    "vin": "5LMFU28R1XJ30002",
+    "date": "2025-04-01",
+    "EVBatteryMisuse": {
+      "count": 3,
+      "ContextualInsight": "EV battery was fully charged and vehicle remained idle for 2 days. No trips assigned or logged.",
+      "RecommendedAction": "Fleet manager should integrate EVs into regular dispatch cycles to avoid idle charging."
+    },
+    "UnderutilizedEVs": {
+      "count": 3,
+      "ContextualInsight": "EV used only twice last week despite availability. Short urban routes were assigned to ICE vehicles instead.",
+      "RecommendedAction": "Fleet manager should prioritize EVs for urban routes to maximize electric miles and reduce emissions."
+    }
+  },
+  {
+    "vin": "5LMFU28R1XJ30002",
+    "date": "2025-04-04",
+    "EVBatteryMisuse": {
+      "count": 0,
+      "ContextualInsight": "No idle-related emissions or EV underuse detected this period."
+    },
+    "UnderutilizedEVs": {
+      "count": 1,
+      "ContextualInsight": "Reduced emission triggers observed this week \u2014 indicates better route and engine usage."
+    }
+  },
+  {
+    "vin": "5LMFU28R1XJ30003",
+    "date": "2025-04-01",
+    "FuelInefficiency": {
+      "count": 2,
+      "ContextualInsight": "Vehicle MPG was 20% lower than expected for route profile. Excessive idling and aggressive acceleration detected.",
+      "RecommendedAction": "Fleet manager should retrain the driver on efficient driving and evaluate vehicle health."
+    },
+    "UnderutilizedEVs": {
+      "count": 4,
+      "ContextualInsight": "EV used only twice last week despite availability. Short urban routes were assigned to ICE vehicles instead.",
+      "RecommendedAction": "Fleet manager should prioritize EVs for urban routes to maximize electric miles and reduce emissions."
+    }
+  },
+  {
+    "vin": "5LMFU28R1XJ30003",
+    "date": "2025-04-04",
+    "FuelInefficiency": {
+      "count": 1,
+      "ContextualInsight": "Reduced emission triggers observed this week \u2014 indicates better route and engine usage."
+    },
+    "UnderutilizedEVs": {
+      "count": 0,
+      "ContextualInsight": "No idle-related emissions or EV underuse detected this period."
+    }
+  },
+  {
+    "vin": "5LMFU28R1XJ30004",
+    "date": "2025-04-01",
+    "EVBatteryMisuse": {
+      "count": 3,
+      "ContextualInsight": "EV battery was fully charged and vehicle remained idle for 2 days. No trips assigned or logged.",
+      "RecommendedAction": "Fleet manager should integrate EVs into regular dispatch cycles to avoid idle charging."
+    },
+    "FuelInefficiency": {
+      "count": 3,
+      "ContextualInsight": "Vehicle MPG was 20% lower than expected for route profile. Excessive idling and aggressive acceleration detected.",
+      "RecommendedAction": "Fleet manager should retrain the driver on efficient driving and evaluate vehicle health."
+    }
+  },
+  {
+    "vin": "5LMFU28R1XJ30004",
+    "date": "2025-04-04",
+    "EVBatteryMisuse": {
+      "count": 1,
+      "ContextualInsight": "Reduced emission triggers observed this week \u2014 indicates better route and engine usage."
+    },
+    "FuelInefficiency": {
+      "count": 0,
+      "ContextualInsight": "No idle-related emissions or EV underuse detected this period."
+    }
+  }
+]
+
+
+// efficiency
+Goal: Ensure I am optimially utiliz. my vehicles
+[
+  {
+    "vin": "2FTRX18W1XCA10000",
+    "date": "2025-04-01",
+    "PowerTakeOff": {
+      "count": 3,
+      "ContextualInsight": "PTO engaged for 3.2 hours total last week, but vehicle distance driven was only 7 miles \u2014 indicating static equipment usage.",
+      "RecommendedAction": "Fleet manager should assess if stationary PTO use aligns with job type or if better route/equipment pairing is needed."
+    },
+    "UnderutilizedEVs": {
+      "count": 2,
+      "ContextualInsight": "EV was dispatched only twice last week while ICE vehicles ran similar routes daily.",
+      "RecommendedAction": "Fleet manager should prioritize EVs for short, regular trips and reserve ICE for long hauls or specialty needs."
+    }
+  },
+  {
+    "vin": "2FTRX18W1XCA10000",
+    "date": "2025-04-04",
+    "PowerTakeOff": {
+      "count": 1,
+      "ContextualInsight": "Fewer inefficiency patterns observed this week \u2014 improvement noted."
+    },
+    "UnderutilizedEVs": {
+      "count": 1,
+      "ContextualInsight": "Fewer inefficiency patterns observed this week \u2014 improvement noted."
+    }
+  },
+  {
+    "vin": "2FTRX18W1XCA10001",
+    "date": "2025-04-01",
+    "UnderutilizedVehicles": {
+      "count": 3,
+      "ContextualInsight": "Vehicle logged only 6 miles in the past week, compared to a fleet median of 70+ miles. No maintenance downtime reported.",
+      "RecommendedAction": "Fleet manager should rotate this vehicle into active routes or reassign to increase daily mileage."
+    },
+    "MultiDayNoActivity": {
+      "count": 3,
+      "ContextualInsight": "No ignition or trip events recorded for 4 consecutive days, while other fleet vehicles remained active.",
+      "RecommendedAction": "Fleet manager should audit if the vehicle is parked, forgotten, or misassigned \u2014 consider redeployment."
+    }
+  },
+  {
+    "vin": "2FTRX18W1XCA10001",
+    "date": "2025-04-04",
+    "UnderutilizedVehicles": {
+      "count": 1,
+      "ContextualInsight": "Fewer inefficiency patterns observed this week \u2014 improvement noted."
+    },
+    "MultiDayNoActivity": {
+      "count": 2,
+      "ContextualInsight": "Fewer inefficiency patterns observed this week \u2014 improvement noted."
+    }
+  },
+  {
+    "vin": "2FTRX18W1XCA10002",
+    "date": "2025-04-01",
+    "PowerTakeOff": {
+      "count": 2,
+      "ContextualInsight": "PTO engaged for 3.2 hours total last week, but vehicle distance driven was only 7 miles \u2014 indicating static equipment usage.",
+      "RecommendedAction": "Fleet manager should assess if stationary PTO use aligns with job type or if better route/equipment pairing is needed."
+    },
+    "BackToBackTripsNoBreak": {
+      "count": 5,
+      "ContextualInsight": "Driver ran 5 trips consecutively with less than 2 minutes of idle time between trips.",
+      "RecommendedAction": "Fleet manager should ensure dispatchers build in proper spacing or assign another driver mid-day."
+    }
+  },
+  {
+    "vin": "2FTRX18W1XCA10002",
+    "date": "2025-04-04",
+    "PowerTakeOff": {
+      "count": 1,
+      "ContextualInsight": "Fewer inefficiency patterns observed this week \u2014 improvement noted."
+    },
+    "BackToBackTripsNoBreak": {
+      "count": 1,
+      "ContextualInsight": "Fewer inefficiency patterns observed this week \u2014 improvement noted."
+    }
+  },
+  {
+    "vin": "2FTRX18W1XCA10003",
+    "date": "2025-04-01",
+    "FuelInefficiency": {
+      "count": 5,
+      "ContextualInsight": "Vehicle MPG dropped by 15% week-over-week without mechanical alerts \u2014 short idle-heavy trips detected.",
+      "RecommendedAction": "Fleet manager should evaluate if this vehicle is suited for short urban trips and reassign if needed."
+    },
+    "RouteDeviation": {
+      "count": 3,
+      "ContextualInsight": "Driver diverted 5+ miles from assigned route on 2 occasions \u2014 both near non-fleet fueling locations.",
+      "RecommendedAction": "Fleet manager should investigate deviation causes and optimize routing tools and accountability."
+    }
+  },
+  {
+    "vin": "2FTRX18W1XCA10003",
+    "date": "2025-04-04",
+    "FuelInefficiency": {
+      "count": 2,
+      "ContextualInsight": "Fewer inefficiency patterns observed this week \u2014 improvement noted."
+    },
+    "RouteDeviation": {
+      "count": 0,
+      "ContextualInsight": "No recent occurrence of this inefficiency pattern detected this week."
+    }
+  },
+  {
+    "vin": "2FTRX18W1XCA10004",
+    "date": "2025-04-01",
+    "BackToBackTripsNoBreak": {
+      "count": 3,
+      "ContextualInsight": "Driver ran 5 trips consecutively with less than 2 minutes of idle time between trips.",
+      "RecommendedAction": "Fleet manager should ensure dispatchers build in proper spacing or assign another driver mid-day."
+    },
+    "DriveTimeOutsideShiftWindow": {
+      "count": 3,
+      "ContextualInsight": "Trips started after 8 PM despite standard shift ending at 6 PM \u2014 no urgent task flagged.",
+      "RecommendedAction": "Fleet manager should confirm operational need and reduce after-hours trips unless business-justified."
+    }
+  },
+  {
+    "vin": "2FTRX18W1XCA10004",
+    "date": "2025-04-04",
+    "BackToBackTripsNoBreak": {
+      "count": 1,
+      "ContextualInsight": "Fewer inefficiency patterns observed this week \u2014 improvement noted."
+    },
+    "DriveTimeOutsideShiftWindow": {
+      "count": 2,
+      "ContextualInsight": "Fewer inefficiency patterns observed this week \u2014 improvement noted."
+    }
+  }
+]

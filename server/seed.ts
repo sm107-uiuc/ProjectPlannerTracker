@@ -1,8 +1,11 @@
 import { db } from "./db";
 import * as schema from "../shared/schema";
 import { eq } from "drizzle-orm";
+import { seedUpdatedData } from "./seed-data";
 
 async function seed() {
+  console.log("Starting database seeding process...");
+  
   // Seed integration services - keeping only WEX, Autointegrate, Fleetio, CEI, and ChargePoint
   const services = [
     {
@@ -59,6 +62,10 @@ async function seed() {
       console.error(`Error creating service ${service.name}:`, error);
     }
   }
+  
+  // Seed updated vehicles and recommendations
+  console.log("Seeding updated vehicles and recommendations data...");
+  await seedUpdatedData();
 
   console.log('Seeding complete!');
   process.exit(0);
