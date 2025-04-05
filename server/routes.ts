@@ -330,6 +330,89 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // AI chatbot routes
+  app.get('/api/ai/has-key', async (req, res) => {
+    try {
+      // Check if Perplexity API key exists in environment variables
+      const hasKey = process.env.PERPLEXITY_API_KEY ? true : false;
+      res.json({ hasKey });
+    } catch (error) {
+      console.error('Error checking Perplexity API key:', error);
+      res.status(500).json({ error: 'Server error checking API key status' });
+    }
+  });
+  
+  app.post('/api/ai/chat', async (req, res) => {
+    try {
+      const { message, goal } = req.body;
+      
+      if (!message || !goal) {
+        return res.status(400).json({ error: 'Message and goal are required' });
+      }
+      
+      // Check if we have the Perplexity API key
+      if (!process.env.PERPLEXITY_API_KEY) {
+        return res.status(503).json({ 
+          error: 'Perplexity API key not configured',
+          content: 'I cannot provide an intelligent response at this time. Please set up the Perplexity API key.'
+        });
+      }
+      
+      // Prepare the system message based on the selected goal
+      const systemMessages = {
+        safety: "You are an expert fleet safety advisor. Provide helpful, concise advice about fleet safety, accident prevention, driver training, and safety metrics. Your answers should be practical and actionable for fleet managers.",
+        fuel: "You are an expert in fleet fuel efficiency. Provide helpful, concise advice about fuel optimization, eco-driving, fuel cost reduction, and related metrics. Your answers should be practical and actionable for fleet managers.",
+        maintenance: "You are an expert in fleet maintenance. Provide helpful, concise advice about vehicle maintenance, downtime reduction, preventative maintenance, and related metrics. Your answers should be practical and actionable for fleet managers.",
+        utilization: "You are an expert in fleet utilization. Provide helpful, concise advice about maximizing vehicle usage, optimizing routes, right-sizing fleets, and related metrics. Your answers should be practical and actionable for fleet managers."
+      };
+      
+      const systemMessage = systemMessages[goal] || systemMessages.safety;
+      
+      // Call the Perplexity API
+      const response = await fetch('https://api.perplexity.ai/chat/completions', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${process.env.PERPLEXITY_API_KEY}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          model: "llama-3.1-sonar-small-128k-online",
+          messages: [
+            {
+              role: "system",
+              content: systemMessage
+            },
+            {
+              role: "user",
+              content: message
+            }
+          ],
+          temperature: 0.2,
+          top_p: 0.9,
+          max_tokens: 150,
+          stream: false
+        })
+      });
+      
+      if (!response.ok) {
+        const errorData = await response.json();
+        console.error('Perplexity API error:', errorData);
+        throw new Error(`API request failed with status ${response.status}`);
+      }
+      
+      const data = await response.json();
+      const content = data.choices[0].message.content;
+      
+      res.json({ content });
+    } catch (error) {
+      console.error('Error calling Perplexity API:', error);
+      res.status(500).json({ 
+        error: 'Failed to get AI response',
+        content: 'I encountered an error while processing your request. Please try again later.'
+      });
+    }
+  });
+
   const httpServer = createServer(app);
 
   return httpServer;

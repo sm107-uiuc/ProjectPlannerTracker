@@ -11,6 +11,8 @@ import { IntegrationsScreen } from "@/components/IntegrationsScreen";
 import { MetricsTab } from "@/components/MetricsTab";
 import { RecommendationsTab } from "@/components/RecommendationsTab";
 import { TabLoader } from "@/components/TabLoader";
+import DidYouKnowCard from "@/components/DidYouKnowCard";
+import ChatbotIcon from "@/components/ChatbotIcon";
 import { 
   RefreshCw, 
   Filter, 
@@ -42,6 +44,7 @@ const DashboardScreen = ({ selectedGoal }: DashboardScreenProps) => {
   return (
     <>
       <Sidebar />
+      <ChatbotIcon goal={selectedGoal} />
       <div className="flex-1 flex flex-col">
         {/* Top Bar */}
         <div className="border-b border-gray-200 px-6 py-4 flex items-center justify-between">
@@ -123,8 +126,12 @@ const DashboardScreen = ({ selectedGoal }: DashboardScreenProps) => {
                     />
                     <RecommendationsCard 
                       goalName={goalDisplayText[selectedGoal]} 
-                      recommendations={data.recommendations} 
+                      selectedGoal={selectedGoal}
                     />
+                  </div>
+                  
+                  <div className="mb-6">
+                    <DidYouKnowCard goal={selectedGoal} />
                   </div>
 
                   <VehiclePerformanceTable 
