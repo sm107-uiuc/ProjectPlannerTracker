@@ -110,13 +110,11 @@ const DashboardScreen = ({ selectedGoal }: DashboardScreenProps) => {
             {/* Overview Tab */}
             <TabsContent value="overview" className="space-y-6">
               {isTabLoading && activeTab === 'overview' ? (
-                <div className="relative">
-                  <TabLoader 
-                    tabName="overview" 
-                    duration={2000} 
-                    onComplete={() => setIsTabLoading(false)} 
-                  />
-                </div>
+                <TabLoader 
+                  tabName="overview" 
+                  duration={2000} 
+                  onComplete={() => setIsTabLoading(false)} 
+                />
               ) : (
                 <>
                   <div className="mb-6">
@@ -165,13 +163,11 @@ const DashboardScreen = ({ selectedGoal }: DashboardScreenProps) => {
             {/* Metrics Tab */}
             <TabsContent value="metrics" className="space-y-6">
               {isTabLoading && activeTab === 'metrics' ? (
-                <div className="relative">
-                  <TabLoader 
-                    tabName="metrics" 
-                    duration={2000} 
-                    onComplete={() => setIsTabLoading(false)} 
-                  />
-                </div>
+                <TabLoader 
+                  tabName="metrics" 
+                  duration={2000} 
+                  onComplete={() => setIsTabLoading(false)} 
+                />
               ) : (
                 <MetricsTab selectedGoal={selectedGoal} />
               )}
@@ -180,13 +176,11 @@ const DashboardScreen = ({ selectedGoal }: DashboardScreenProps) => {
             {/* Recommendations Tab */}
             <TabsContent value="recommendations" className="space-y-6">
               {isTabLoading && activeTab === 'recommendations' ? (
-                <div className="relative">
-                  <TabLoader 
-                    tabName="recommendations" 
-                    duration={2000} 
-                    onComplete={() => setIsTabLoading(false)} 
-                  />
-                </div>
+                <TabLoader 
+                  tabName="recommendations" 
+                  duration={2000} 
+                  onComplete={() => setIsTabLoading(false)} 
+                />
               ) : (
                 <RecommendationsTab selectedGoal={selectedGoal} />
               )}

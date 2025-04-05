@@ -56,7 +56,7 @@ export const TabLoader: React.FC<TabLoaderProps> = ({
   };
 
   return (
-    <div className="absolute inset-0 flex flex-col items-center justify-center bg-white z-20 rounded-md">
+    <div className="fixed inset-0 flex flex-col items-center justify-center bg-white z-50">
       <div className="flex flex-col items-center max-w-md w-full">
         {/* Top Tab Navigation (non-functional) */}
         <div className="flex mb-8 bg-slate-100 rounded-xl p-1 self-start">
