@@ -1,4 +1,5 @@
 import { db } from "./db";
+import * as schema from "@shared/schema";
 import { users, vehicles, recommendations, recommendationSteps, InsertRecommendationStep } from "@shared/schema";
 
 export async function seedUpdatedData() {
@@ -25,62 +26,69 @@ export async function seedUpdatedData() {
       console.log(`Using existing user with ID: ${userId}`);
     }
 
-    // Create vehicles with the new VIN patterns
-    const safetyVehicles = [
-      { vehicleId: "S-0000", userId, vin: "1G2NF52E8XM7600000", make: "Toyota", model: "Camry", year: 2025, driverScore: 68, maintenanceScore: 82, overallScore: 74, status: "Needs Review" },
-      { vehicleId: "S-0001", userId, vin: "1G2NF52E8XM7600001", make: "Ford", model: "F-150", year: 2025, driverScore: 72, maintenanceScore: 84, overallScore: 78, status: "Needs Review" },
-      { vehicleId: "S-0002", userId, vin: "1G2NF52E8XM7600002", make: "Honda", model: "Civic", year: 2025, driverScore: 65, maintenanceScore: 79, overallScore: 71, status: "Needs Review" },
-      { vehicleId: "S-0003", userId, vin: "1G2NF52E8XM7600003", make: "Chevrolet", model: "Silverado", year: 2025, driverScore: 55, maintenanceScore: 75, overallScore: 63, status: "Action Required" },
-      { vehicleId: "S-0004", userId, vin: "1G2NF52E8XM7600004", make: "Nissan", model: "Altima", year: 2025, driverScore: 74, maintenanceScore: 88, overallScore: 80, status: "Good" },
-      { vehicleId: "S-0005", userId, vin: "1G2NF52E8XM7600005", make: "Toyota", model: "Tacoma", year: 2025, driverScore: 71, maintenanceScore: 82, overallScore: 76, status: "Needs Review" },
-      { vehicleId: "S-0006", userId, vin: "1G2NF52E8XM7600006", make: "Jeep", model: "Grand Cherokee", year: 2025, driverScore: 62, maintenanceScore: 77, overallScore: 68, status: "Needs Review" }
+    // Create vehicles with real VINs
+    const vehicles = [
+      // Safety-focused vehicles
+      { vehicleId: "1FTEW1E50LFB43025", userId, vin: "1FTEW1E50LFB43025", make: "Ford", model: "F-150", year: 2023, driverScore: 68, maintenanceScore: 82, overallScore: 74, status: "Needs Review" },
+      { vehicleId: "1C4RJFBG5LC123456", userId, vin: "1C4RJFBG5LC123456", make: "Jeep", model: "Grand Cherokee", year: 2024, driverScore: 72, maintenanceScore: 84, overallScore: 78, status: "Needs Review" },
+      { vehicleId: "2T1BURHE8KC123789", userId, vin: "2T1BURHE8KC123789", make: "Toyota", model: "Camry", year: 2023, driverScore: 65, maintenanceScore: 79, overallScore: 71, status: "Needs Review" },
+      { vehicleId: "1GCUYDED9LZ217654", userId, vin: "1GCUYDED9LZ217654", make: "Chevrolet", model: "Silverado", year: 2024, driverScore: 55, maintenanceScore: 75, overallScore: 63, status: "Action Required" },
+      { vehicleId: "1N4BL4BV5LC253012", userId, vin: "1N4BL4BV5LC253012", make: "Nissan", model: "Altima", year: 2023, driverScore: 74, maintenanceScore: 88, overallScore: 80, status: "Good" },
+      
+      // Maintenance-focused vehicles
+      { vehicleId: "JTMRFREV5KJ019283", userId, vin: "JTMRFREV5KJ019283", make: "Toyota", model: "RAV4", year: 2024, driverScore: 86, maintenanceScore: 68, overallScore: 76, status: "Needs Review" },
+      { vehicleId: "1FMSK8DH5LGC76513", userId, vin: "1FMSK8DH5LGC76513", make: "Ford", model: "Explorer", year: 2024, driverScore: 82, maintenanceScore: 62, overallScore: 70, status: "Needs Review" },
+      { vehicleId: "1G1ZD5ST6LF112233", userId, vin: "1G1ZD5ST6LF112233", make: "Chevrolet", model: "Malibu", year: 2023, driverScore: 88, maintenanceScore: 70, overallScore: 78, status: "Needs Review" },
+      { vehicleId: "2HKRW1H59MH445566", userId, vin: "2HKRW1H59MH445566", make: "Honda", model: "CR-V", year: 2023, driverScore: 84, maintenanceScore: 65, overallScore: 73, status: "Needs Review" },
+      { vehicleId: "4S4BTACC8L3778899", userId, vin: "4S4BTACC8L3778899", make: "Subaru", model: "Outback", year: 2024, driverScore: 90, maintenanceScore: 69, overallScore: 78, status: "Needs Review" },
+      
+      // Emissions/EV vehicles
+      { vehicleId: "5YJ3E1EA8LF778901", userId, vin: "5YJ3E1EA8LF778901", make: "Tesla", model: "Model 3", year: 2024, driverScore: 92, maintenanceScore: 88, overallScore: 90, status: "Good" },
+      { vehicleId: "1N4AZ1CP8LC667788", userId, vin: "1N4AZ1CP8LC667788", make: "Nissan", model: "Leaf", year: 2023, driverScore: 85, maintenanceScore: 80, overallScore: 82, status: "Good" },
+      { vehicleId: "1G1FY6S08L4112233", userId, vin: "1G1FY6S08L4112233", make: "Chevrolet", model: "Bolt", year: 2024, driverScore: 88, maintenanceScore: 82, overallScore: 85, status: "Good" },
+      { vehicleId: "JTDKARFU8L3998877", userId, vin: "JTDKARFU8L3998877", make: "Toyota", model: "Prius", year: 2023, driverScore: 86, maintenanceScore: 78, overallScore: 81, status: "Good" },
+      { vehicleId: "KM8K33A64MU334455", userId, vin: "KM8K33A64MU334455", make: "Hyundai", model: "Kona Electric", year: 2024, driverScore: 89, maintenanceScore: 81, overallScore: 84, status: "Good" },
+      
+      // Utilization/Efficiency focused vehicles
+      { vehicleId: "1FTYE1YM7LKA56789", userId, vin: "1FTYE1YM7LKA56789", make: "Ford", model: "Transit", year: 2023, driverScore: 78, maintenanceScore: 75, overallScore: 77, status: "Needs Review" },
+      { vehicleId: "WD3PE7CD0KP223344", userId, vin: "WD3PE7CD0KP223344", make: "Mercedes", model: "Sprinter", year: 2024, driverScore: 82, maintenanceScore: 79, overallScore: 80, status: "Good" },
+      { vehicleId: "1GCWGAFG4L1234567", userId, vin: "1GCWGAFG4L1234567", make: "Chevrolet", model: "Express", year: 2023, driverScore: 72, maintenanceScore: 68, overallScore: 70, status: "Needs Review" },
+      { vehicleId: "3C6TRVDG1LE556677", userId, vin: "3C6TRVDG1LE556677", make: "Ram", model: "ProMaster", year: 2024, driverScore: 75, maintenanceScore: 71, overallScore: 73, status: "Needs Review" },
+      { vehicleId: "1N6BF0KM3LN887766", userId, vin: "1N6BF0KM3LN887766", make: "Nissan", model: "NV Cargo", year: 2023, driverScore: 79, maintenanceScore: 76, overallScore: 77, status: "Needs Review" }
     ];
 
-    const maintenanceVehicles = [
-      { vehicleId: "M-0000", userId, vin: "3HGRM2H5XFL80000", make: "Toyota", model: "RAV4", year: 2025, driverScore: 86, maintenanceScore: 68, overallScore: 76, status: "Needs Review" },
-      { vehicleId: "M-0001", userId, vin: "3HGRM2H5XFL80001", make: "Ford", model: "Explorer", year: 2025, driverScore: 82, maintenanceScore: 62, overallScore: 70, status: "Needs Review" },
-      { vehicleId: "M-0002", userId, vin: "3HGRM2H5XFL80002", make: "Chevrolet", model: "Malibu", year: 2025, driverScore: 88, maintenanceScore: 70, overallScore: 78, status: "Needs Review" },
-      { vehicleId: "M-0003", userId, vin: "3HGRM2H5XFL80003", make: "Honda", model: "CR-V", year: 2025, driverScore: 84, maintenanceScore: 65, overallScore: 73, status: "Needs Review" },
-      { vehicleId: "M-0004", userId, vin: "3HGRM2H5XFL80004", make: "Subaru", model: "Outback", year: 2025, driverScore: 90, maintenanceScore: 69, overallScore: 78, status: "Needs Review" }
-    ];
-
-    const emissionsVehicles = [
-      { vehicleId: "E-0000", userId, vin: "5LMFU28R1XJ30000", make: "Tesla", model: "Model 3", year: 2025, driverScore: 92, maintenanceScore: 88, overallScore: 90, status: "Good" },
-      { vehicleId: "E-0001", userId, vin: "5LMFU28R1XJ30001", make: "Nissan", model: "Leaf", year: 2025, driverScore: 85, maintenanceScore: 80, overallScore: 82, status: "Good" },
-      { vehicleId: "E-0002", userId, vin: "5LMFU28R1XJ30002", make: "Chevrolet", model: "Bolt", year: 2025, driverScore: 88, maintenanceScore: 82, overallScore: 85, status: "Good" },
-      { vehicleId: "E-0003", userId, vin: "5LMFU28R1XJ30003", make: "Toyota", model: "Prius", year: 2025, driverScore: 86, maintenanceScore: 78, overallScore: 81, status: "Good" },
-      { vehicleId: "E-0004", userId, vin: "5LMFU28R1XJ30004", make: "Hyundai", model: "Kona Electric", year: 2025, driverScore: 89, maintenanceScore: 81, overallScore: 84, status: "Good" }
-    ];
-
-    const efficiencyVehicles = [
-      { vehicleId: "U-0000", userId, vin: "2FTRX18W1XCA10000", make: "Ford", model: "Transit", year: 2025, driverScore: 78, maintenanceScore: 75, overallScore: 77, status: "Needs Review" },
-      { vehicleId: "U-0001", userId, vin: "2FTRX18W1XCA10001", make: "Mercedes", model: "Sprinter", year: 2025, driverScore: 82, maintenanceScore: 79, overallScore: 80, status: "Good" },
-      { vehicleId: "U-0002", userId, vin: "2FTRX18W1XCA10002", make: "Chevrolet", model: "Express", year: 2025, driverScore: 72, maintenanceScore: 68, overallScore: 70, status: "Needs Review" },
-      { vehicleId: "U-0003", userId, vin: "2FTRX18W1XCA10003", make: "Ram", model: "ProMaster", year: 2025, driverScore: 75, maintenanceScore: 71, overallScore: 73, status: "Needs Review" },
-      { vehicleId: "U-0004", userId, vin: "2FTRX18W1XCA10004", make: "Nissan", model: "NV Cargo", year: 2025, driverScore: 79, maintenanceScore: 76, overallScore: 77, status: "Needs Review" }
-    ];
-
-    // Combine all vehicles
-    const allVehicles = [
-      ...safetyVehicles,
-      ...maintenanceVehicles,
-      ...emissionsVehicles,
-      ...efficiencyVehicles
-    ];
+    // Use the vehicles array directly
+    const allVehicles = vehicles;
 
     console.log(`Inserting ${allVehicles.length} vehicles...`);
 
-    // Add the vehicles
+    // Add the vehicles one by one to avoid type issues
     for (const vehicle of allVehicles) {
-      const existingVehicle = await db.query.vehicles.findFirst({
-        where: (vehicles, { eq }) => eq(vehicles.vin, vehicle.vin)
-      });
+      try {
+        const existingVehicle = await db.query.vehicles.findFirst({
+          where: (vehicles, { eq }) => eq(vehicles.vin, vehicle.vin)
+        });
 
-      if (!existingVehicle) {
-        await db.insert(vehicles).values(vehicle);
-        console.log(`Added vehicle: ${vehicle.vin}`);
-      } else {
-        console.log(`Vehicle ${vehicle.vin} already exists. Skipping.`);
+        if (!existingVehicle) {
+          const vehicleData = {
+            vehicleId: vehicle.vehicleId,
+            userId: vehicle.userId,
+            vin: vehicle.vin,
+            make: vehicle.make,
+            model: vehicle.model,
+            year: vehicle.year,
+            driverScore: vehicle.driverScore,
+            maintenanceScore: vehicle.maintenanceScore,
+            overallScore: vehicle.overallScore,
+            status: vehicle.status
+          };
+          await db.insert(vehicles).values(vehicleData);
+          console.log(`Added vehicle: ${vehicle.vin}`);
+        } else {
+          console.log(`Vehicle ${vehicle.vin} already exists. Skipping.`);
+        }
+      } catch (error) {
+        console.error(`Error adding vehicle ${vehicle.vin}:`, error);
       }
     }
 
