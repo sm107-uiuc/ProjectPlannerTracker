@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { BarChart3, ListTodo, LineChart } from 'lucide-react';
+import { BarChart3, ListTodo, LineChart, ArrowRight } from 'lucide-react';
 
 interface TabLoaderProps {
   tabName: 'overview' | 'metrics' | 'recommendations';
@@ -16,18 +16,27 @@ export const TabLoader: React.FC<TabLoaderProps> = ({
   const [progress, setProgress] = useState(0);
   
   useEffect(() => {
+    let isMounted = true;
     const interval = setInterval(() => {
       setProgress(prev => {
         if (prev >= 100) {
           clearInterval(interval);
-          if (onComplete) onComplete();
+          if (isMounted && onComplete) {
+            // Use setTimeout to avoid React state update warning
+            setTimeout(() => {
+              onComplete();
+            }, 0);
+          }
           return 100;
         }
         return prev + 5;
       });
     }, duration / 20);
     
-    return () => clearInterval(interval);
+    return () => {
+      isMounted = false;
+      clearInterval(interval);
+    };
   }, [duration, onComplete]);
 
   const getIcon = () => {
@@ -53,36 +62,55 @@ export const TabLoader: React.FC<TabLoaderProps> = ({
   };
 
   return (
-    <div className="absolute inset-0 flex flex-col items-center justify-center bg-white bg-opacity-90 z-20 rounded-md">
-      <div className="w-full max-w-md px-6 flex flex-col items-center">
+    <div className="absolute inset-0 flex flex-col items-center justify-center bg-white z-20 rounded-md">
+      <div className="flex flex-col items-center max-w-md w-full">
+        {/* Top Tab Navigation (non-functional) */}
+        <div className="flex mb-8 bg-slate-100 rounded-xl p-1 self-start">
+          <div className={`px-4 py-2 rounded-lg ${tabName === 'overview' ? 'bg-white shadow-sm' : ''}`}>Overview</div>
+          <div className={`px-4 py-2 rounded-lg ${tabName === 'metrics' ? 'bg-white shadow-sm' : ''}`}>Metrics</div>
+          <div className={`px-4 py-2 rounded-lg ${tabName === 'recommendations' ? 'bg-white shadow-sm' : ''}`}>Recommendations</div>
+        </div>
+        
+        {/* Icon */}
         <motion.div
-          animate={{
+          initial={{ scale: 0.8, opacity: 0 }}
+          animate={{ 
+            scale: 1, 
+            opacity: 1,
             rotate: [0, 360],
           }}
           transition={{
-            duration: 1.5,
+            duration: 1.8,
             repeat: Infinity,
-            ease: "linear",
+            ease: "easeInOut",
           }}
-          className="mb-5"
+          className="mb-8"
         >
-          <div className="w-16 h-16 rounded-full bg-blue-500 flex items-center justify-center">
+          <div className="w-20 h-20 rounded-full bg-blue-500 flex items-center justify-center shadow-lg">
             {getIcon()}
           </div>
         </motion.div>
         
-        <div className="text-lg font-medium text-blue-600 mb-4">
+        {/* Message */}
+        <motion.div
+          initial={{ y: 10, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ duration: 0.5 }}
+          className="text-lg font-medium text-blue-600 mb-6 flex items-center justify-center text-center"
+        >
           {getMessage()}
-        </div>
+        </motion.div>
         
-        <div className="w-full bg-gray-200 h-2 rounded-full mb-2">
-          <div 
-            className="bg-blue-500 h-2 rounded-full" 
-            style={{ width: `${progress}%` }}
-          />
-        </div>
+        {/* Progress Bar */}
+        <motion.div 
+          initial={{ width: "0%" }}
+          animate={{ width: "100%" }}
+          transition={{ duration: duration / 1000, ease: "easeInOut" }}
+          className="w-full max-w-sm bg-blue-500 h-2 rounded-full mb-3"
+        />
         
-        <div className="text-sm text-gray-500">
+        {/* Progress Text */}
+        <div className="text-sm text-gray-500 font-medium">
           {progress}% complete
         </div>
       </div>
