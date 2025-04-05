@@ -230,15 +230,15 @@ const GoalSelectionScreen = ({
                 className="w-full min-h-[10rem] bg-white" 
                 placeholder="e.g., Reduce carbon footprint and increase sustainability"
                 rows={10}
-                minLength={200}
+                minLength={50}
                 value={customGoal}
                 onChange={(e) => setCustomGoal(e.target.value)}
               />
               <p className="text-sm text-gray-500 mt-1">
-                {customGoal.length}/200 characters minimum for AI analysis
+                {customGoal.length}/50 characters minimum for AI analysis
               </p>
               
-              {customGoal.length >= 200 && (
+              {customGoal.length >= 50 && (
                 <Button 
                   className="mt-4 bg-primary text-white hover:bg-primary/90"
                   onClick={handleGenerateWeights}

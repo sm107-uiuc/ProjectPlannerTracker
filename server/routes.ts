@@ -429,9 +429,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Validate request body
       const { goalDescription, events } = req.body;
       
-      if (!goalDescription || typeof goalDescription !== 'string' || goalDescription.length < 200) {
+      if (!goalDescription || typeof goalDescription !== 'string' || goalDescription.length < 50) {
         return res.status(400).json({ 
-          error: 'Goal description must be at least 200 characters long'
+          error: 'Goal description must be at least 50 characters long'
         });
       }
       
