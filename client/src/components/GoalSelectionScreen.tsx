@@ -159,7 +159,7 @@ const GoalSelectionScreen = ({
                 onClick={handleViewDashboard}
                 disabled={!selectedGoal}
               >
-                View Dashboard
+                Generate Dashboard
               </Button>
             </div>
           </div>
