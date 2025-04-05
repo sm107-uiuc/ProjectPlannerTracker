@@ -1,29 +1,28 @@
 import { useState } from "react";
-import { Goal } from "@/lib/types";
-import { goalData, goalDisplayText, mockVehicles, getTopPerformers, getVehiclesNeedingAttention, mockMetricsData } from "@/lib/mockData";
-import { Sidebar } from "@/components/Sidebar";
-import FleetScoreCard from "@/components/FleetScoreCard";
-import FleetScoreTrendCard from "@/components/FleetScoreTrendCard";
-import RecommendationsCard from "@/components/RecommendationsCard";
-import VehiclePerformanceTable from "@/components/VehiclePerformanceTable";
-import PerformersCard from "@/components/PerformersCard";
-import { IntegrationsScreen } from "@/components/IntegrationsScreen";
-import { MetricsTab } from "@/components/MetricsTab";
-import { RecommendationsTab } from "@/components/RecommendationsTab";
-import { TabLoader } from "@/components/TabLoader";
-import DidYouKnowCard from "@/components/DidYouKnowCard";
-import ChatbotIcon from "@/components/ChatbotIcon";
-import GoalDescriptionCard from "@/components/GoalDescriptionCard";
-import ScoreCalculationCard from "@/components/ScoreCalculationCard";
+import { Goal } from "../lib/types";
+import { goalData, goalDisplayText, mockVehicles, getTopPerformers, getVehiclesNeedingAttention, mockMetricsData } from "../lib/mockData";
+import { Sidebar } from "../components/Sidebar";
+import FleetScoreCard from "../components/FleetScoreCard";
+import FleetScoreTrendCard from "../components/FleetScoreTrendCard";
+import RecommendationsCard from "../components/RecommendationsCard";
+import VehiclePerformanceTable from "../components/VehiclePerformanceTable";
+import PerformersCard from "../components/PerformersCard";
+import { IntegrationsScreen } from "../components/IntegrationsScreen";
+import { MetricsTab } from "../components/MetricsTab";
+import { RecommendationsTab } from "../components/RecommendationsTab";
+import { TabLoader } from "../components/TabLoader";
+import DidYouKnowCard from "../components/DidYouKnowCard";
+import ChatbotIcon from "../components/ChatbotIcon";
+import CombinedGoalCard from "../components/CombinedGoalCard";
 import { 
   RefreshCw, 
   Filter, 
   Link as LinkIcon, 
   X
 } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Button } from "../components/ui/button";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../components/ui/dialog";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "../components/ui/tabs";
 
 interface DashboardScreenProps {
   selectedGoal: Goal;
@@ -118,26 +117,30 @@ const DashboardScreen = ({ selectedGoal }: DashboardScreenProps) => {
                 />
               ) : (
                 <>
-                  {/* Goal Description and Score Calculation Cards in the same row */}
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-                    <GoalDescriptionCard goal={selectedGoal} />
-                    <ScoreCalculationCard goal={selectedGoal} />
-                  </div>
-                  
+                  {/* Main Layout: Combined Goal Card & Description on left, Fleet Score & Trend stacked on right */}
                   <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
-                    <FleetScoreCard fleetScore={data.fleetScore} />
-                    <FleetScoreTrendCard 
-                      trend={data.trend} 
-                      isTrendPositive={data.isTrendPositive} 
-                    />
-                    <DidYouKnowCard goal={selectedGoal} />
+                    {/* Combined Goal Card (2/3 width) */}
+                    <div className="lg:col-span-2">
+                      <CombinedGoalCard goal={selectedGoal} />
+                    </div>
+                    
+                    {/* Fleet Score Cards stacked vertically (1/3 width) */}
+                    <div className="flex flex-col gap-6">
+                      <FleetScoreCard fleetScore={data.fleetScore} />
+                      <FleetScoreTrendCard 
+                        trend={data.trend} 
+                        isTrendPositive={data.isTrendPositive} 
+                      />
+                    </div>
                   </div>
                   
-                  <div className="mb-6">
+                  {/* Recommendations and Did You Know side by side */}
+                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
                     <RecommendationsCard 
                       goalName={goalDisplayText[selectedGoal]} 
                       selectedGoal={selectedGoal}
                     />
+                    <DidYouKnowCard goal={selectedGoal} />
                   </div>
 
                   <VehiclePerformanceTable 
