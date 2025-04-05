@@ -10,11 +10,14 @@ import {
   CardTitle 
 } from '../components/ui/card';
 import { 
-  Accordion, 
-  AccordionContent, 
-  AccordionItem, 
-  AccordionTrigger 
-} from '../components/ui/accordion';
+  Table,
+  TableBody,
+  TableCaption,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow
+} from '../components/ui/table';
 import { ScrollArea } from '../components/ui/scroll-area';
 import { Info, Calculator, ChevronRight, Percent } from 'lucide-react';
 import { Badge } from '../components/ui/badge';
@@ -25,7 +28,7 @@ interface ScoreCalculationCardProps {
 }
 
 const ScoreCalculationCard = ({ goal }: ScoreCalculationCardProps) => {
-  const [activeTab, setActiveTab] = useState<'explanation' | 'weights'>('explanation');
+  const [activeTab, setActiveTab] = useState<'explanation' | 'table'>('explanation');
   const data = scoringData[goal];
   
   // Sort events by weight (descending)
@@ -52,13 +55,13 @@ const ScoreCalculationCard = ({ goal }: ScoreCalculationCardProps) => {
       
       <Tabs 
         value={activeTab} 
-        onValueChange={(value) => setActiveTab(value as 'explanation' | 'weights')}
+        onValueChange={(value) => setActiveTab(value as 'explanation' | 'table')}
         className="w-full"
       >
         <div className="px-4 pt-0">
           <TabsList className="grid w-full grid-cols-2 mb-2">
             <TabsTrigger value="explanation">Score Explanation</TabsTrigger>
-            <TabsTrigger value="weights">Event Weights</TabsTrigger>
+            <TabsTrigger value="table">Events Table</TabsTrigger>
           </TabsList>
         </div>
         
@@ -95,87 +98,90 @@ const ScoreCalculationCard = ({ goal }: ScoreCalculationCardProps) => {
           </div>
         </TabsContent>
         
-        <TabsContent value="weights" className="pt-0 pb-0 px-0">
+        <TabsContent value="table" className="pt-0 pb-0 px-0">
           <ScrollArea className="h-60 w-full rounded-md">
             <div className="p-4">
               <div className="mb-4">
                 <h4 className="text-sm font-medium text-gray-700 flex items-center mb-2">
                   <Percent className="h-4 w-4 mr-1 text-blue-500" />
-                  Event Weight Distribution
+                  Events Impact Table
                 </h4>
                 <p className="text-xs text-gray-500 mb-3">
-                  Events are weighted based on their impact on overall fleet performance.
-                  Higher weights indicate greater significance in score calculation.
+                  A comprehensive reference of all events that affect your fleet score.
                 </p>
               </div>
               
-              <Accordion type="single" collapsible className="w-full">
-                <AccordionItem value="high-impact" className="border-b">
-                  <AccordionTrigger className="text-sm py-2">
-                    <div className="flex items-center">
-                      High Impact Events
-                      <Badge className="ml-2 bg-blue-100 text-blue-800 hover:bg-blue-200">{highWeightEvents.length}</Badge>
-                    </div>
-                  </AccordionTrigger>
-                  <AccordionContent>
-                    <ul className="space-y-2 pt-2">
+              <Table>
+                <TableCaption>Fleet Score Events for {goal.charAt(0).toUpperCase() + goal.slice(1)}</TableCaption>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead className="w-[180px]">Event</TableHead>
+                    <TableHead>Description</TableHead>
+                    <TableHead className="text-right w-[80px]">Weight</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {/* High Impact Events */}
+                  {highWeightEvents.length > 0 && (
+                    <>
+                      <TableRow>
+                        <TableCell colSpan={3} className="bg-blue-50 font-medium text-blue-800">
+                          High Impact Events
+                        </TableCell>
+                      </TableRow>
                       {highWeightEvents.map((event) => (
-                        <li key={event.eventName} className="text-sm">
-                          <div className="flex items-center justify-between mb-1">
-                            <span className="font-medium">{event.eventName}</span>
+                        <TableRow key={`high-${event.eventName}`}>
+                          <TableCell className="font-medium">{event.eventName}</TableCell>
+                          <TableCell className="text-xs">{event.description}</TableCell>
+                          <TableCell className="text-right">
                             <Badge className="bg-blue-500">{event.weight}%</Badge>
-                          </div>
-                          <p className="text-xs text-gray-500">{event.description}</p>
-                        </li>
+                          </TableCell>
+                        </TableRow>
                       ))}
-                    </ul>
-                  </AccordionContent>
-                </AccordionItem>
-                
-                <AccordionItem value="medium-impact" className="border-b">
-                  <AccordionTrigger className="text-sm py-2">
-                    <div className="flex items-center">
-                      Medium Impact Events
-                      <Badge className="ml-2 bg-blue-100 text-blue-800 hover:bg-blue-200">{mediumWeightEvents.length}</Badge>
-                    </div>
-                  </AccordionTrigger>
-                  <AccordionContent>
-                    <ul className="space-y-2 pt-2">
+                    </>
+                  )}
+                  
+                  {/* Medium Impact Events */}
+                  {mediumWeightEvents.length > 0 && (
+                    <>
+                      <TableRow>
+                        <TableCell colSpan={3} className="bg-blue-50 font-medium text-blue-800">
+                          Medium Impact Events
+                        </TableCell>
+                      </TableRow>
                       {mediumWeightEvents.map((event) => (
-                        <li key={event.eventName} className="text-sm">
-                          <div className="flex items-center justify-between mb-1">
-                            <span className="font-medium">{event.eventName}</span>
+                        <TableRow key={`medium-${event.eventName}`}>
+                          <TableCell className="font-medium">{event.eventName}</TableCell>
+                          <TableCell className="text-xs">{event.description}</TableCell>
+                          <TableCell className="text-right">
                             <Badge className="bg-blue-500">{event.weight}%</Badge>
-                          </div>
-                          <p className="text-xs text-gray-500">{event.description}</p>
-                        </li>
+                          </TableCell>
+                        </TableRow>
                       ))}
-                    </ul>
-                  </AccordionContent>
-                </AccordionItem>
-                
-                <AccordionItem value="low-impact" className="border-b">
-                  <AccordionTrigger className="text-sm py-2">
-                    <div className="flex items-center">
-                      Low Impact Events
-                      <Badge className="ml-2 bg-blue-100 text-blue-800 hover:bg-blue-200">{lowWeightEvents.length}</Badge>
-                    </div>
-                  </AccordionTrigger>
-                  <AccordionContent>
-                    <ul className="space-y-2 pt-2">
+                    </>
+                  )}
+                  
+                  {/* Low Impact Events */}
+                  {lowWeightEvents.length > 0 && (
+                    <>
+                      <TableRow>
+                        <TableCell colSpan={3} className="bg-blue-50 font-medium text-blue-800">
+                          Low Impact Events
+                        </TableCell>
+                      </TableRow>
                       {lowWeightEvents.map((event) => (
-                        <li key={event.eventName} className="text-sm">
-                          <div className="flex items-center justify-between mb-1">
-                            <span className="font-medium">{event.eventName}</span>
+                        <TableRow key={`low-${event.eventName}`}>
+                          <TableCell className="font-medium">{event.eventName}</TableCell>
+                          <TableCell className="text-xs">{event.description}</TableCell>
+                          <TableCell className="text-right">
                             <Badge className="bg-blue-500">{event.weight}%</Badge>
-                          </div>
-                          <p className="text-xs text-gray-500">{event.description}</p>
-                        </li>
+                          </TableCell>
+                        </TableRow>
                       ))}
-                    </ul>
-                  </AccordionContent>
-                </AccordionItem>
-              </Accordion>
+                    </>
+                  )}
+                </TableBody>
+              </Table>
             </div>
           </ScrollArea>
         </TabsContent>
