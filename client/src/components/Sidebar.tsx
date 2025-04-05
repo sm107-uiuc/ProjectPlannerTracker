@@ -1,17 +1,14 @@
 import { 
-  Settings, 
   LayoutDashboard, 
-  Truck, 
-  MessageSquare, 
-  Users, 
-  FileText, 
   Settings2, 
   Download, 
-  HelpCircle,
-  Link as LinkIcon
+  HelpCircle
 } from "lucide-react";
 import { Link, useLocation } from "wouter";
 import { cn } from "../lib/utils";
+
+// Import the MotorQ logo
+import motorqLogo from "../assets/motorq-logo.svg";
 
 export const Sidebar = () => {
   const [location] = useLocation();
@@ -20,12 +17,9 @@ export const Sidebar = () => {
     return location === path;
   };
 
+  // Only keeping the Dashboard icon
   const navItems = [
     { icon: LayoutDashboard, label: "Dashboard", path: "/" },
-    { icon: Truck, label: "Vehicles", path: "/vehicles" },
-    { icon: MessageSquare, label: "Messages", path: "/messages" },
-    { icon: Users, label: "Users", path: "/users" },
-    { icon: FileText, label: "Reports", path: "/reports" },
   ];
 
   const bottomNavItems = [
@@ -36,10 +30,12 @@ export const Sidebar = () => {
 
   return (
     <div className="w-[68px] bg-sidebar flex flex-col items-center py-4 flex-shrink-0">
+      {/* MotorQ logo at the top */}
       <div className="sidebar-icon mb-8">
-        <Settings className="w-6 h-6" />
+        <img src={motorqLogo} alt="MotorQ Logo" className="w-8 h-8" />
       </div>
       
+      {/* Only rendering the Dashboard icon */}
       {navItems.map((item) => (
         <Link key={item.path} href={item.path}>
           <div className={cn(
