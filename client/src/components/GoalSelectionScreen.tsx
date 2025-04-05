@@ -154,9 +154,9 @@ const GoalSelectionScreen = ({
   };
   
   const handleGenerateWeights = async () => {
-    // Validate custom goal length (minimum 200 characters)
-    if (customGoal.length < 200) {
-      alert("Please describe your goal in at least 200 characters for a more accurate analysis.");
+    // Validate custom goal length (minimum 50 characters)
+    if (customGoal.length < 50) {
+      alert("Please describe your goal in at least 50 characters for a more accurate analysis.");
       return;
     }
     
