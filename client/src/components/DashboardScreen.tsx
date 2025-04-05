@@ -14,6 +14,7 @@ import { TabLoader } from "@/components/TabLoader";
 import DidYouKnowCard from "@/components/DidYouKnowCard";
 import ChatbotIcon from "@/components/ChatbotIcon";
 import GoalDescriptionCard from "@/components/GoalDescriptionCard";
+import ScoreCalculationCard from "@/components/ScoreCalculationCard";
 import { 
   RefreshCw, 
   Filter, 
@@ -128,6 +129,11 @@ const DashboardScreen = ({ selectedGoal }: DashboardScreenProps) => {
                       isTrendPositive={data.isTrendPositive} 
                     />
                     <DidYouKnowCard goal={selectedGoal} />
+                  </div>
+                  
+                  {/* Score Calculation Card */}
+                  <div className="mb-6">
+                    <ScoreCalculationCard goal={selectedGoal} />
                   </div>
                   
                   <div className="mb-6">
